@@ -1,5 +1,7 @@
 ![header](https://capsule-render.vercel.app/api?type=rect&color=0:833ab4,50:fd1d1d,100:fcb045&height=300&section=header&text=Greetings!&fontSize=90&fontColor=f7f5f5)
 
+2018741022 이기진
+
 ## **I'm Gijin, Lee**
 
 _🤖 I’m currently learning Robotics in Kwangwoon University(2018~), South Korea_
