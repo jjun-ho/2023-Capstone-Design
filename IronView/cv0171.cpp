@@ -6,7 +6,7 @@
 #include <vector>
 #include <fstream>
 
-#include "eigen-3.4.0/Eigen/Dense"
+//#include "eigen-3.4.0/Eigen/Dense"
 #include "cv0171.h"
 
 #define __PI 3.141592
@@ -626,137 +626,137 @@ KImageColor cv0171::GeneralizedHT(KImageGray& Input_Img, int row, int col){
 
 KEdgeImg cv0171::OpticalFlow(KImageGray& igImg1, KImageGray& igImg2, int iter)
 {
-    double gaussianVoting5[5][5];
+//    double gaussianVoting5[5][5];
 
-    for(int nRow = -2; nRow <3; nRow++){
-        for(int nCol= -2; nCol < 3; nCol++){
-            gaussianVoting5[nRow+2][nCol+2] = 1 / (_2PI * pow(5, 2)) * exp(-0.5 * ( pow(nRow,2) + pow(nCol,2) / pow(5, 2)));
-        }
-    }
+//    for(int nRow = -2; nRow <3; nRow++){
+//        for(int nCol= -2; nCol < 3; nCol++){
+//            gaussianVoting5[nRow+2][nCol+2] = 1 / (_2PI * pow(5, 2)) * exp(-0.5 * ( pow(nRow,2) + pow(nCol,2) / pow(5, 2)));
+//        }
+//    }
 
-    int kernelSize = 5;
-    int kernalH = kernelSize/2;
+//    int kernelSize = 5;
+//    int kernalH = kernelSize/2;
 
-    int minSize = _MIN(igImg2.Row(), igImg2.Col());
+//    int minSize = _MIN(igImg2.Row(), igImg2.Col());
 
-    KImageColor resultImg;
-
-
-    // 반복횟수로 인한 이미지 축소가 minsize 보다 크면 iter를 다시 정의=
-    if(pow(2, iter-1) > minSize / kernelSize){
-        iter = 0;
-        int tmpValue = 1;
-
-        while(1){
-            iter++;
-            tmpValue *= 2;
-            if(tmpValue > minSize / kernelSize){
-                iter--;
-                break;
-            }
-        }
-    }
-
-    // iter + 1개의 이미지 피라미드 생성(원본의 이미지도 저장되기 때문에)
-    ImgPyramid imgPyramid1(igImg1);
-    ImgPyramid imgPyramid2(igImg2);
-
-    imgPyramid1.Create(iter);
-    imgPyramid2.Create(iter);
-
-    // LK method 사용
-    vector<KEdgeImg>* pyImgSrc1 = imgPyramid1.getPyImg();
-    vector<KEdgeImg>* pyImgSrc2 = imgPyramid2.getPyImg();
+//    KImageColor resultImg;
 
 
-    // 상위의 피라미드 이미지(작은 이미지)부터 구하기
-    vector<vector<double>> srcMat1 = GetValMatrix((*pyImgSrc1)[iter]);
-    vector<vector<double>> srcMat2 = GetValMatrix((*pyImgSrc2)[iter]);
+//    // 반복횟수로 인한 이미지 축소가 minsize 보다 크면 iter를 다시 정의=
+//    if(pow(2, iter-1) > minSize / kernelSize){
+//        iter = 0;
+//        int tmpValue = 1;
 
-    // LK를 적용하기 위한 가중치 벡터 생성
-    Eigen::Matrix<double, 25, 25> weightedMat5;   weightedMat5.fill(0.);
+//        while(1){
+//            iter++;
+//            tmpValue *= 2;
+//            if(tmpValue > minSize / kernelSize){
+//                iter--;
+//                break;
+//            }
+//        }
+//    }
 
-    // 행렬 만들기
-    Eigen::Matrix<double, 25, 2> A;
-    Eigen::Matrix<double, 25, 1> b;
-    Eigen::Matrix<double, 2, 25> aTw;
-    Eigen::Matrix<double, 2, 1> zeta;
+//    // iter + 1개의 이미지 피라미드 생성(원본의 이미지도 저장되기 때문에)
+//    ImgPyramid imgPyramid1(igImg1);
+//    ImgPyramid imgPyramid2(igImg2);
 
-    for(int i = 0; i<kernelSize; i++){
-        for(int j = 0; j<kernelSize; j++){
-            weightedMat5(i*kernelSize + j,i*kernelSize + j) = gaussianVoting5[i][j];
-            cout << weightedMat5(i*kernelSize + j, i*kernelSize + j) << " ";
-        }
-        cout << endl;
-    }
+//    imgPyramid1.Create(iter);
+//    imgPyramid2.Create(iter);
 
-    // dx, dy 찾기: 제일 위의 이미지에서 찾기
-    for(int nRow=kernalH+1; nRow < srcMat1.size()-kernalH-1; nRow++){
-        for(int nCol=kernalH+1; nCol < srcMat1[0].size()-kernalH-1; nCol++){
-                for(int kRow = nRow-kernalH, _i=0; kRow <= nRow+kernalH; kRow++, _i++){
-                    for(int kCol = nCol-kernalH, _j=0; kCol <= nCol+kernalH; kCol++, _j++){
-
-                        // 이전 이미지의 크기는 1/2배, 거리는 2배
-                        double moveX = kCol + (*pyImgSrc2)[iter][nRow]->at(nCol).dx;
-                        double moveY = kRow + (*pyImgSrc2)[iter][nRow]->at(nCol).dy;
-
-                        if(moveX <0) moveX = 0; if(moveX > srcMat1[0].size()-1) moveX = srcMat1[0].size()-1;
-                        if(moveY <0) moveY = 0; if(moveY > srcMat1.size()-1) moveY = srcMat1.size()-1;
-
-                        A.row(_i*kernelSize + _j) << srcMat1[kRow][kCol+1] - srcMat1[kRow][kCol-1], srcMat1[kRow+1][kCol] - srcMat1[kRow-1][kCol];
-                        b.row(_i*kernelSize + _j) << srcMat1[moveY][moveX] - srcMat2[kRow][kCol];
-
-                    }
-                }
-
-                //역행렬을 통해 d값을 구하는 과정
-                aTw = A.transpose() * weightedMat5;
-                zeta = (aTw * A).inverse() * aTw * b;
-                cout << zeta << endl;
-
-                (*pyImgSrc2)[iter][nRow]->at(nCol).dx += zeta(0,0);
-                (*pyImgSrc2)[iter][nRow]->at(nCol).dy += zeta(1,0);
-        }
-    }
-
-    for(int i = iter-1; i >= 0; i--){
-        srcMat1 = GetValMatrix((*pyImgSrc1)[i]);
-        srcMat2 = GetValMatrix((*pyImgSrc2)[i]);
-        KEdgeImg refMat = (*pyImgSrc2)[i+1];    //상단 이미지(래퍼런스)의 dx,dy를 가져오기 위해
-
-        // 커널을 옮겨가면서 dx, dy 찾기 - 맨 상단의 이미지에서 dx, dy 추출
-        for(int nRow=kernalH+1; nRow < srcMat1.size()-kernalH-1; nRow++){
-            for(int nCol=kernalH+1; nCol < srcMat1[0].size()-kernalH-1; nCol++){
-
-                    // 커널안의 점들을 통해 LK를 위한 행렬을 만듬
-                    for(int kRow = nRow-kernalH, _i=0; kRow <= nRow+kernalH; kRow++, _i++){
-                        for(int kCol = nCol-kernalH, _j=0; kCol <= nCol+kernalH; kCol++, _j++){
-                        // 이전 이미지의 크기는 1/2, 거리는 2배
-                        double moveX = kCol + refMat[nRow/2]->at(nCol/2).dx * 2 + (*pyImgSrc2)[i][nRow]->at(nCol).dx;
-                        double moveY = kRow + refMat[nRow/2]->at(nCol/2).dy * 2 + (*pyImgSrc2)[i][nRow]->at(nCol).dy;
-                        if(moveX <0) moveX = 0; if(moveX > srcMat1[0].size()-1) moveX = srcMat1[0].size()-1;
-                        if(moveY <0) moveY = 0; if(moveY > srcMat1.size()-1) moveY = srcMat1.size()-1;
+//    // LK method 사용
+//    vector<KEdgeImg>* pyImgSrc1 = imgPyramid1.getPyImg();
+//    vector<KEdgeImg>* pyImgSrc2 = imgPyramid2.getPyImg();
 
 
-                        A.row(_i*kernelSize + _j) << srcMat1[kRow][kCol+1] - srcMat1[kRow][kCol-1], srcMat1[kRow+1][kCol] - srcMat1[kRow-1][kCol];
-                        b.row(_i*kernelSize + _j) << srcMat1[moveY][moveX] - srcMat2[kRow][kCol];
-                        }
-                    }
+//    // 상위의 피라미드 이미지(작은 이미지)부터 구하기
+//    vector<vector<double>> srcMat1 = GetValMatrix((*pyImgSrc1)[iter]);
+//    vector<vector<double>> srcMat2 = GetValMatrix((*pyImgSrc2)[iter]);
 
-                    //역행렬을 통해 d값을 구하는 과정
-                    aTw = A.transpose() * weightedMat5;
-                    zeta = (aTw * A).inverse() * aTw * b;
+//    // LK를 적용하기 위한 가중치 벡터 생성
+//    Eigen::Matrix<double, 25, 25> weightedMat5;   weightedMat5.fill(0.);
 
-                    (*pyImgSrc2)[i][nRow]->at(nCol).dx += zeta(0,0);
-                    (*pyImgSrc2)[i][nRow]->at(nCol).dy += zeta(1,0);
-            }
-        }
-    }
+//    // 행렬 만들기
+//    Eigen::Matrix<double, 25, 2> A;
+//    Eigen::Matrix<double, 25, 1> b;
+//    Eigen::Matrix<double, 2, 25> aTw;
+//    Eigen::Matrix<double, 2, 1> zeta;
 
-    // 2번째 이미지를 컬러로 변환 후 자동저장
-    resultIcImg = igImg2.GrayToRGB();
+//    for(int i = 0; i<kernelSize; i++){
+//        for(int j = 0; j<kernelSize; j++){
+//            weightedMat5(i*kernelSize + j,i*kernelSize + j) = gaussianVoting5[i][j];
+//            cout << weightedMat5(i*kernelSize + j, i*kernelSize + j) << " ";
+//        }
+//        cout << endl;
+//    }
 
-    return (*pyImgSrc2)[0];
+//    // dx, dy 찾기: 제일 위의 이미지에서 찾기
+//    for(int nRow=kernalH+1; nRow < srcMat1.size()-kernalH-1; nRow++){
+//        for(int nCol=kernalH+1; nCol < srcMat1[0].size()-kernalH-1; nCol++){
+//                for(int kRow = nRow-kernalH, _i=0; kRow <= nRow+kernalH; kRow++, _i++){
+//                    for(int kCol = nCol-kernalH, _j=0; kCol <= nCol+kernalH; kCol++, _j++){
+
+//                        // 이전 이미지의 크기는 1/2배, 거리는 2배
+//                        double moveX = kCol + (*pyImgSrc2)[iter][nRow]->at(nCol).dx;
+//                        double moveY = kRow + (*pyImgSrc2)[iter][nRow]->at(nCol).dy;
+
+//                        if(moveX <0) moveX = 0; if(moveX > srcMat1[0].size()-1) moveX = srcMat1[0].size()-1;
+//                        if(moveY <0) moveY = 0; if(moveY > srcMat1.size()-1) moveY = srcMat1.size()-1;
+
+//                        A.row(_i*kernelSize + _j) << srcMat1[kRow][kCol+1] - srcMat1[kRow][kCol-1], srcMat1[kRow+1][kCol] - srcMat1[kRow-1][kCol];
+//                        b.row(_i*kernelSize + _j) << srcMat1[moveY][moveX] - srcMat2[kRow][kCol];
+
+//                    }
+//                }
+
+//                //역행렬을 통해 d값을 구하는 과정
+//                aTw = A.transpose() * weightedMat5;
+//                zeta = (aTw * A).inverse() * aTw * b;
+//                cout << zeta << endl;
+
+//                (*pyImgSrc2)[iter][nRow]->at(nCol).dx += zeta(0,0);
+//                (*pyImgSrc2)[iter][nRow]->at(nCol).dy += zeta(1,0);
+//        }
+//    }
+
+//    for(int i = iter-1; i >= 0; i--){
+//        srcMat1 = GetValMatrix((*pyImgSrc1)[i]);
+//        srcMat2 = GetValMatrix((*pyImgSrc2)[i]);
+//        KEdgeImg refMat = (*pyImgSrc2)[i+1];    //상단 이미지(래퍼런스)의 dx,dy를 가져오기 위해
+
+//        // 커널을 옮겨가면서 dx, dy 찾기 - 맨 상단의 이미지에서 dx, dy 추출
+//        for(int nRow=kernalH+1; nRow < srcMat1.size()-kernalH-1; nRow++){
+//            for(int nCol=kernalH+1; nCol < srcMat1[0].size()-kernalH-1; nCol++){
+
+//                    // 커널안의 점들을 통해 LK를 위한 행렬을 만듬
+//                    for(int kRow = nRow-kernalH, _i=0; kRow <= nRow+kernalH; kRow++, _i++){
+//                        for(int kCol = nCol-kernalH, _j=0; kCol <= nCol+kernalH; kCol++, _j++){
+//                        // 이전 이미지의 크기는 1/2, 거리는 2배
+//                        double moveX = kCol + refMat[nRow/2]->at(nCol/2).dx * 2 + (*pyImgSrc2)[i][nRow]->at(nCol).dx;
+//                        double moveY = kRow + refMat[nRow/2]->at(nCol/2).dy * 2 + (*pyImgSrc2)[i][nRow]->at(nCol).dy;
+//                        if(moveX <0) moveX = 0; if(moveX > srcMat1[0].size()-1) moveX = srcMat1[0].size()-1;
+//                        if(moveY <0) moveY = 0; if(moveY > srcMat1.size()-1) moveY = srcMat1.size()-1;
+
+
+//                        A.row(_i*kernelSize + _j) << srcMat1[kRow][kCol+1] - srcMat1[kRow][kCol-1], srcMat1[kRow+1][kCol] - srcMat1[kRow-1][kCol];
+//                        b.row(_i*kernelSize + _j) << srcMat1[moveY][moveX] - srcMat2[kRow][kCol];
+//                        }
+//                    }
+
+//                    //역행렬을 통해 d값을 구하는 과정
+//                    aTw = A.transpose() * weightedMat5;
+//                    zeta = (aTw * A).inverse() * aTw * b;
+
+//                    (*pyImgSrc2)[i][nRow]->at(nCol).dx += zeta(0,0);
+//                    (*pyImgSrc2)[i][nRow]->at(nCol).dy += zeta(1,0);
+//            }
+//        }
+//    }
+
+//    // 2번째 이미지를 컬러로 변환 후 자동저장
+//    resultIcImg = igImg2.GrayToRGB();
+
+//    return (*pyImgSrc2)[0];
 }
 
 // Input : 만들 이미지 피라미드 갯수

@@ -1190,99 +1190,100 @@ void MainFrame::on_Apply_Compare_Img_clicked()
 
 void MainFrame::on_CameraBtn_clicked()
 {
-    void* handle1;
-    void* handle2;
-    void* handle3;
-    void* handle4;
-    void* handle5;
+//    void* handle1;
+//    void* handle2;
+//    void* handle3;
+//    void* handle4;
+//    void* handle5;
     void* handle6;
 
     double setFrame = 10.0f;
 
-    handle1 = CreateCamera("Cam01");            // Create Handle and Open
-    handle2 = CreateCamera("Cam02");            // Create Handle and Open
-    handle3 = CreateCamera("Cam03");            // Create Handle and Open
-    handle4 = CreateCamera("Cam04");            // Create Handle and Open
-    handle5 = CreateCamera("Cam05");            // Create Handle and Open
+//    handle1 = CreateCamera("Cam01");            // Create Handle and Open
+//    handle2 = CreateCamera("Cam02");            // Create Handle and Open
+//    handle3 = CreateCamera("Cam03");            // Create Handle and Open
+//    handle4 = CreateCamera("Cam04");            // Create Handle and Open
+//    handle5 = CreateCamera("Cam05");            // Create Handle and Open
     handle6 = CreateCamera("Cam06");            // Create Handle and Open
 
-    SetExposureAuto(handle1, true);                    // set Exposure Auto off
-    //SetExposure(handle, 30000.0f);                    // set Exposure
-    SetFramerate(handle1, setFrame);                    // set Frame rate
+//    SetExposureAuto(handle1, true);                    // set Exposure Auto off
+//    //SetExposure(handle, 30000.0f);                    // set Exposure
+//    SetFramerate(handle1, setFrame);                    // set Frame rate
 
-    SetExposureAuto(handle2, true);                    // set Exposure Auto off
-    //SetExposure(handle, 30000.0f);                    // set Exposure
-    SetFramerate(handle2, setFrame);                    // set Frame rate
+//    SetExposureAuto(handle2, true);                    // set Exposure Auto off
+//    //SetExposure(handle, 30000.0f);                    // set Exposure
+//    SetFramerate(handle2, setFrame);                    // set Frame rate
 
-    SetExposureAuto(handle3, true);                    // set Exposure Auto off
-    //SetExposure(handle, 30000.0f);                    // set Exposure
-    SetFramerate(handle3, setFrame);                    // set Frame rate
+//    SetExposureAuto(handle3, true);                    // set Exposure Auto off
+//    //SetExposure(handle, 30000.0f);                    // set Exposure
+//    SetFramerate(handle3, setFrame);                    // set Frame rate
 
-    SetExposureAuto(handle4, true);                    // set Exposure Auto off
-    //SetExposure(handle, 30000.0f);                    // set Exposure
-    SetFramerate(handle4, setFrame);                    // set Frame rate
+//    SetExposureAuto(handle4, true);                    // set Exposure Auto off
+//    //SetExposure(handle, 30000.0f);                    // set Exposure
+//    SetFramerate(handle4, setFrame);                    // set Frame rate
 
-    SetExposureAuto(handle5, true);                    // set Exposure Auto off
-    //SetExposure(handle, 30000.0f);                    // set Exposure
-    SetFramerate(handle5, setFrame);                    // set Frame rate
+//    SetExposureAuto(handle5, true);                    // set Exposure Auto off
+//    //SetExposure(handle, 30000.0f);                    // set Exposure
+//    SetFramerate(handle5, setFrame);                    // set Frame rate
 
     SetExposureAuto(handle6, true);                    // set Exposure Auto off
     //SetExposure(handle, 30000.0f);                    // set Exposure
     SetFramerate(handle6, setFrame);                    // set Frame rate
 
     // data type : BayerRG8
-    MV_CC_SetEnumValue(handle1, "PixelFormat", 0x01080009);
-    MV_CC_SetEnumValue(handle2, "PixelFormat", 0x01080009);
-    MV_CC_SetEnumValue(handle3, "PixelFormat", 0x01080009);
-    MV_CC_SetEnumValue(handle4, "PixelFormat", 0x01080009);
-    MV_CC_SetEnumValue(handle5, "PixelFormat", 0x01080009);
+//    MV_CC_SetEnumValue(handle1, "PixelFormat", 0x01080009);
+//    MV_CC_SetEnumValue(handle2, "PixelFormat", 0x01080009);
+//    MV_CC_SetEnumValue(handle3, "PixelFormat", 0x01080009);
+//    MV_CC_SetEnumValue(handle4, "PixelFormat", 0x01080009);
+//    MV_CC_SetEnumValue(handle5, "PixelFormat", 0x01080009);
     MV_CC_SetEnumValue(handle6, "PixelFormat", 0x01080009);
 
-    GrabCamera(handle1);
-    GrabCamera(handle2);
-    GrabCamera(handle3);
-    GrabCamera(handle4);
-    GrabCamera(handle5);
+//    GrabCamera(handle1);
+//    GrabCamera(handle2);
+//    GrabCamera(handle3);
+//    GrabCamera(handle4);
+//    GrabCamera(handle5);
     GrabCamera(handle6);
 
-    Mat img1, img2, img3, img4, img5, img6;
+//    Mat img1, img2, img3, img4, img5, img6;
+    Mat img6;
 
     while (true) {
-        img1 = GetMatFrame(handle1);                                // get frame
-        img2 = GetMatFrame(handle2);
-        img3 = GetMatFrame(handle3);
-        img4 = GetMatFrame(handle4);
-        img5 = GetMatFrame(handle5);
+//        img1 = GetMatFrame(handle1);                                // get frame
+//        img2 = GetMatFrame(handle2);
+//        img3 = GetMatFrame(handle3);
+//        img4 = GetMatFrame(handle4);
+//        img5 = GetMatFrame(handle5);
         img6 = GetMatFrame(handle6);
 
-        cv::resize(img1, img1, Size(img1.cols/2, img1.rows/2));        // resize
-        cv::resize(img2, img2, Size(img2.cols/2, img2.rows/2));        // resize
-        cv::resize(img3, img3, Size(img3.cols/2, img3.rows/2));        // resize
-        cv::resize(img4, img4, Size(img4.cols/2, img4.rows/2));        // resize
-        cv::resize(img5, img5, Size(img5.cols/2, img5.rows/2));        // resize
-        cv::resize(img6, img6, Size(img5.cols/2, img5.rows/2));        // resize
+//        cv::resize(img1, img1, Size(img1.cols/2, img1.rows/2));        // resize
+//        cv::resize(img2, img2, Size(img2.cols/2, img2.rows/2));        // resize
+//        cv::resize(img3, img3, Size(img3.cols/2, img3.rows/2));        // resize
+//        cv::resize(img4, img4, Size(img4.cols/2, img4.rows/2));        // resize
+//        cv::resize(img5, img5, Size(img5.cols/2, img5.rows/2));        // resize
+        cv::resize(img6, img6, Size(img6.cols/2, img6.rows/2));        // resize
 
-        imshow("camera1", img1);
-        imshow("camera2", img2);
-        imshow("camera3", img3);
-        imshow("camera4", img4);
-        imshow("camera5", img5);
+//        imshow("camera1", img1);
+//        imshow("camera2", img2);
+//        imshow("camera3", img3);
+//        imshow("camera4", img4);
+//        imshow("camera5", img5);
         imshow("camera6", img6);
 
         char c = (char)waitKey(10);
         if (c == 27) { // ESC
-            StopCamera(handle1);                        // stop camera
-            StopCamera(handle2);                        // stop camera
-            StopCamera(handle3);                        // stop camera
-            StopCamera(handle4);                        // stop camera
-            StopCamera(handle5);                        // stop camera
+//            StopCamera(handle1);                        // stop camera
+//            StopCamera(handle2);                        // stop camera
+//            StopCamera(handle3);                        // stop camera
+//            StopCamera(handle4);                        // stop camera
+//            StopCamera(handle5);                        // stop camera
             StopCamera(handle6);                        // stop camera
 
-            CloseCamera(handle1);                    // close camera
-            CloseCamera(handle2);                    // close camera
-            CloseCamera(handle3);                    // close camera
-            CloseCamera(handle4);                    // close camera
-            CloseCamera(handle5);                    // close camera
+//            CloseCamera(handle1);                    // close camera
+//            CloseCamera(handle2);                    // close camera
+//            CloseCamera(handle3);                    // close camera
+//            CloseCamera(handle4);                    // close camera
+//            CloseCamera(handle5);                    // close camera
             CloseCamera(handle6);                    // close camera
 
             break;
