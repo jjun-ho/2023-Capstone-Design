@@ -1,0 +1,32 @@
+// create handle, 연결된 카메라를 찾는 함수, 이 함수로 카메라의 핸들을 얻게 된다.(void *handle)
+// 이후 카메라를 제어하는 데에 있어서 핸들은 꼭 필요함.
+int MV_CC_CreateHandle( void *handle, const MV_CC_DEVICE_INFO *pstDevInfo );
+
+
+// Open device, 핸들에 해당하는 카메라를 연결한다.
+// 이 부분이 정상적으로 작동되어야 카메라 데이터를 받아올 수 있다.
+int MV_CC_OpenDevice( void *handle, unsigned int nAccessMode = MV_ACCESS_Exclusive, unsigned short nSwitchoverKey = 0 );
+
+
+// Start acquiring image, 카메라가 이미지를 잡기(촬영하기)시작한다.
+// 이 상태에서 프레임을 가져올 수 있다.
+int MV_CC_StartGrabbing( void *handle );
+
+
+// Get one frame of picture, support getting chunk information and setting timeout
+// 카메라 이미지 데이터를 가져오는 함수, 함수 한번 실행당 한 프레임을 받는다.
+// 받아온 데이터는 *pData에 저장된다.
+int MV_CC_GetOneFrameTimeout( void *handle, unsigned char *pData, unsigned int nDataSize, MV_FRAME_OUT_INFO_EX *pFrameInfo, int nMsec );
+
+
+// Stop recording, 카메라 중지, 이 상태에서는 프레임 가져오기 불가능
+int MV_CC_StopGrabbing( void *handle );
+
+
+// Shut device 카메라 연결 해제
+int MV_CC_CloseDevice( void *handle );
+
+
+// Destroy device example and related resources
+// 카메라 핸들 제거 및 관련 리소스 해제
+int MV_CC_DestroyHandle( void *handle );
