@@ -610,74 +610,7 @@ release/main.o: main.cpp mainframe.h \
 		C:/Qt/6.4.2/mingw_64/include/QtGui/qguiapplication_platform.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o main.cpp
 
-release/cv0171.o: cv0171.cpp eigen-3.4.0/Eigen/Dense \
-		eigen-3.4.0/Eigen/LU \
-		eigen-3.4.0/Eigen/src/misc/Kernel.h \
-		eigen-3.4.0/Eigen/src/misc/Image.h \
-		eigen-3.4.0/Eigen/src/LU/FullPivLU.h \
-		eigen-3.4.0/Eigen/src/LU/PartialPivLU.h \
-		eigen-3.4.0/Eigen/src/misc/lapacke.h \
-		eigen-3.4.0/Eigen/src/misc/lapacke_mangling.h \
-		eigen-3.4.0/Eigen/src/LU/PartialPivLU_LAPACKE.h \
-		eigen-3.4.0/Eigen/src/LU/Determinant.h \
-		eigen-3.4.0/Eigen/src/LU/InverseImpl.h \
-		eigen-3.4.0/Eigen/src/LU/arch/InverseSize4.h \
-		eigen-3.4.0/Eigen/Cholesky \
-		eigen-3.4.0/Eigen/Jacobi \
-		eigen-3.4.0/Eigen/src/Jacobi/Jacobi.h \
-		eigen-3.4.0/Eigen/src/Cholesky/LLT.h \
-		eigen-3.4.0/Eigen/src/Cholesky/LDLT.h \
-		eigen-3.4.0/Eigen/src/Cholesky/LLT_LAPACKE.h \
-		eigen-3.4.0/Eigen/QR \
-		eigen-3.4.0/Eigen/Householder \
-		eigen-3.4.0/Eigen/src/Householder/Householder.h \
-		eigen-3.4.0/Eigen/src/Householder/HouseholderSequence.h \
-		eigen-3.4.0/Eigen/src/Householder/BlockHouseholder.h \
-		eigen-3.4.0/Eigen/src/QR/HouseholderQR.h \
-		eigen-3.4.0/Eigen/src/QR/FullPivHouseholderQR.h \
-		eigen-3.4.0/Eigen/src/QR/ColPivHouseholderQR.h \
-		eigen-3.4.0/Eigen/src/QR/CompleteOrthogonalDecomposition.h \
-		eigen-3.4.0/Eigen/src/QR/HouseholderQR_LAPACKE.h \
-		eigen-3.4.0/Eigen/src/QR/ColPivHouseholderQR_LAPACKE.h \
-		eigen-3.4.0/Eigen/SVD \
-		eigen-3.4.0/Eigen/src/misc/RealSvd2x2.h \
-		eigen-3.4.0/Eigen/src/SVD/UpperBidiagonalization.h \
-		eigen-3.4.0/Eigen/src/SVD/SVDBase.h \
-		eigen-3.4.0/Eigen/src/SVD/JacobiSVD.h \
-		eigen-3.4.0/Eigen/src/SVD/BDCSVD.h \
-		eigen-3.4.0/Eigen/src/SVD/JacobiSVD_LAPACKE.h \
-		eigen-3.4.0/Eigen/Geometry \
-		eigen-3.4.0/Eigen/src/Geometry/OrthoMethods.h \
-		eigen-3.4.0/Eigen/src/Geometry/EulerAngles.h \
-		eigen-3.4.0/Eigen/src/Geometry/Homogeneous.h \
-		eigen-3.4.0/Eigen/src/Geometry/RotationBase.h \
-		eigen-3.4.0/Eigen/src/Geometry/Rotation2D.h \
-		eigen-3.4.0/Eigen/src/Geometry/Quaternion.h \
-		eigen-3.4.0/Eigen/src/Geometry/AngleAxis.h \
-		eigen-3.4.0/Eigen/src/Geometry/Transform.h \
-		eigen-3.4.0/Eigen/src/Geometry/Translation.h \
-		eigen-3.4.0/Eigen/src/Geometry/Scaling.h \
-		eigen-3.4.0/Eigen/src/Geometry/Hyperplane.h \
-		eigen-3.4.0/Eigen/src/Geometry/ParametrizedLine.h \
-		eigen-3.4.0/Eigen/src/Geometry/AlignedBox.h \
-		eigen-3.4.0/Eigen/src/Geometry/Umeyama.h \
-		eigen-3.4.0/Eigen/src/Geometry/arch/Geometry_SIMD.h \
-		eigen-3.4.0/Eigen/Eigenvalues \
-		eigen-3.4.0/Eigen/src/Eigenvalues/Tridiagonalization.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/RealSchur.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/HessenbergDecomposition.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/EigenSolver.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/ComplexSchur.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/ComplexEigenSolver.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/RealQZ.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/RealSchur_LAPACKE.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/ComplexSchur_LAPACKE.h \
-		eigen-3.4.0/Eigen/src/Eigenvalues/SelfAdjointEigenSolver_LAPACKE.h \
-		cv0171.h \
+release/cv0171.o: cv0171.cpp cv0171.h \
 		kfc.h \
 		C:/Qt/6.4.2/mingw_64/include/QtCore/QDebug \
 		C:/Qt/6.4.2/mingw_64/include/QtCore/qdebug.h \

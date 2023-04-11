@@ -1297,7 +1297,7 @@ void MainFrame::on_Checker_Corner_clicked()
     int numCornerHor = 9;
     int numCornerVer = 6;
     //int oneSqureLen = 40;
-    int numBoards = 3;
+    int numBoards = 10;
 
     int numSquares = numCornerHor *  numCornerVer;
     Size board_sz = Size(numCornerHor, numCornerVer);
@@ -1313,8 +1313,7 @@ void MainFrame::on_Checker_Corner_clicked()
         Mat image;
         Mat gray_image;
 
-        //string iname =  "C:/Users/ironview/Desktop/Base/data/CheckerBoard/";
-        string iname =  "C:/Users/gkswn/Desktop/Base/data/CheckerBoard/";
+        string iname = "C:/Users/ironview/Desktop/2023-Capstone-Design/IronView/data/cam1/";
         iname += to_string(success+1);
         iname += ".bmp";
 
@@ -1343,8 +1342,7 @@ void MainFrame::on_Checker_Corner_clicked()
         imshow(winname, gray_image);
 
         ofstream ofs;
-        //string fname = "C:/Users/ironview/Desktop/Base/data/Points/points_";
-        string fname = "C:/Users/gkswn/Desktop/Base/data/Points/points_";
+        string fname = "C:/Users/ironview/Desktop/2023-Capstone-Design/IronView/data/Points/points_";
         fname += to_string(success);
         fname += ".txt";
 
@@ -1356,7 +1354,7 @@ void MainFrame::on_Checker_Corner_clicked()
         //ofs << corners;
         for(int i=0;i<corners.size();i++)
         {
-            ofs<<corners.at(i).x << " " << corners.at(i).y << endl;
+            ofs<<double(corners.at(i).x)<< " " << corners.at(i).y << endl;
         }
         ofs.close();
     }
