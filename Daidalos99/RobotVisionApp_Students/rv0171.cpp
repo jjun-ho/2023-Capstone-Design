@@ -13,7 +13,8 @@ using namespace std;
 
 
 // Read List of Points(x, y) from .txt file
-vector<pair<double, double>> rv0171::PointList(string location){
+vector<pair<double, double>> rv0171::PointList(string location)
+{
     vector<pair<double, double>> pt;
     double x, y;
 
@@ -32,10 +33,10 @@ vector<pair<double, double>> rv0171::PointList(string location){
 //////////////////////////////
 //// Zhang's Method (HW1) ////
 //////////////////////////////
-pair<double, double> rv0171::Normalization(double dX, double dY, KMatrix mat){
-    // xmin, ymin, xmax, ymax
-    // shift-operation: shiftx = pt.x - xmin, shifty = pt.y - ymin
-    // scale-operation: scalex = shiftx / (xmax - xmin), scaley = shifty / (ymax - ymin)
+pair<double, double> rv0171::Normalization(double dX, double dY, KMatrix mat)
+{
+    // precondition: dX, dX is x, y coordinate(double) of point, mat size is 2 x n
+    // xmin, ymin, xmax, ymax(get the rectangle)
     double xmin = mat[0][0];
     double ymin = mat[1][0];
     double xmax = mat[0][0];
@@ -46,20 +47,23 @@ pair<double, double> rv0171::Normalization(double dX, double dY, KMatrix mat){
         if(mat[0][i] > xmax) xmax = mat[0][i];
         if(mat[1][i] > ymax) ymax = mat[1][i];
     }
-    // shift
+
+    // 1. shift-operation
     double xshift = dX - xmin;
     double yshift = dY - ymin;
-    // scale
-    double xscale = xmax - xmin;
-    double yscale = ymax - ymin;
 
-    double normalized_x = xshift / xscale;
-    double normalized_y = yshift / yscale;
+    // 2. scale-operation
+    double xlength = xmax - xmin;
+    double ylength = ymax - ymin;
+
+    double normalized_x = xshift / xlength;
+    double normalized_y = yshift / ylength;
 
     return make_pair(normalized_x, normalized_y);
 }
 
-KMatrix rv0171::NormalizeCoordinates(KMatrix& M, KMatrix& normalized_M){
+KMatrix rv0171::NormalizeCoordinates(KMatrix& M, KMatrix& normalized_M)
+{
     KMatrix TM(3, 3);
 
     // 1. x_bar, y_bar (평균)
@@ -76,17 +80,15 @@ KMatrix rv0171::NormalizeCoordinates(KMatrix& M, KMatrix& normalized_M){
     KMatrix temp_mM;
     for(unsigned int i=0; i < M.Col(); i++)
     {
-        temp_mM |= KVector(M[0][i], M[1][i]); // 2 x 156
+        temp_mM |= KVector(M[0][i] - x_bar, M[1][i] - y_bar); // 2 x 156
     }
 
     // 3. s
     double s=0;
     double sum=0;
     for(unsigned int  i=0 ; i < temp_mM.Col(); i++)
-    {
         sum += sqrt(_SQR(temp_mM[0][i]) + _SQR(temp_mM[1][i]));
-    }
-    s = sqrt(2) * temp_mM.Col() / (sum);
+    s = sqrt(2) * temp_mM.Col() / sum;
 
     // 4. get T
     TM[0][0] =   s; TM[0][1] = 0.0; TM[0][2] = -s * x_bar;
@@ -98,7 +100,8 @@ KMatrix rv0171::NormalizeCoordinates(KMatrix& M, KMatrix& normalized_M){
 }
 
 
-KVector rv0171::MakevV(KMatrix mH, int i, int j){
+KVector rv0171::MakevV(KMatrix mH, int i, int j)
+{
     KVector vV(6);
 
     i -= 1;
@@ -114,7 +117,8 @@ KVector rv0171::MakevV(KMatrix mH, int i, int j){
     return vV;
 }
 
-KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip, int nImg, int nFeature, int iter){
+KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip, const int& nImg, const int& nFeature, const int& nItr)
+{
     // 1. Estimate the Homography H
     KList<KMatrix> lmF;
     KMatrix mFn, mMn;
@@ -122,80 +126,79 @@ KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip,
 
     for(int i = 0; i < nImg; i++){
         KMatrix mF;
-        for(int j = 0; j < nFeature; j++){
-            mF |= KVector(pointzip[i][j].first, pointzip[i][j].second, 1.0);     // feature
-        }
+        for(int j = 0; j < nFeature; j++)
+            mF |= KVector(pointzip[i][j].first, pointzip[i][j].second, 1.0);    // Feature matrix
         lmF.Add(mF);
     }
 
     KMatrix mM;
-    for(int i = 0; i < nFeature; i++){
-        mM |= KVector(pointzip[nImg][i].first, pointzip[nImg][i].second, 1.0);      // model
-    }
+    for(int i = 0; i < nFeature; i++)
+        mM |= KVector(pointzip[nImg][i].first, pointzip[nImg][i].second, 1.0);  // Model matrix
 
     double mFn_x[nFeature];
     double mFn_y[nFeature];
     double mMn_x[nFeature];
     double mMn_y[nFeature];
 
-    // M
+    // Mn
     for(int i = 0; i < nFeature; i++){
         mMn_x[i] = rv0171::Normalization(mM[0][i], mM[1][i], mM).first;
         mMn_y[i] = rv0171::Normalization(mM[0][i], mM[1][i], mM).second;
     }
 
     for(int i = 0; i < nFeature; i++){
-        mMn |= KVector(mMn_x[i], mMn_y[i], 1.0);
+        mMn |= KVector(mMn_x[i], mMn_y[i], 1.0);    // Normalized model matrix
     }
 
-    mTm = rv0171::NormalizeCoordinates(mM, mMn);    // model transform matrix
+    // Tm
+    mTm = rv0171::NormalizeCoordinates(mM, mMn);    // Normalized model transform matrix
 
-    // F(for문 사용)
+    // F(iterative)
     KList<KMatrix> lmH;
     KMatrix mV;
 
     for(int i = 0; i < nImg; i++){
         for(int j = 0; j < nFeature; j++){
-        // mFn_x, mFn_y를 매번 새롭게 (이미지마다)
+        // refresh mFn_x, mFn_y for every image
             mFn_x[j] = rv0171::Normalization(lmF[i][0][j], lmF[i][1][j], lmF[i]).first;
             mFn_y[j] = rv0171::Normalization(lmF[i][0][j], lmF[i][1][j], lmF[i]).second;
         }
 
-        for(int j = 0; j < nFeature; j++){
-            mFn |= KVector(mFn_x[j], mFn_y[j], 1.0);
-        }
+        for(int j = 0; j < nFeature; j++)
+            mFn |= KVector(mFn_x[j], mFn_y[j], 1.0);        // Normalized feature matrix
 
-        mTf = rv0171::NormalizeCoordinates(lmF[i], mFn);    // feature transform matrix
+        // Tf
+        mTf = rv0171::NormalizeCoordinates(lmF[i], mFn);    // Normalized feature transform matrix
 
-        // Form the matrix A such that ||Ah||=0, ||h||=1
+        // Form the matrix A such that ||Ah||=0, ||h||=1, (A is not intrinsic)
         KMatrix mA; // 3x9 matrix
         for(int j = 0; j < nFeature; j++){
             KVector vM;
             // mMn: 3 x 156
-            vM = KVector(mMn[0][j], mMn[1][j], 1.0);
+            vM = KVector(mMn[0][j], mMn[1][j], 1.0); // Transpose in Advance
             // ^= 행단위로 추가
             mA ^= KVector(0.0, 0.0, 0.0).Tail(-vM).Tail(vM * mFn[1][j]).Tr();                  // 1 x 9, ^= 열단위 추가: (0^T, -mi^T, vi * mi^T)
             mA ^= vM.Tail(KVector(0.0, 0.0, 0.0)).Tail(vM * (-mFn[0][j])).Tr();                // ^= 열단위 추가: (mi^T, 0^T, -ui * mi^T)
             mA ^= (vM * (-mFn[1][j])).Tail(vM * mFn[0][j]).Tail(KVector(0.0, 0.0, 0.0)).Tr();  // ^= 열단위 추가: (-vi * mi^T, ui * mi^T, 0^T)
         }
 
-        // Apply SVD to the matrix A
         KMatrix _mU, _mV, mHn, mH;
         KVector _vD, _vH;
-        // SVD 적용
-        mA.SVD(_mU, _vD, _mV); //----------------------여기서 막힘
 
-        // 마지막 열 벡터가 호모그래피 행렬 요소를 구성함
+        // Apply SVD
+        mA.SVD(_mU, _vD, _mV);
+
+        // last col composes H
         _vH = _mV.Column(_mV.Col() - 1);
 
-        // 호모그래피 행렬 구성
+        // make H(normalized)
         mHn = (_vH.Cut(0, 2).Tr() ^ _vH.Cut(3, 5).Tr() ^ _vH.Cut(6, 8).Tr());
+
         // undo the normalization
         mH = ~mTf * mHn * mTm;
-        //mH[2][2]=1.0이 되도록 스케일링
+        // scale to make mH[2][2]=1.0
         mH /= mH[2][2];
 
-        // H에 저장
         lmH.Add(mH);
 
         // 2. Form the matrix V as shown in the previous lecture
@@ -253,9 +256,6 @@ KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip,
     }
 
     // 6. Perform the nonlinear optimization for fine-tuning of the parameters including the lens distortion parameters
-    // class needed p36
-
-    // set the state vector
     // vX: 6x1 vector (alpha, beta, u0, v0, k1, k2)
     KVector vX;
 
@@ -264,12 +264,13 @@ KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip,
 
     vX.Tailed(KVector(0.0, 0.0));   // k1, k2
 
-    for (int i = 0; i < nImg; i++) {
+    for (int i = 0; i < nImg; i++)
+    {
         KRotation rR(lmR[i]);
         KHomogeneous hP(rR, lvT[i]);
         //vX.Tailed(hP.EulerTranslation());
-        vX.Tailed(hP.R().Rodrigues());              // 3x1
-        vX.Tailed(lvT[i]);                          // 3x1
+        vX.Tailed(hP.R().Rodrigues());              // R1, R2, R3
+        vX.Tailed(lvT[i]);                          // Tx, Ty, Tz
     }
     // vX: 48x1
 
@@ -279,189 +280,23 @@ KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip,
     for(int i = 0; i < nImg; i++) zhang.mF[i] = lmF[i];
     zhang.nImg = nImg;
     zhang.nFeature = nFeature;
-    zhang.Powell(vX, 0.001, iter);
+    zhang.Powell(vX, 0.001, nItr);
 
     vX.Tailed(zhang.dError);
-    // vX: 49x1
+    // vX: (alpha, beta, u0, v0, k1, k2) + (R1, R2, R3, Tx, Ty, Tz)*7 + dError => 49x1
 
     return vX;
 }
 
-
-
-//////////////////////////////
-// Stereo Calibration (HW2) //
-//////////////////////////////
-KVector rv0171::StereoCalibration(int nImg, int nFeature, KVector vXl, KVector vXr, KPoint**& psFl, KPoint**& psFr, KPoint*& psM)
-{
-    // Gather pairs of a target point and its corresponding point
-    // Left image points
-    KList<KMatrix> lmFl;    // Feature matrix for each image
-    for (int i = 0; i < nImg; i++) {
-        // For each image
-        KMatrix mF;         // 3 x nFeature matrix
-        for (int j = 0; j < nFeature; j++) {
-            mF |= KVector(psFl[i][j]._dX, psFl[i][j]._dY, 1.0); // Add a column
-        }
-        lmFl.Add(mF);
-    }
-    // lmFl input debug
-//    for (int i = 0; i < nImg; i++) {
-//        for (int j = 0; j < nFeature; j++) {
-//            qDebug() << i << lmFl[i][__X][j] << lmFl[i][__Y][j];
-//        }
-//    }
-
-    // Right image points
-    KList<KMatrix> lmFr;    // Feature matrix for each image
-    for (int i = 0; i < nImg; i++) {
-        // For each image
-        KMatrix mF;         // 3 x nFeature matrix
-        for (int j = 0; j < nFeature; j++) {
-            mF |= KVector(psFr[i][j]._dX, psFr[i][j]._dY, 1.0); // Add a column
-        }
-        lmFr.Add(mF);
-    }
-    // lmFr input debug
-//    for (int i = 0; i < nImg; i++) {
-//        for (int j = 0; j < nFeature; j++) {
-//            qDebug() << i << lmFr[i][__X][j] << lmFr[i][__Y][j];
-//        }
-//    }
-
-    // Model points
-    KMatrix mM;             // 3 x mFeature matrix
-    for (int i = 0; i < nFeature; i++) {
-        mM |= KVector(psM[i]._dX, psM[i]._dY, 1.0);             // Add a column
-    }
-    // mM input debug
-//    for (int i = 0; i < nFeature; i++) {
-//        qDebug() << mM.Column(i)[__X] << mM.Column(i)[__Y];
-//    }
-
-    // For left images
-    KMatrix mAl(3, 3);
-    mAl[0][0] = vXl[0];     // alpha
-    mAl[1][1] = vXl[1];     // beta
-    mAl[0][2] = vXl[2];     // u0
-    mAl[1][2] = vXl[3];     // v0
-    mAl[2][2] = 1.0;        //
-    double dK1l = vXl[4];   // distortion parameter k1
-    double dK2l = vXl[5];   // distortion parameter k2
-    // mAl debug
-//    qDebug() << mAl[0][0] << mAl[0][1] << mAl[0][2];
-//    qDebug() << mAl[1][0] << mAl[1][1] << mAl[1][2];
-//    qDebug() << mAl[2][0] << mAl[2][1] << mAl[2][2];
-//    qDebug() << dK1l << dK2l;
-
-    KHomogeneous* hPl;
-    hPl = new KHomogeneous[nImg];
-    for (int i = 0; i < nImg; i++) {
-        KRotation rR;
-        rR.FromRodrigues(vXl[6 * (i + 1)], vXl[6 * (i + 1) + 1], vXl[6 * (i + 1) + 2]);
-        KVector   vT(vXl[6*(i + 1) + 3], vXl[6 * (i + 1) + 4], vXl[6 * (i + 1) + 5]);
-        hPl[i] = KHomogeneous(rR, vT);      // 4x4 matrix, TL->W
-    }
-
-    // For right images
-    KMatrix mAr(3, 3);
-    mAr[0][0] = vXr[0];     // alpha
-    mAr[1][1] = vXr[1];     // beta
-    mAr[0][2] = vXr[2];     // u0
-    mAr[1][2] = vXr[3];     // v0
-    mAr[2][2] = 1.0;        //
-    double dK1r = vXr[4];   // distortion parameter k1
-    double dK2r = vXr[5];   // distortion parameter k2
-    // mAr debug
-//    qDebug() << mAr[0][0] << mAr[0][1] << mAr[0][2];
-//    qDebug() << mAr[1][0] << mAr[1][1] << mAr[1][2];
-//    qDebug() << mAr[2][0] << mAr[2][1] << mAr[2][2];
-//    qDebug() << dK1r << dK2r;
-
-    KHomogeneous* hPr;
-    hPr = new KHomogeneous[nImg];
-    for (int i = 0; i < nImg; i++) {
-        KRotation rR;
-        rR.FromRodrigues(vXr[6 * (i + 1)], vXr[6 * (i + 1) + 1], vXr[6 * (i + 1) + 2]);
-        KVector   vT(vXr[6*(i + 1) + 3], vXr[6 * (i + 1) + 4], vXr[6 * (i + 1) + 5]);
-        hPr[i] = KHomogeneous(rR, vT);      // 4x4 matrix, TR->W
-    }
-
-    // Stereo Calibration
-    KCalibrationStereo calib_stereo;
-    calib_stereo.mAl = mAl;
-    calib_stereo.mAr = mAr;
-
-    calib_stereo._hRw = hPr;
-    calib_stereo._hLw = hPl;
-    calib_stereo.hLr = hPl[0] * ~hPr[0];
-//    qDebug() << calib_stereo.hLr.Size();
-//    for (int i = 0; i < 4; i++) {
-//        for (int j = 0; j < 4; j++) {
-//            qDebug() << calib_stereo.hLr[i][j];
-//        }
-//        qDebug() << "---";
-//    }
-
-    KVector vX;
-    vX.Tailed(calib_stereo.hLr.R().Rodrigues());    // 3x1
-    vX.Tailed(calib_stereo.hLr.t());                // 3x1
-
-    calib_stereo.vKl = KVector(dK1l, dK2l);
-    calib_stereo.vKr = KVector(dK1r, dK2r);
-
-    calib_stereo._lpFl = &lmFl;
-    calib_stereo._lpFr = &lmFr;
-    calib_stereo._mpM  = &mM;
-
-    int nItr = 1000;
-    calib_stereo.Powell(vX, 0.001, nItr);
-    vX.Tailed(calib_stereo.dError);
-
-    delete[] hPl;
-    delete[] hPr;
-    return vX;
-}
-
-KMatrix KCalibrationStereo::ImageProjection(KMatrix mA, KVector vK, KHomogeneous hP, KMatrix mM){
-    int nFeature = mM.Size() / 3;
-    KMatrix mF;     // Return value: projected points
-
-    for (int i = 0; i < nFeature; i++) {
-        // Projection
-        double dR2;
-        KVector vXc, vXn, vU, vDr;
-        vXc = hP.R() * mM.Column(i) + hP.t();               // 3x1 matrix
-        vXn = (vXc / vXc[2]).To(1);                         // 2x1 matrix
-        // Radial distortion
-        dR2 = _SQR(vXn[0]) + _SQR(vXn[1]);                  // double
-        vDr = vXn * (1.0 + vK[0] * dR2 + vK[1] * pow(dR2, 2));              // 2x1 matrix
-        // Final distortion
-        vXc = vDr.Tailed(1.0);                              // 3x1 matrix
-        // Image projection
-        vU = mA * vXc;      vU /= vU[2];                    // 3x1 matrix, {ud, vd, 1.0}
-
-        mF |= vU;                                           // 3 x nFeature matrix, add a column
-    }
-
-    return mF;
-}
-
-
-
-//////////////////////////////
-/// Calibration Class Func ///
-/////// Including Erf ////////
-//////////////////////////////
 double KCalibrationZhang::Erf(const KVector& vX){
     double dError = 0;
 
-    KMatrix mA(3, 3);
-    mA[0][0] = vX[0];     // alpha
+    KMatrix mA(3, 3);   // intrinsic matrix
+    mA[0][0] = vX[0];   // alpha
     mA[1][1] = vX[1];   // beta
     mA[0][2] = vX[2];   // u0
     mA[1][2] = vX[3];   // v0
-    mA[2][2] = 1.0;
+    mA[2][2] = 1.0;     // scale factor
     double dK1 = vX[4]; // distortion parameter k1
     double dK2 = vX[5]; // distortion parameter k2
 
@@ -475,6 +310,7 @@ double KCalibrationZhang::Erf(const KVector& vX){
 
     double dR2;
     KVector vXc, vXn, vU, vDr;
+    // double sigma
     for(int i = 0; i < nImg; i++){
         for(int j = 0; j < nFeature; j++){
             vXc = (lP[i].R() * mM.Column(j) + lP[i].t());       // 3x1 matrix
@@ -491,48 +327,99 @@ double KCalibrationZhang::Erf(const KVector& vX){
             vU = mA * vXc; vU /= vU[2];                         // 3x1 matrix
 
             //error computation
-            dError += (_SQR(vU[0] - mF[i][0][j]) + _SQR(vU[1] - mF[i][1][j]));
+            dError += (_SQR(mF[i][0][j] - vU[0]) + _SQR(mF[i][1][j] - vU[1]));
         }
     }
+
+    dError /= nImg * nFeature;
     this->dError = dError;
-    qDebug() << "Count:" << cnt++ << "| Alpha:" << vX[0] << " Beta:" << vX[1] << " u0:" << vX[2] << " v0:" << vX[3] << " k1:" << vX[4] << " k2:" << vX[5] << " Error:" << dError;
+
+    cout << "Epoch:" << cnt++ \
+         << " | Alpha:" << vX[0] << " Beta:" << vX[1] \
+         << " u0:" << vX[2] << " v0:" << vX[3] \
+         << " k1:" << vX[4] << " k2:" << vX[5] \
+         << " Error:" << dError << endl;
     return dError;
 }
 
-double KCalibrationStereo::Erf(const KVector& vX){
-    const KList<KMatrix>& lFl   = *_lpFl;   // Left Cam Feature Pt
-    const KList<KMatrix>& lFr   = *_lpFr;   // Right Camera Feature Pt
-    const KMatrix& mM           = *_mpM;    // Model Point
 
-    KRotation rR;
-    rR.FromRodrigues(vX[0], vX[1], vX[2]);
-    KVector   vT(vX[3], vX[4], vX[5]);
-    hLr = KHomogeneous(rR, vT);
-    KHomogeneous hRl = ~hLr;
 
-    double dError = 0.0;
-    for (unsigned int i = 0; i < lFr.Count(); i++) {
-        // For each images
-        // Right image projection
-        KMatrix mFr = ImageProjection(mAr, vKr, hRl*_hLw[i], mM);     // 3 x nFeature
-        KMatrix mFl = ImageProjection(mAl, vKl, hLr*_hRw[i], mM);     // 3 x nFeature
-        // (--, --, 1.0)
-        mFr /= KMatrix::RepMat(mFr.RowVec(2), 3, 1);
-        mFl /= KMatrix::RepMat(mFl.RowVec(2), 3, 1);
-        // Error
-        KMatrix mEr = lFr[i] - mFr;
-        KMatrix mEl = lFl[i] - mFl;
-        // 3 x nFeature
-        // Element-wise square
-        mEr ^= 2.0;
-        mEl ^= 2.0;
-        // Norm
-        dError += (mEr.Sum().Sum() + mEl.Sum().Sum());
-    }
+//////////////////////////////
+// Stereo Calibration (HW2) //
+//////////////////////////////
+KVector rv0171::StereoCalibration(int nImg, int nFeature, KVector vXl, KVector vXr, KPoint**& psFl, KPoint**& psFr, KPoint*& psM)
+{
 
-    this->dError = dError;
-    qDebug() << cnt++ << dError << "|" << vX[0] << vX[1] << vX[2] << vX[3] << vX[4] << vX[5];
-    return dError;
+}
+
+//KMatrix KCalibrationStereo::ImageProjection(KMatrix mA, KVector vK, KHomogeneous hP, KMatrix mM)
+//{
+//    int nFeature = mM.Size() / 3;
+//    KMatrix mF;     // Return value: projected points
+
+//    for (int i = 0; i < nFeature; i++) {
+//        // Projection
+//        double dR2;
+//        KVector vXc, vXn, vU, vDr;
+//        vXc = hP.R() * mM.Column(i) + hP.t();               // 3x1 matrix
+//        vXn = (vXc / vXc[2]).To(1);                         // 2x1 matrix
+//        // Radial distortion
+//        dR2 = _SQR(vXn[0]) + _SQR(vXn[1]);                  // double
+//        vDr = vXn * (1.0 + vK[0] * dR2 + vK[1] * pow(dR2, 2));              // 2x1 matrix
+//        // Final distortion
+//        vXc = vDr.Tailed(1.0);                              // 3x1 matrix
+//        // Image projection
+//        vU = mA * vXc;      vU /= vU[2];                    // 3x1 matrix, {ud, vd, 1.0}
+
+//        mF |= vU;                                           // 3 x nFeature matrix, add a column
+//    }
+
+//    return mF;
+//}
+
+double KCalibrationStereo::Erf(const KVector& vX)
+{
+//    const KList<KMatrix>& lFl   = *_lpFl;
+//    const KList<KMatrix>& lFr   = *_lpFr;
+//    const KMatrix& mM           = *_mpM;
+
+//    //parameters from the state, vX
+//    UpdateParameters(vX);
+
+//    double dError = 0.0;
+//    KHomogeneous hLr = ~_hRl;
+
+//    for (unsigned int i = 0; i < lFr.Count(); i++)
+//    {
+//        // For each images
+//        // Right image projection
+//        KMatrix mFr = ImageProjection(_mAr, _vKr, _hRl*_hLw[i], mM);     // 3 x nFeature
+//        KMatrix mFl = ImageProjection(_mAl, _vKl, _hLr*_hRw[i], mM);     // 3 x nFeature
+
+//        // (--, --, 1.0)
+//        mFr /= KMatrix::RepMat(mFr.RowVec(2), 3, 1);
+//        mFl /= KMatrix::RepMat(mFl.RowVec(2), 3, 1);
+
+//        // Error
+//        KMatrix mEr = lFr[i] - mFr;
+//        KMatrix mEl = lFl[i] - mFl;
+
+//        // 3 x nFeature
+//        // Element-wise square
+//        mEr ^= 2.0;
+//        mEl ^= 2.0;
+
+//        // Norm
+//        dError += (mEr.Sum().Sum() + mEl.Sum().Sum());
+//    }
+
+//    cout << "Epoch:" << cnt++ \
+//         << "| Alpha:" << vX[0] << " Beta:" << vX[1] \
+//         << " u0:" << vX[2] << " v0:" << vX[3] \
+//         << " k1:" << vX[4] << " k2:" << vX[5] \
+//         << " Error:" << dError << endl;
+
+    //return dError;
 }
 
 
@@ -540,7 +427,6 @@ double KCalibrationStereo::Erf(const KVector& vX){
 //////////////////////////////
 /////// AdaBoost (HW3) ///////
 //////////////////////////////
-
 double KWeakClassifierCoord::OptimalThreshold(const KVector &vFCol, const KVector &vY, const KVector &vW)
 {
     // 1. Sort samples according to each feature value(Ascending Order)

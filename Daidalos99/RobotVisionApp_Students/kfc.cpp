@@ -11255,14 +11255,14 @@ KPPM& KPPM::operator=(const KImageColor& oImg)
 bool KOptima::ExecuteWithoutGradients(KVector& vP,double dTol,int nItr)
 {
     //starting point
-    int nDim =  vP.Dim();
-    _vP      =  vP;
+    int nDim =  vP.Dim();   // 48
+    _vP      =  vP;         // vP: (alpha, beta, u0, v0, k1, k2) + (R1, R2, R3, Tx, Ty, Tz)*7
 
 	//initial matrix, each column is initial direction vector
 	_mDir.Create(nDim,nDim,_IDENTITY);
 	_vDir.Create(nDim);
 
-	 //history for return values of Erf(..)
+    //history for return values of Erf(..)
 	_vHistoryErf.Tailed(Erf(_vP));
 
 	//Optimaization

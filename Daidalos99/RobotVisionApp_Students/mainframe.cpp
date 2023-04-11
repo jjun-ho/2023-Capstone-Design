@@ -11,7 +11,7 @@
 
 using namespace std;
 
-string rvdir = "C:/RV/RobotVisionApp_Students/data/";
+string rvdir = "C:/Robot_Vision/RobotVisionApp_Students/data/";
 
 MainFrame::MainFrame(QWidget *parent) :
     QDialog(parent),
@@ -166,10 +166,15 @@ void MainFrame::on_buttonShowList_clicked()
     }
 }
 
+
+
+//////////////////////////////
+//// Zhang's Method (HW1) ////
+//////////////////////////////
 void MainFrame::on_zhang_clicked()
 {
     int nImg = 7;
-    int nFeatures = 156;
+    int nFeature = 156;
     int nItr = 100;
 
     // Load Image & Model Points to vector
@@ -190,11 +195,7 @@ void MainFrame::on_zhang_clicked()
 
     KVector vX;
 
-    vX = rv0171::ZhangsCalibration(pointzip, nImg, nFeatures, nItr);
-
-    for(unsigned int i = 0; i < vX.Size(); i++){
-        cout << vX[i] << endl;
-    }
+    vX = rv0171::ZhangsCalibration(pointzip, nImg, nFeature, nItr);
 
     // Reprojection
     KMatrix mA(3, 3);
@@ -235,9 +236,9 @@ void MainFrame::on_zhang_clicked()
 void MainFrame::on_plot_point_clicked()
 {
     int nImg = 7;
-    int nFeatures = 156;
-    int row = 640;
-    int col = 640;
+    int nFeature = 156;
+    int row = 1300;
+    int col = 1300;
 
     // Load Image & Model Points to vector
     vector<vector<pair<double, double>>> pointzip;
@@ -272,7 +273,7 @@ void MainFrame::on_plot_point_clicked()
     }
 
     for(int i = 0; i < nImg + 1; i++){
-        for(int j = 0; j < nFeatures; j++){
+        for(int j = 0; j < nFeature; j++){
             q_pForm[i]->DrawLine(pointzip[i][j].first, pointzip[i][j].second, pointzip[i][j].first, pointzip[i][j].second, QColor(255, 0, 0), 2);
         }
     }
@@ -287,27 +288,31 @@ void MainFrame::on_plot_point_clicked()
 }
 
 
+
+//////////////////////////////
+// Stereo Calibration (HW2) //
+//////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
     int nImg = 15;
-    int nFeatures = 100; // Feature점 개수: 100
+    int nFeature = 100; // Feature점 개수: 100
     int nItr = 100;
 
     KPoint* psM;
-    psM = new KPoint[nFeatures];
+    psM = new KPoint[nFeature];
 
     KPoint** psFl;
     KPoint** psFr;
     psFl = new KPoint*[nImg];
     for (int i = 0; i < nImg; i++) {
-        psFl[i] = new KPoint[nFeatures];
+        psFl[i] = new KPoint[nFeature];
     }
     psFr = new KPoint*[nImg];
     for (int i = 0; i < nImg; i++) {
-        psFr[i] = new KPoint[nFeatures];
+        psFr[i] = new KPoint[nFeature];
     }
 
-    // Load left Image & Model Points to vector
+    // 1. Capture stereo pairs
     vector<vector<pair<double, double>>> left_pointzip;
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
@@ -323,7 +328,6 @@ void MainFrame::on_stereo_calibration_clicked()
         }
     }
 
-    // Load right Image & Model Points to vector
     vector<vector<pair<double, double>>> right_pointzip;
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
@@ -340,8 +344,9 @@ void MainFrame::on_stereo_calibration_clicked()
     }
     KVector vX_l, vX_r;
 
-    vX_l = rv0171::ZhangsCalibration(left_pointzip, nImg, nFeatures, nItr);
-    vX_r = rv0171::ZhangsCalibration(right_pointzip, nImg, nFeatures, nItr);
+    // 2. Calibrate separately the two cameras using Zhang's method
+    vX_l = rv0171::ZhangsCalibration(left_pointzip, nImg, nFeature, nItr);
+    vX_r = rv0171::ZhangsCalibration(right_pointzip, nImg, nFeature, nItr);
 
     KMatrix mA_l(3, 3);
     mA_l[0][0] = vX_l[0];
@@ -351,6 +356,7 @@ void MainFrame::on_stereo_calibration_clicked()
     mA_l[2][2] = 1.0;
     double dK1_l = vX_l[4];
     double dK2_l = vX_l[5];
+    double dError_l = vX_l[vX_l.Size() - 1];  // vX's last element is Err
 
     KHomogeneous* hP_l;
     hP_l = new KHomogeneous[nImg];
@@ -358,8 +364,27 @@ void MainFrame::on_stereo_calibration_clicked()
         KRotation rR;
         rR.FromRodrigues(vX_l[6 * (i + 1)], vX_l[6 * (i + 1) + 1], vX_l[6 * (i + 1) + 2]);
         KVector   vT(vX_l[6*(i + 1) + 3], vX_l[6 * (i + 1) + 4], vX_l[6 * (i + 1) + 5]);
-        hP_l[i] = KHomogeneous(rR, vT);      // 4x4 matrix, TL->W
+        hP_l[i] = KHomogeneous(rR, vT);      // 4x4 matrix, W->L
     }
+
+    //  Print left calibration parameters
+    QString temp_str;
+    temp_str = QString::fromStdString(std::to_string(mA_l[0][0]));
+    ui->textAlphaCam01->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_l[0][1]));
+    ui->textSkewCam01->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_l[0][2]));
+    ui->textU0Cam01->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_l[1][1]));
+    ui->textBetaCam01->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_l[1][2]));
+    ui->textV0Cam01->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(dK1_l));
+    ui->textK1Cam01->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(dK2_l));
+    ui->textK2Cam01->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(dError_l));
+    ui->textErrorCam01->setText(temp_str);
 
     KMatrix mA_r(3, 3);
     mA_r[0][0] = vX_r[0];
@@ -369,6 +394,7 @@ void MainFrame::on_stereo_calibration_clicked()
     mA_r[2][2] = 1.0;
     double dK1_r = vX_r[4];
     double dK2_r = vX_r[5];
+    double dError_r = vX_r[vX_r.Size() - 1];  // vX's last element is Err
 
     KHomogeneous* hP_r;
     hP_r = new KHomogeneous[nImg];
@@ -376,13 +402,31 @@ void MainFrame::on_stereo_calibration_clicked()
         KRotation rR;
         rR.FromRodrigues(vX_l[6 * (i + 1)], vX_l[6 * (i + 1) + 1], vX_l[6 * (i + 1) + 2]);
         KVector   vT(vX_l[6*(i + 1) + 3], vX_l[6 * (i + 1) + 4], vX_l[6 * (i + 1) + 5]);
-        hP_r[i] = KHomogeneous(rR, vT);      // 4x4 matrix, TL->W
+        hP_r[i] = KHomogeneous(rR, vT);      // 4x4 matrix, W->R
     }
+
+    // Print right calibration parameters
+    temp_str = QString::fromStdString(std::to_string(mA_r[0][0]));
+    ui->textAlphaCam02->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_r[0][1]));
+    ui->textSkewCam02->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_r[0][2]));
+    ui->textU0Cam02->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_r[1][1]));
+    ui->textBetaCam02->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(mA_r[1][2]));
+    ui->textV0Cam02->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(dK1_r));
+    ui->textK1Cam02->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(dK2_r));
+    ui->textK2Cam02->setText(temp_str);
+    temp_str = QString::fromStdString(std::to_string(dError_r));
+    ui->textErrorCam02->setText(temp_str);
 
 
     // Stereo Calibration
     // vX: 6*1 matrix, {r, p, y, x, y, z}
-    KVector vX = rv0171::StereoCalibration(nImg, nFeatures, vX_l, vX_r, psFl, psFr, psM);
+    KVector vX = rv0171::StereoCalibration(nImg, nFeature, vX_l, vX_r, psFl, psFr, psM);
 //    qDebug() << vX.Size() << vX[0] << vX[1] << vX[2] << vX[3] << vX[4] << vX[5] << vX[6];
 //    KRotation rR;
 //    rR.FromRodrigues(vX[0], vX[1], vX[2]);
@@ -391,7 +435,7 @@ void MainFrame::on_stereo_calibration_clicked()
 
 //    // Model points
 //    KMatrix mM;             // 3 x mFeature matrix
-//    for (int i = 0; i < nFeatures; i++) {
+//    for (int i = 0; i < nFeature; i++) {
 //        mM |= KVector(psM[i]._dX, psM[i]._dY, 1.0);             // Add a column
 //    }
 
@@ -435,7 +479,7 @@ void MainFrame::on_stereo_calibration_clicked()
 //        else {
 //            q_pForm[i] = new ImageForm(icMain, QString::fromStdString(wName[i]), this);
 
-//            for(int j = 0; j < nFeatures; j++) {
+//            for(int j = 0; j < nFeature; j++) {
 //                // Real point
 //                QPoint point;
 //                point.setX((int)(psFl[i][j]._dX));
@@ -479,6 +523,9 @@ void MainFrame::on_stereo_calibration_clicked()
 
 
 
+//////////////////////////////
+/////// AdaBoost (HW3) ///////
+//////////////////////////////
 void MainFrame::on_pushAdaboost_clicked()
 {
     int nSample = 1000;

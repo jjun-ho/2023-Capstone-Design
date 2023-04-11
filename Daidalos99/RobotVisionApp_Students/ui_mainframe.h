@@ -62,6 +62,38 @@ public:
     QLabel *label_3;
     QWidget *tab_4;
     QPushButton *stereo_calibration;
+    QLabel *label_4;
+    QLabel *label_12;
+    QLabel *label_13;
+    QLabel *label_14;
+    QTextEdit *textAlphaCam01;
+    QTextEdit *textSkewCam01;
+    QTextEdit *textU0Cam01;
+    QTextEdit *textZero1Cam01;
+    QTextEdit *textBetaCam01;
+    QTextEdit *textV0Cam01;
+    QTextEdit *textZero2Cam01;
+    QTextEdit *textZero3Cam01;
+    QTextEdit *textScaleCam01;
+    QTextEdit *textK1Cam01;
+    QLabel *label_15;
+    QTextEdit *textK2Cam01;
+    QLabel *label_16;
+    QTextEdit *textErrorCam01;
+    QTextEdit *textK1Cam02;
+    QTextEdit *textZero1Cam02;
+    QTextEdit *textZero2Cam02;
+    QTextEdit *textSkewCam02;
+    QTextEdit *textU0Cam02;
+    QTextEdit *textAlphaCam02;
+    QTextEdit *textV0Cam02;
+    QTextEdit *textZero3Cam01_2;
+    QLabel *label_33;
+    QTextEdit *textScaleCam02;
+    QTextEdit *textBetaCam02;
+    QLabel *label_34;
+    QTextEdit *textErrorCam02;
+    QTextEdit *textK2Cam02;
     QWidget *tab_5;
     QLabel *label_5;
     QLabel *label_6;
@@ -86,13 +118,13 @@ public:
     {
         if (MainFrame->objectName().isEmpty())
             MainFrame->setObjectName("MainFrame");
-        MainFrame->resize(622, 461);
+        MainFrame->resize(911, 492);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainFrame->sizePolicy().hasHeightForWidth());
         MainFrame->setSizePolicy(sizePolicy);
-        MainFrame->setMinimumSize(QSize(0, 461));
+        MainFrame->setMinimumSize(QSize(0, 420));
         MainFrame->setModal(false);
         verticalLayout = new QVBoxLayout(MainFrame);
         verticalLayout->setSpacing(6);
@@ -202,7 +234,7 @@ public:
         sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
         tabWidget->setSizePolicy(sizePolicy3);
-        tabWidget->setMinimumSize(QSize(299, 394));
+        tabWidget->setMinimumSize(QSize(600, 400));
         QPalette palette;
         QBrush brush(QColor(255, 255, 255, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -225,100 +257,196 @@ public:
         tab_1->setObjectName("tab_1");
         zhang = new QPushButton(tab_1);
         zhang->setObjectName("zhang");
-        zhang->setGeometry(QRect(10, 10, 131, 31));
+        zhang->setGeometry(QRect(160, 20, 131, 31));
         plot_point = new QPushButton(tab_1);
         plot_point->setObjectName("plot_point");
-        plot_point->setGeometry(QRect(150, 10, 131, 31));
+        plot_point->setGeometry(QRect(300, 20, 131, 31));
         label = new QLabel(tab_1);
         label->setObjectName("label");
-        label->setGeometry(QRect(10, 60, 111, 16));
+        label->setGeometry(QRect(160, 70, 111, 16));
         textAlpha = new QTextEdit(tab_1);
         textAlpha->setObjectName("textAlpha");
-        textAlpha->setGeometry(QRect(10, 80, 91, 31));
+        textAlpha->setGeometry(QRect(160, 90, 91, 31));
         textSkew = new QTextEdit(tab_1);
         textSkew->setObjectName("textSkew");
-        textSkew->setGeometry(QRect(100, 80, 91, 31));
+        textSkew->setGeometry(QRect(250, 90, 91, 31));
         textU0 = new QTextEdit(tab_1);
         textU0->setObjectName("textU0");
-        textU0->setGeometry(QRect(190, 80, 91, 31));
+        textU0->setGeometry(QRect(340, 90, 91, 31));
         textZero_1 = new QTextEdit(tab_1);
         textZero_1->setObjectName("textZero_1");
-        textZero_1->setGeometry(QRect(10, 120, 91, 31));
+        textZero_1->setGeometry(QRect(160, 130, 91, 31));
         textBeta = new QTextEdit(tab_1);
         textBeta->setObjectName("textBeta");
-        textBeta->setGeometry(QRect(100, 120, 91, 31));
+        textBeta->setGeometry(QRect(250, 130, 91, 31));
         textV0 = new QTextEdit(tab_1);
         textV0->setObjectName("textV0");
-        textV0->setGeometry(QRect(190, 120, 91, 31));
+        textV0->setGeometry(QRect(340, 130, 91, 31));
         textZero_2 = new QTextEdit(tab_1);
         textZero_2->setObjectName("textZero_2");
-        textZero_2->setGeometry(QRect(10, 160, 91, 31));
+        textZero_2->setGeometry(QRect(160, 170, 91, 31));
         textZero_3 = new QTextEdit(tab_1);
         textZero_3->setObjectName("textZero_3");
-        textZero_3->setGeometry(QRect(100, 160, 91, 31));
+        textZero_3->setGeometry(QRect(250, 170, 91, 31));
         textScale = new QTextEdit(tab_1);
         textScale->setObjectName("textScale");
-        textScale->setGeometry(QRect(190, 160, 91, 31));
+        textScale->setGeometry(QRect(340, 170, 91, 31));
         label_2 = new QLabel(tab_1);
         label_2->setObjectName("label_2");
-        label_2->setGeometry(QRect(10, 210, 121, 16));
+        label_2->setGeometry(QRect(160, 220, 121, 16));
         textK1 = new QTextEdit(tab_1);
         textK1->setObjectName("textK1");
-        textK1->setGeometry(QRect(10, 230, 91, 31));
+        textK1->setGeometry(QRect(160, 240, 91, 31));
         textK2 = new QTextEdit(tab_1);
         textK2->setObjectName("textK2");
-        textK2->setGeometry(QRect(100, 230, 91, 31));
+        textK2->setGeometry(QRect(250, 240, 91, 31));
         textError = new QTextEdit(tab_1);
         textError->setObjectName("textError");
-        textError->setGeometry(QRect(10, 290, 91, 31));
+        textError->setGeometry(QRect(160, 300, 91, 31));
         label_3 = new QLabel(tab_1);
         label_3->setObjectName("label_3");
-        label_3->setGeometry(QRect(10, 270, 121, 16));
+        label_3->setGeometry(QRect(160, 280, 121, 16));
         tabWidget->addTab(tab_1, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName("tab_4");
         stereo_calibration = new QPushButton(tab_4);
         stereo_calibration->setObjectName("stereo_calibration");
-        stereo_calibration->setGeometry(QRect(30, 10, 241, 31));
+        stereo_calibration->setGeometry(QRect(170, 10, 241, 31));
+        label_4 = new QLabel(tab_4);
+        label_4->setObjectName("label_4");
+        label_4->setGeometry(QRect(20, 50, 81, 21));
+        label_12 = new QLabel(tab_4);
+        label_12->setObjectName("label_12");
+        label_12->setGeometry(QRect(310, 50, 81, 21));
+        label_13 = new QLabel(tab_4);
+        label_13->setObjectName("label_13");
+        label_13->setGeometry(QRect(20, 70, 111, 21));
+        label_14 = new QLabel(tab_4);
+        label_14->setObjectName("label_14");
+        label_14->setGeometry(QRect(310, 70, 111, 21));
+        textAlphaCam01 = new QTextEdit(tab_4);
+        textAlphaCam01->setObjectName("textAlphaCam01");
+        textAlphaCam01->setGeometry(QRect(20, 90, 91, 31));
+        textSkewCam01 = new QTextEdit(tab_4);
+        textSkewCam01->setObjectName("textSkewCam01");
+        textSkewCam01->setGeometry(QRect(110, 90, 91, 31));
+        textU0Cam01 = new QTextEdit(tab_4);
+        textU0Cam01->setObjectName("textU0Cam01");
+        textU0Cam01->setGeometry(QRect(200, 90, 91, 31));
+        textZero1Cam01 = new QTextEdit(tab_4);
+        textZero1Cam01->setObjectName("textZero1Cam01");
+        textZero1Cam01->setGeometry(QRect(20, 130, 91, 31));
+        textBetaCam01 = new QTextEdit(tab_4);
+        textBetaCam01->setObjectName("textBetaCam01");
+        textBetaCam01->setGeometry(QRect(110, 130, 91, 31));
+        textV0Cam01 = new QTextEdit(tab_4);
+        textV0Cam01->setObjectName("textV0Cam01");
+        textV0Cam01->setGeometry(QRect(200, 130, 91, 31));
+        textZero2Cam01 = new QTextEdit(tab_4);
+        textZero2Cam01->setObjectName("textZero2Cam01");
+        textZero2Cam01->setGeometry(QRect(20, 170, 91, 31));
+        textZero3Cam01 = new QTextEdit(tab_4);
+        textZero3Cam01->setObjectName("textZero3Cam01");
+        textZero3Cam01->setGeometry(QRect(110, 170, 91, 31));
+        textScaleCam01 = new QTextEdit(tab_4);
+        textScaleCam01->setObjectName("textScaleCam01");
+        textScaleCam01->setGeometry(QRect(200, 170, 91, 31));
+        textK1Cam01 = new QTextEdit(tab_4);
+        textK1Cam01->setObjectName("textK1Cam01");
+        textK1Cam01->setGeometry(QRect(20, 240, 91, 31));
+        label_15 = new QLabel(tab_4);
+        label_15->setObjectName("label_15");
+        label_15->setGeometry(QRect(20, 220, 111, 21));
+        textK2Cam01 = new QTextEdit(tab_4);
+        textK2Cam01->setObjectName("textK2Cam01");
+        textK2Cam01->setGeometry(QRect(110, 240, 91, 31));
+        label_16 = new QLabel(tab_4);
+        label_16->setObjectName("label_16");
+        label_16->setGeometry(QRect(20, 280, 111, 21));
+        textErrorCam01 = new QTextEdit(tab_4);
+        textErrorCam01->setObjectName("textErrorCam01");
+        textErrorCam01->setGeometry(QRect(20, 300, 91, 31));
+        textK1Cam02 = new QTextEdit(tab_4);
+        textK1Cam02->setObjectName("textK1Cam02");
+        textK1Cam02->setGeometry(QRect(310, 240, 91, 31));
+        textZero1Cam02 = new QTextEdit(tab_4);
+        textZero1Cam02->setObjectName("textZero1Cam02");
+        textZero1Cam02->setGeometry(QRect(310, 130, 91, 31));
+        textZero2Cam02 = new QTextEdit(tab_4);
+        textZero2Cam02->setObjectName("textZero2Cam02");
+        textZero2Cam02->setGeometry(QRect(310, 170, 91, 31));
+        textSkewCam02 = new QTextEdit(tab_4);
+        textSkewCam02->setObjectName("textSkewCam02");
+        textSkewCam02->setGeometry(QRect(400, 90, 91, 31));
+        textU0Cam02 = new QTextEdit(tab_4);
+        textU0Cam02->setObjectName("textU0Cam02");
+        textU0Cam02->setGeometry(QRect(490, 90, 91, 31));
+        textAlphaCam02 = new QTextEdit(tab_4);
+        textAlphaCam02->setObjectName("textAlphaCam02");
+        textAlphaCam02->setGeometry(QRect(310, 90, 91, 31));
+        textV0Cam02 = new QTextEdit(tab_4);
+        textV0Cam02->setObjectName("textV0Cam02");
+        textV0Cam02->setGeometry(QRect(490, 130, 91, 31));
+        textZero3Cam01_2 = new QTextEdit(tab_4);
+        textZero3Cam01_2->setObjectName("textZero3Cam01_2");
+        textZero3Cam01_2->setGeometry(QRect(400, 170, 91, 31));
+        label_33 = new QLabel(tab_4);
+        label_33->setObjectName("label_33");
+        label_33->setGeometry(QRect(310, 220, 111, 21));
+        textScaleCam02 = new QTextEdit(tab_4);
+        textScaleCam02->setObjectName("textScaleCam02");
+        textScaleCam02->setGeometry(QRect(490, 170, 91, 31));
+        textBetaCam02 = new QTextEdit(tab_4);
+        textBetaCam02->setObjectName("textBetaCam02");
+        textBetaCam02->setGeometry(QRect(400, 130, 91, 31));
+        label_34 = new QLabel(tab_4);
+        label_34->setObjectName("label_34");
+        label_34->setGeometry(QRect(310, 280, 111, 21));
+        textErrorCam02 = new QTextEdit(tab_4);
+        textErrorCam02->setObjectName("textErrorCam02");
+        textErrorCam02->setGeometry(QRect(310, 300, 91, 31));
+        textK2Cam02 = new QTextEdit(tab_4);
+        textK2Cam02->setObjectName("textK2Cam02");
+        textK2Cam02->setGeometry(QRect(400, 240, 91, 31));
         tabWidget->addTab(tab_4, QString());
         tab_5 = new QWidget();
         tab_5->setObjectName("tab_5");
         label_5 = new QLabel(tab_5);
         label_5->setObjectName("label_5");
-        label_5->setGeometry(QRect(160, 60, 111, 21));
+        label_5->setGeometry(QRect(300, 60, 111, 21));
         label_6 = new QLabel(tab_5);
         label_6->setObjectName("label_6");
-        label_6->setGeometry(QRect(20, 130, 111, 21));
+        label_6->setGeometry(QRect(160, 130, 111, 21));
         pushAdaboost = new QPushButton(tab_5);
         pushAdaboost->setObjectName("pushAdaboost");
-        pushAdaboost->setGeometry(QRect(80, 20, 131, 31));
+        pushAdaboost->setGeometry(QRect(220, 20, 131, 31));
         label_7 = new QLabel(tab_5);
         label_7->setObjectName("label_7");
-        label_7->setGeometry(QRect(20, 150, 111, 21));
+        label_7->setGeometry(QRect(160, 150, 111, 21));
         label_8 = new QLabel(tab_5);
         label_8->setObjectName("label_8");
-        label_8->setGeometry(QRect(160, 150, 111, 21));
+        label_8->setGeometry(QRect(300, 150, 111, 21));
         textTP = new QTextEdit(tab_5);
         textTP->setObjectName("textTP");
-        textTP->setGeometry(QRect(20, 170, 111, 31));
+        textTP->setGeometry(QRect(160, 170, 111, 31));
         textFN = new QTextEdit(tab_5);
         textFN->setObjectName("textFN");
-        textFN->setGeometry(QRect(160, 170, 111, 31));
+        textFN->setGeometry(QRect(300, 170, 111, 31));
         label_9 = new QLabel(tab_5);
         label_9->setObjectName("label_9");
-        label_9->setGeometry(QRect(20, 210, 111, 21));
+        label_9->setGeometry(QRect(160, 210, 111, 21));
         label_10 = new QLabel(tab_5);
         label_10->setObjectName("label_10");
-        label_10->setGeometry(QRect(160, 210, 111, 21));
+        label_10->setGeometry(QRect(300, 210, 111, 21));
         textFP = new QTextEdit(tab_5);
         textFP->setObjectName("textFP");
-        textFP->setGeometry(QRect(20, 230, 111, 31));
+        textFP->setGeometry(QRect(160, 230, 111, 31));
         textTN = new QTextEdit(tab_5);
         textTN->setObjectName("textTN");
-        textTN->setGeometry(QRect(160, 230, 111, 31));
+        textTN->setGeometry(QRect(300, 230, 111, 31));
         spinWeakclassifier = new QSpinBox(tab_5);
         spinWeakclassifier->setObjectName("spinWeakclassifier");
-        spinWeakclassifier->setGeometry(QRect(160, 80, 121, 31));
+        spinWeakclassifier->setGeometry(QRect(300, 80, 121, 31));
         spinWeakclassifier->setMinimum(0);
         spinWeakclassifier->setMaximum(1000);
         spinWeakclassifier->setSingleStep(10);
@@ -326,10 +454,10 @@ public:
         spinWeakclassifier->setDisplayIntegerBase(10);
         textAccuracy = new QTextEdit(tab_5);
         textAccuracy->setObjectName("textAccuracy");
-        textAccuracy->setGeometry(QRect(20, 300, 111, 31));
+        textAccuracy->setGeometry(QRect(160, 300, 111, 31));
         label_11 = new QLabel(tab_5);
         label_11->setObjectName("label_11");
-        label_11->setGeometry(QRect(20, 280, 111, 21));
+        label_11->setGeometry(QRect(160, 280, 111, 21));
         tabWidget->addTab(tab_5, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName("tab_2");
@@ -398,7 +526,7 @@ public:
 
         retranslateUi(MainFrame);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainFrame);
@@ -524,6 +652,206 @@ public:
         label_3->setText(QCoreApplication::translate("MainFrame", "Error", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_1), QCoreApplication::translate("MainFrame", "1 ", nullptr));
         stereo_calibration->setText(QCoreApplication::translate("MainFrame", "Stereo Calibration", nullptr));
+        label_4->setText(QCoreApplication::translate("MainFrame", "Cam01", nullptr));
+        label_12->setText(QCoreApplication::translate("MainFrame", "Cam02", nullptr));
+        label_13->setText(QCoreApplication::translate("MainFrame", "Intrinsic Patrameter", nullptr));
+        label_14->setText(QCoreApplication::translate("MainFrame", "Intrinsic Patrameter", nullptr));
+        textAlphaCam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Alpha</p></body></html>", nullptr));
+        textSkewCam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Skew(0.0)</p></body></html>", nullptr));
+        textU0Cam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">u0</p></body></html>", nullptr));
+        textZero1Cam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        textBetaCam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Beta</p></body></html>", nullptr));
+        textV0Cam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">v0</p></body></html>", nullptr));
+        textZero2Cam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        textZero3Cam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        textScaleCam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1.0</p></body></html>", nullptr));
+        textK1Cam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">k1</p></body></html>", nullptr));
+        label_15->setText(QCoreApplication::translate("MainFrame", "Distortion Parameter", nullptr));
+        textK2Cam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">k2</p></body></html>", nullptr));
+        label_16->setText(QCoreApplication::translate("MainFrame", "Error", nullptr));
+        textErrorCam01->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        textK1Cam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">k1</p></body></html>", nullptr));
+        textZero1Cam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        textZero2Cam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        textSkewCam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Skew(0.0)</p></body></html>", nullptr));
+        textU0Cam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">u0</p></body></html>", nullptr));
+        textAlphaCam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Alpha</p></body></html>", nullptr));
+        textV0Cam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">v0</p></body></html>", nullptr));
+        textZero3Cam01_2->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        label_33->setText(QCoreApplication::translate("MainFrame", "Distortion Parameter", nullptr));
+        textScaleCam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1.0</p></body></html>", nullptr));
+        textBetaCam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Beta</p></body></html>", nullptr));
+        label_34->setText(QCoreApplication::translate("MainFrame", "Error", nullptr));
+        textErrorCam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
+        textK2Cam02->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">k2</p></body></html>", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainFrame", "2", nullptr));
         label_5->setText(QCoreApplication::translate("MainFrame", "Weak Classifier Num", nullptr));
         label_6->setText(QCoreApplication::translate("MainFrame", "Confusion Matrix", nullptr));

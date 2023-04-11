@@ -30,7 +30,7 @@ namespace rv0171
     pair<double, double> Normalization(double dX, double dY, KMatrix mat);
     KMatrix NormalizeCoordinates(KMatrix& M, KMatrix& normalized_M);
     KVector MakevV(KMatrix mH, int i, int j);
-    KVector ZhangsCalibration(vector<vector<pair<double, double>>> pointzip, int nImg, int nFeature, int iter = 500);
+    KVector ZhangsCalibration(vector<vector<pair<double, double>>> pointzip, const int& nImg, const int& nFeature, const int& iter = 500);
 
     // Stereo Camera Calibration (HW2)
     KVector StereoCalibration(int nImg, int nFeature, KVector vXl, KVector vXr, KPoint**& psFl, KPoint**& psFr, KPoint*& psM);
@@ -65,31 +65,24 @@ protected:
 // Stereo Camera Calibration(HW2)
 class KCalibrationStereo : public KOptima
 {
-public:
-    KMatrix         mAl, mAr;
-    // Homogeneous Transform(Right Cam to World, Left Cam to World,  Left Cam to Right)
-    KHomogeneous    hLr;   // Xr = hRw * Xw, xl Xl = hLr * Xl
-    KHomogeneous*   _hLw;
-    KHomogeneous*   _hRw;
-    KVector         vKl, vKr;
+    KMatrix         _mAl, _mAr;
+    KHomogeneous    _hRw, _hLw, _hLr;   // Xr = hRw * Xw, Xl = hLr * Xl
+    KVector         _vKl, _vKr;
 
-    // temepral
-    KList<KMatrix>*     _lpFl;  // Left Cam Feature Points
-    KList<KMatrix>*     _lpFr;  // Right Cam Feature Points
-    KMatrix*            _mpM;   // Model points
-
-    double dError = 0;
-    int cnt = 0;
-
-    KMatrix ImageProjection(KMatrix mA, KVector vK, KHomogeneous hP, KMatrix mM);
+    //temporal
+    KList<KMatrix>*     _lpFl;  // list point Feature left
+    KList<KMatrix>*     _lpFr;  // list point Feature right
+    KMatrix*            _mpM;   // matrix point Model
 
 public:
-    KCalibrationStereo(){}
-    //bool Run(const KList<KMatrix>* lpFl, const KList<KMatrix>* lpFr, const KMatrix* mpM) { }
+    KCalibrationStereo(){ }
+
+    bool Run(const KList<KMatrix>* lpFl, const KList<KMatrix>* lpFr,
+             const KMatrix* mpM){ }
 
 protected:
-    // Powell
-    void UpdateParameters(const KVector& vX);
+    void    UpdateParameters(const KVector& vX){ }
+
     virtual double Erf(const KVector& vX);
 };
 
