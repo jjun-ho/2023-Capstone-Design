@@ -16,13 +16,13 @@ using namespace std;
 vector<pair<double, double>> rv0171::PointList(string location)
 {
     vector<pair<double, double>> pt;
-    double x, y;
+    string x, y;
 
     ifstream fin;
     fin.open(location);
     while(!fin.eof()){
         fin >> x >> y;
-        pt.push_back(make_pair(x, y));
+        pt.push_back(make_pair(stod(x), stod(y)));
     }
     if(fin.is_open()) fin.close();
     return pt;

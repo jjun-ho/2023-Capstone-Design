@@ -11,7 +11,7 @@
 
 using namespace std;
 
-string rvdir = "C:/Robot_Vision/RobotVisionApp_Students/data/";
+string rvdir = "C:/Users/ironview/Desktop/2023-Capstone-Design/Daidalos99/RobotVisionApp_Students/data/";
 
 MainFrame::MainFrame(QWidget *parent) :
     QDialog(parent),
@@ -173,8 +173,8 @@ void MainFrame::on_buttonShowList_clicked()
 //////////////////////////////
 void MainFrame::on_zhang_clicked()
 {
-    int nImg = 7;
-    int nFeature = 156;
+    int nImg = 6;
+    int nFeature = 54;
     int nItr = 100;
 
     // Load Image & Model Points to vector
@@ -192,6 +192,8 @@ void MainFrame::on_zhang_clicked()
             pointzip.push_back(rv0171::PointList(dir));
         }
     }
+
+    cout << typeid(pointzip).name() << endl;
 
     KVector vX;
 
@@ -235,10 +237,10 @@ void MainFrame::on_zhang_clicked()
 // 체커보드 점을 띄운 검은 이미지 출력
 void MainFrame::on_plot_point_clicked()
 {
-    int nImg = 7;
-    int nFeature = 156;
-    int row = 1300;
-    int col = 1300;
+    int nImg = 6;
+    int nFeature = 54;
+    int row = 1024;
+    int col = 1280;
 
     // Load Image & Model Points to vector
     vector<vector<pair<double, double>>> pointzip;

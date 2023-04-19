@@ -1194,16 +1194,16 @@ void MainFrame::on_CameraBtn_clicked()
 //    void* handle2;
 //    void* handle3;
 //    void* handle4;
-//    void* handle5;
+    void* handle5;
     void* handle6;
 
-    double setFrame = 10.0f;
+    double setFrame = 90.0f;
 
 //    handle1 = CreateCamera("Cam01");            // Create Handle and Open
 //    handle2 = CreateCamera("Cam02");            // Create Handle and Open
 //    handle3 = CreateCamera("Cam03");            // Create Handle and Open
 //    handle4 = CreateCamera("Cam04");            // Create Handle and Open
-//    handle5 = CreateCamera("Cam05");            // Create Handle and Open
+    handle5 = CreateCamera("Cam05");            // Create Handle and Open
     handle6 = CreateCamera("Cam06");            // Create Handle and Open
 
 //    SetExposureAuto(handle1, true);                    // set Exposure Auto off
@@ -1222,9 +1222,9 @@ void MainFrame::on_CameraBtn_clicked()
 //    //SetExposure(handle, 30000.0f);                    // set Exposure
 //    SetFramerate(handle4, setFrame);                    // set Frame rate
 
-//    SetExposureAuto(handle5, true);                    // set Exposure Auto off
-//    //SetExposure(handle, 30000.0f);                    // set Exposure
-//    SetFramerate(handle5, setFrame);                    // set Frame rate
+    SetExposureAuto(handle5, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle5, setFrame);                    // set Frame rate
 
     SetExposureAuto(handle6, true);                    // set Exposure Auto off
     //SetExposure(handle, 30000.0f);                    // set Exposure
@@ -1235,39 +1235,39 @@ void MainFrame::on_CameraBtn_clicked()
 //    MV_CC_SetEnumValue(handle2, "PixelFormat", 0x01080009);
 //    MV_CC_SetEnumValue(handle3, "PixelFormat", 0x01080009);
 //    MV_CC_SetEnumValue(handle4, "PixelFormat", 0x01080009);
-//    MV_CC_SetEnumValue(handle5, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle5, "PixelFormat", 0x01080009);
     MV_CC_SetEnumValue(handle6, "PixelFormat", 0x01080009);
 
 //    GrabCamera(handle1);
 //    GrabCamera(handle2);
 //    GrabCamera(handle3);
 //    GrabCamera(handle4);
-//    GrabCamera(handle5);
+    GrabCamera(handle5);
     GrabCamera(handle6);
 
 //    Mat img1, img2, img3, img4, img5, img6;
-    Mat img6;
+    Mat img5, img6;
 
     while (true) {
 //        img1 = GetMatFrame(handle1);                                // get frame
 //        img2 = GetMatFrame(handle2);
 //        img3 = GetMatFrame(handle3);
 //        img4 = GetMatFrame(handle4);
-//        img5 = GetMatFrame(handle5);
+        img5 = GetMatFrame(handle5);
         img6 = GetMatFrame(handle6);
 
 //        cv::resize(img1, img1, Size(img1.cols/2, img1.rows/2));        // resize
 //        cv::resize(img2, img2, Size(img2.cols/2, img2.rows/2));        // resize
 //        cv::resize(img3, img3, Size(img3.cols/2, img3.rows/2));        // resize
 //        cv::resize(img4, img4, Size(img4.cols/2, img4.rows/2));        // resize
-//        cv::resize(img5, img5, Size(img5.cols/2, img5.rows/2));        // resize
-        cv::resize(img6, img6, Size(img6.cols/2, img6.rows/2));        // resize
+        cv::resize(img5, img5, Size(img5.cols, img5.rows));        // resize
+        cv::resize(img6, img6, Size(img6.cols, img6.rows));        // resize
 
 //        imshow("camera1", img1);
 //        imshow("camera2", img2);
 //        imshow("camera3", img3);
 //        imshow("camera4", img4);
-//        imshow("camera5", img5);
+        imshow("camera5", img5);
         imshow("camera6", img6);
 
         char c = (char)waitKey(10);
@@ -1276,14 +1276,14 @@ void MainFrame::on_CameraBtn_clicked()
 //            StopCamera(handle2);                        // stop camera
 //            StopCamera(handle3);                        // stop camera
 //            StopCamera(handle4);                        // stop camera
-//            StopCamera(handle5);                        // stop camera
+            StopCamera(handle5);                        // stop camera
             StopCamera(handle6);                        // stop camera
 
 //            CloseCamera(handle1);                    // close camera
 //            CloseCamera(handle2);                    // close camera
 //            CloseCamera(handle3);                    // close camera
 //            CloseCamera(handle4);                    // close camera
-//            CloseCamera(handle5);                    // close camera
+            CloseCamera(handle5);                    // close camera
             CloseCamera(handle6);                    // close camera
 
             break;
@@ -1297,7 +1297,7 @@ void MainFrame::on_Checker_Corner_clicked()
     int numCornerHor = 9;
     int numCornerVer = 6;
     //int oneSqureLen = 40;
-    int numBoards = 3;
+    int numBoards = 10;
 
     int numSquares = numCornerHor *  numCornerVer;
     Size board_sz = Size(numCornerHor, numCornerVer);
@@ -1313,8 +1313,8 @@ void MainFrame::on_Checker_Corner_clicked()
         Mat image;
         Mat gray_image;
 
-        //string iname =  "C:/Users/ironview/Desktop/Base/data/CheckerBoard/";
-        string iname =  "C:/Users/gkswn/Desktop/Base/data/CheckerBoard/";
+        string iname =  "C:/Users/ironview/Desktop/IronView/data/CheckerBoard/";
+        //string iname =  "C:/Users/gkswn/Desktop/IronView/data/CheckerBoard/";
         iname += to_string(success+1);
         iname += ".bmp";
 
@@ -1343,8 +1343,8 @@ void MainFrame::on_Checker_Corner_clicked()
         imshow(winname, gray_image);
 
         ofstream ofs;
-        //string fname = "C:/Users/ironview/Desktop/Base/data/Points/points_";
-        string fname = "C:/Users/gkswn/Desktop/Base/data/Points/points_";
+        string fname = "C:/Users/ironview/Desktop/IronView/data/Points/points_";
+        //string fname = "C:/Users/gkswn/Desktop/IronView/data/Points/points_";
         fname += to_string(success);
         fname += ".txt";
 

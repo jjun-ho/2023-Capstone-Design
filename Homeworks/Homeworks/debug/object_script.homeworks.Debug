@@ -1,0 +1,10 @@
+debug/classifierCoord.o
+debug/imageform.o
+debug/kfc.o
+debug/linearTransform.o
+debug/main.o
+debug/mainframe.o
+debug/msjrv.o
+debug/qrc_mainframe.o
+debug/moc_imageform.o
+debug/moc_mainframe.o

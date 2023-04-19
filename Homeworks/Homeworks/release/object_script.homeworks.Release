@@ -1,0 +1,10 @@
+release/classifierCoord.o
+release/imageform.o
+release/kfc.o
+release/linearTransform.o
+release/main.o
+release/mainframe.o
+release/msjrv.o
+release/qrc_mainframe.o
+release/moc_imageform.o
+release/moc_mainframe.o
