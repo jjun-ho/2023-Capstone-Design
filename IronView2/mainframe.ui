@@ -434,7 +434,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <property name="iconSize">
         <size>
@@ -757,6 +757,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </property>
          <property name="text">
           <string>Stereo calibration</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushRtMatrix">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>100</y>
+           <width>75</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>RT Matrix</string>
          </property>
         </widget>
        </widget>

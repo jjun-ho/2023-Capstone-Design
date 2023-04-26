@@ -289,8 +289,6 @@ void MainFrame::on_calib_btn_clicked()
 //////////
 // HW02 //
 ////////// Stereo Camera Calibration
-
-
 void MainFrame::on_pushStereoCalib_clicked()
 {
     int left_cam_num = 1;
@@ -429,7 +427,7 @@ void MainFrame::on_pushStereoCalib_clicked()
     //ofs << corners;
     for(int i=0;i<6;i++)
     {
-        ofs<< vX[i] << ' ';
+        ofs<< vX[i] << endl;
     }
     ofs.close();
 
@@ -845,3 +843,46 @@ void MainFrame::on_pushAdaBoost_clicked()
     } delete[] dsF;
     qDebug() << "Process end\n";
 }
+
+void MainFrame::on_pushRtMatrix_clicked()
+{
+    int left_cam_num = 1;
+    int right_cam_num = 2;
+
+    string RT_path = data_dir + "RTtxt/RT_";
+    RT_path += to_string(left_cam_num);
+    RT_path += to_string(right_cam_num);
+    RT_path += ".txt";
+
+    string str;
+    double buf[6] = {0,};
+    ifstream RT_fname(RT_path);
+    if (RT_fname.is_open()) {
+        int i =0;
+        while (getline(RT_fname, str))
+        {
+            buf[i] = stod(str);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname.close();
+
+    KRotation Rt;
+    Rt.FromRodrigues(buf[0], buf[1], buf[2]);
+
+    cout <<  "RT_Matrix =" <<endl;
+     for(int i=0; i<3; i++)
+     {
+         for(int j=0; j<3; j++)
+         {
+             cout<< Rt[i][j] << " ";
+         }
+         cout << endl;
+     }
+
+     cout << "t1:" << buf[3] << " t2:" << buf[4] << " t3:" << buf[5] << endl;
+}
+

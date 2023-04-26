@@ -49,6 +49,8 @@ private slots:
 
     void on_pushAdaBoost_clicked();
 
+    void on_pushRtMatrix_clicked();
+
 protected:
     void closeEvent(QCloseEvent* event);
 };
