@@ -873,7 +873,7 @@ void MainFrame::on_pushRtMatrix_clicked()
     KRotation Rt;
     Rt.FromRodrigues(buf[0], buf[1], buf[2]);
 
-    cout <<  "RT_Matrix =" <<endl;
+    cout <<  "RT_" << left_cam_num << right_cam_num << "_Matrix =" <<endl;
      for(int i=0; i<3; i++)
      {
          for(int j=0; j<3; j++)
