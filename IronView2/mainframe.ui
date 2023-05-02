@@ -772,6 +772,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <string>RT Matrix</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="RT_product">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>160</y>
+           <width>80</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>RT_product</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="tab_3">
         <attribute name="title">

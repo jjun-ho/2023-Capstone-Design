@@ -62,6 +62,7 @@ public:
     QWidget *tab_2;
     QPushButton *pushStereoCalib;
     QPushButton *pushRtMatrix;
+    QPushButton *RT_product;
     QWidget *tab_3;
     QPushButton *pushAdaBoost;
     QLabel *label_3;
@@ -287,6 +288,9 @@ public:
         pushRtMatrix = new QPushButton(tab_2);
         pushRtMatrix->setObjectName("pushRtMatrix");
         pushRtMatrix->setGeometry(QRect(100, 100, 75, 24));
+        RT_product = new QPushButton(tab_2);
+        RT_product->setObjectName("RT_product");
+        RT_product->setGeometry(QRect(100, 160, 80, 24));
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
@@ -514,6 +518,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_1), QCoreApplication::translate("MainFrame", "1 ", nullptr));
         pushStereoCalib->setText(QCoreApplication::translate("MainFrame", "Stereo calibration", nullptr));
         pushRtMatrix->setText(QCoreApplication::translate("MainFrame", "RT Matrix", nullptr));
+        RT_product->setText(QCoreApplication::translate("MainFrame", "RT_product", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("MainFrame", "2 ", nullptr));
         pushAdaBoost->setText(QCoreApplication::translate("MainFrame", "Implement AdaBoost", nullptr));
         label_3->setText(QCoreApplication::translate("MainFrame", "Accuracy", nullptr));

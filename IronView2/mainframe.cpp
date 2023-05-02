@@ -133,8 +133,7 @@ void MainFrame::on_buttonShowList_clicked()
     }
 }
 
-string data_dir = "C:/Users/ironview/Desktop/2023-Capstone-Design/IronView2/data/";
-
+string data_dir = "C:/Users/ksh99/k_docu/2023-Capstone-Design/IronView2/data/";
 //////////
 // HW01 //
 ////////// Mono Camera Calibration
@@ -291,8 +290,8 @@ void MainFrame::on_calib_btn_clicked()
 ////////// Stereo Camera Calibration
 void MainFrame::on_pushStereoCalib_clicked()
 {
-    int left_cam_num = 1;
-    int right_cam_num = 2;
+    int left_cam_num = 2;
+    int right_cam_num = 3;
 
     int nImg = 4;
     int nFeature = 54;
@@ -330,7 +329,7 @@ void MainFrame::on_pushStereoCalib_clicked()
     for (int i = 1; i <= nImg; i++) {
         // Iterate for 15 images
         // For left images
-        string fname = data_dir + "Cam123txt/left";
+        string fname = data_dir + "Cam123txt/main";
         fname += to_string(i);
         fname += ".txt";
         ifstream image_file_L(fname);
@@ -343,7 +342,7 @@ void MainFrame::on_pushStereoCalib_clicked()
         } image_file_L.close();
 
         // For right images
-        fname = data_dir + "Cam123txt/main";
+        fname = data_dir + "Cam123txt/right";
         fname += to_string(i);
         fname += ".txt";
         ifstream image_file_R(fname);
@@ -439,9 +438,9 @@ void MainFrame::on_pushStereoCalib_clicked()
 
     // 출력을 위한 ImageForm 생성
     ImageForm* q_pForm[4] = {0,};
-    string wName[] = {"left1", "left2", "left3", "left4"};
+    string wName[] = {"main1", "main2", "main3", "main4"};
     for (int i = 0; i < nImg; i++) {
-        string sImgName = data_dir + "Cam123txt/left";
+        string sImgName = data_dir + "Cam123txt/main";
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
@@ -523,329 +522,9 @@ void MainFrame::on_pushStereoCalib_clicked()
     qDebug() << "Process end\n";
 }
 
-//////////
-// HW03 //
-////////// Rectification
-void MainFrame::on_pushRect_clicked()
-{
-    int nImg = 15;
-    int nFeature = 100;
-
-    KPoint* psM;
-    psM = new KPoint[nFeature];
-
-    KPoint** psFl;
-    KPoint** psFr;
-    psFl = new KPoint*[nImg];
-    for (int i = 0; i < nImg; i++) {
-        psFl[i] = new KPoint[nFeature];
-    }
-    psFr = new KPoint*[nImg];
-    for (int i = 0; i < nImg; i++) {
-        psFr[i] = new KPoint[nFeature];
-    }
-
-    // Get Model coordinates
-    QString defaultPath = QCoreApplication::applicationDirPath();
-    string model_path = defaultPath.toStdString() + "//..//..//Homeworks//data//hw02//calib_data//model.txt";
-    ifstream model_file(model_path);
-    if (model_file.is_open()) {
-        for (int i = 0; i < nFeature; i++) {
-            model_file >> psM[i]._dX;
-            model_file >> psM[i]._dY;
-            //qDebug() << psM[i]._dX << psM[i]._dY;
-        }
-    }
-    else {
-        qDebug() << "File open error!\n";
-    }
-    model_file.close();
-
-    // Get images coordinates
-    for (int i = 1; i <= nImg; i++) {
-        // Iterate for 15 images
-        // For left images
-        string fname = defaultPath.toStdString() + "//..//..//Homeworks//data//hw02//calib_data//left";
-        fname += to_string(i);
-        fname += ".txt";
-        ifstream image_file_L(fname);
-        if (image_file_L.is_open()) {
-            for (int j = 0; j < nFeature; j++) {
-                image_file_L >> psFl[i - 1][j]._dX;
-                image_file_L >> psFl[i - 1][j]._dY;
-                //qDebug() << "left" << i << j << psFl[i - 1][j]._dX << psFl[i - 1][j]._dY;
-            }
-        } image_file_L.close();
-
-        // For right images
-        fname = defaultPath.toStdString() + "//..//..//Homeworks//data//hw02//calib_data//right";
-        fname += to_string(i);
-        fname += ".txt";
-        ifstream image_file_R(fname);
-        if (image_file_R.is_open()) {
-            for (int j = 0; j < nFeature; j++) {
-                image_file_R >> psFr[i - 1][j]._dX;
-                image_file_R >> psFr[i - 1][j]._dY;
-                //qDebug() << "right" << i << j << psFr[i - 1][j]._dX << psFr[i - 1][j]._dY;
-            }
-        }
-        else {
-            qDebug() << "File open error!\n";
-        } image_file_R.close();
-    }
-
-    KVector vXl, vXr;
-    vXl = msjrv::ZhangMethod(nImg, nFeature, psFl, psM);
-    vXr = msjrv::ZhangMethod(nImg, nFeature, psFr, psM);
-
-    // For left images
-    KMatrix mAl(3, 3);
-    mAl[0][0] = vXl[0];     // alpha
-    mAl[1][1] = vXl[1];     // beta
-    mAl[0][2] = vXl[2];     // u0
-    mAl[1][2] = vXl[3];     // v0
-    mAl[2][2] = 1.0;        //
-    double dK1l = vXl[4];   // distortion parameter k1
-    double dK2l = vXl[5];   // distortion parameter k2
-
-    KHomogeneous* hPl;      // Homogeneous matrix
-    hPl = new KHomogeneous[nImg];
-    KMatrix* mPl;           // Projection matrix
-    mPl = new KMatrix[nImg];
-    KVector* vCl;           // Optical center
-    vCl = new KVector[nImg];
-    for (int i = 0; i < nImg; i++) {
-        KRotation rR;
-        rR.FromRodrigues(vXl[6 * (i + 1)], vXl[6 * (i + 1) + 1], vXl[6 * (i + 1) + 2]);
-        KVector   vT(vXl[6*(i + 1) + 3], vXl[6 * (i + 1) + 4], vXl[6 * (i + 1) + 5]);
-        hPl[i] = KHomogeneous(rR, vT);      // 4x4 matrix, W->TL
-
-        // Projection matrix about each image
-        mPl[i] = mAl * hPl[i];
-
-        // Compute the optical center
-        vCl[i] = msjrv::OpticalCenter(mPl[i]);
-    }
-
-    // For right images
-    KMatrix mAr(3, 3);
-    mAr[0][0] = vXr[0];     // alpha
-    mAr[1][1] = vXr[1];     // beta
-    mAr[0][2] = vXr[2];     // u0
-    mAr[1][2] = vXr[3];     // v0
-    mAr[2][2] = 1.0;        //
-    double dK1r = vXr[4];   // distortion parameter k1
-    double dK2r = vXr[5];   // distortion parameter k2
-
-    KHomogeneous* hPr;      // Homogeneous matrix
-    hPr = new KHomogeneous[nImg];
-    KMatrix* mPr;           // Projection matrix
-    mPr = new KMatrix[nImg];
-    KVector* vCr;           // Optical center
-    vCr = new KVector[nImg];
-    for (int i = 0; i < nImg; i++) {
-        KRotation rR;
-        rR.FromRodrigues(vXr[6 * (i + 1)], vXr[6 * (i + 1) + 1], vXr[6 * (i + 1) + 2]);
-        KVector   vT(vXr[6*(i + 1) + 3], vXr[6 * (i + 1) + 4], vXr[6 * (i + 1) + 5]);
-        hPr[i] = KHomogeneous(rR, vT);      // 4x4 matrix, W->TR
-
-        // Projection matrix about each image
-        mPr[i] = mAr * hPr[i];
-
-        // Compute the optical center
-        vCr[i] = msjrv::OpticalCenter(mPr[i]);
-    }
-
-    // Two cameras should have the same intrinsic parameters, right camera' -> standard
-    KMatrix mAn = mAr;
-
-    // Both cameras must have the same rotation
-    // Rwl = Rwr = R = (r11 r12 r13
-    //                  r21 r22 r23
-    //                  r31 r32 r33) = (vR1 vR2 vR3)
-    // R' = R.Transpose
-    KMatrix* mR;
-    mR = new KMatrix[nImg];
-    for (int i = 0; i < nImg; i++) {
-        KVector vR1, vR2, vR3;
-        vR1 = vCr[i] - vCl[i];
-        vR1 /= sqrt(vR1.Norm2());   // Normalization
-
-        KVector vK;
-        vK = hPr[i].R().Tr().Column(2);
-        vR2 = vK.Skew() * vR1;
-
-        vR3 = vR1.Skew() * vR2;
-
-        // R' = R.Transpose
-        mR[i] ^= vR1.Tr();          // Add a row
-        mR[i] ^= vR2.Tr();          // Add a row
-        mR[i] ^= vR3.Tr();          // Add a row
-    }
-
-    // 출력을 위한 ImageForm 생성
-    ImageForm* q_pForm[15] = {0,};
-    string wName[] = {"img1", "img2", "img3", "img4", "img5", "img6", "img7", "img8", "img9", "img10", "img11", "img12", "img13", "img14", "img15"};
-    for (int i = 0; i < nImg; i++) {
-        string sImgNameL = defaultPath.toStdString() + "//..//..//Homeworks//data//hw02//calib_data//left";
-        string sImgNameR = defaultPath.toStdString() + "//..//..//Homeworks//data//hw02//calib_data//right";
-        sImgNameL += to_string(i + 1);
-        sImgNameR += to_string(i + 1);
-        sImgNameL += ".bmp";
-        sImgNameR += ".bmp";
-
-        // u~' = \lambda * Q' * Q^-1 * u~
-        // Q = AR -> Q' = A'R'
-        KMatrix* mQl;
-        mQl = new KMatrix[nImg];
-        KMatrix* mQr;
-        mQr = new KMatrix[nImg];
-        KMatrix* mQn;
-        mQn = new KMatrix[nImg];
-        mQl[i] = mAl * hPl[i].R();
-        mQr[i] = mAr * hPr[i].R();
-        mQn[i] = mAn * mR[i];
-
-        KImageColor icMain(480, 1280);
-        QImage* _imgL = new QImage();        // Left 이미지를 로드하기 위한 QImage 선언
-        QImage* _imgR = new QImage();        // Right 이미지를 로드하기 위한 QImage 선언
-        if (_imgL->load(QString::fromStdString(sImgNameL)) && _imgR->load(QString::fromStdString(sImgNameR))) {
-            for (int ii = 0; ii < 480; ii++) {
-                for (int jj = 0; jj < 640; jj++) {
-                    if (ii % 80 == 0) {
-                        // 일정 구간마다 가로로 red line을 그어
-                        // 결과 확인
-                        icMain[ii][jj].r = 255;
-                        icMain[ii][jj].g = 0;
-                        icMain[ii][jj].b = 0;
-                        icMain[ii][jj + 640].r = 255;
-                        icMain[ii][jj + 640].g = 0;
-                        icMain[ii][jj + 640].b = 0;
-                    }
-                    else {
-                        // Left image
-                        // u~' = \lambda * Q' * Q^-1 * u~
-                        KMatrix mTl = mQn[i] * mQl[i].Iv();
-                        // Bilinear interpolation
-                        KVector vPl = msjrv::BilinearInterpolation(_imgL, 640, 480, mTl, KVector(jj, ii, 1.0));
-                        icMain[ii][jj].r = vPl[0];
-                        icMain[ii][jj].g = vPl[1];
-                        icMain[ii][jj].b = vPl[2];
-
-                        // Right image
-                        // u~' = \lambda * Q' * Q^-1 * u~
-                        KMatrix mTr = mQn[i] * mQr[i].Iv();
-                        // Bilinear interpolation
-                        KVector vPr = msjrv::BilinearInterpolation(_imgR, 640, 480, mTr, KVector(jj, ii, 1.0));
-                        icMain[ii][jj + 640].r = vPr[0];
-                        icMain[ii][jj + 640].g = vPr[1];
-                        icMain[ii][jj + 640].b = vPr[2];
-                    }
-                }
-            }
-        }
-        else {
-            qDebug() << "Image load Error";
-        }
-
-        for (unsigned int ii = 0; ii < _plpImageForm->Count(); ii++) {
-            if ((*_plpImageForm)[ii]->ID() == QString::fromStdString(wName[i])) {
-                q_pForm[i] = (*_plpImageForm)[ii];
-            }
-        }
-
-        // Display window
-        if (q_pForm[i]) {
-            // 이미지 창이 이미 존재하면 아무것도 하지 않음
-        }
-        else {
-            q_pForm[i] = new ImageForm(icMain, QString::fromStdString(wName[i]), this);
-            q_pForm[i]->show();
-            _plpImageForm->Add(q_pForm[i]);
-        }
-
-        delete _imgL;
-        delete _imgR;
-        delete[] mQl;
-        delete[] mQr;
-        delete[] mQn;
-    }
-
-    // UI 활성화 갱신
-    UpdateUI();
-
-    // Delete memory
-    for (int i = 0; i < nImg; i++) {
-        delete[] psFl[i];
-    } delete[] psFl;
-    for (int i = 0; i < nImg; i++) {
-        delete[] psFr[i];
-    } delete[] psFr;
-    delete[] psM;
-    delete[] hPl;
-    delete[] hPr;
-    delete[] mPl;
-    delete[] mPr;
-    qDebug() << "Process end\n";
-}
-
-//////////
-// HW04 //
-////////// AdaBoost
-void MainFrame::on_pushAdaBoost_clicked()
-{
-    // Get sample features
-    int nSample = 1000;
-    int nFeature = 10 + 1;      // 10 features, label{+1, -1}
-    double** dsF;
-    dsF = new double*[nSample];
-    for (int i = 0; i < nSample; i++) {
-        dsF[i] = new double[nFeature];
-    }
-    QString defaultPath = QCoreApplication::applicationDirPath();
-    string modelPath = "C:/RV/RobotVisionApp_Students/data/hw03/samples.txt";
-    ifstream sampleFile(modelPath);
-    if (sampleFile.is_open()) {
-        for (int i = 0; i < nSample; i++) {
-            for (int j = 0; j < nFeature; j++) {
-                sampleFile >> dsF[i][j];
-            }
-//            qDebug() << dsF[i][0] << dsF[i][1] << dsF[i][2] << dsF[i][3] << dsF[i][4] << dsF[i][5] << dsF[i][6] << dsF[i][7] << dsF[i][8] << dsF[i][9] << dsF[i][10];
-        }
-    }
-    else {
-        qDebug() << "File open error!\n";
-    }
-    sampleFile.close();
-
-    // Get num of weakclassifier
-    int nWeak = ui->spinWeakclassifier->text().toInt();
-
-    // {Error, TP, TN, FP, FN}
-    KVector resClassify = msjrv::AdaBoost(nSample, nFeature, dsF, nWeak);
-
-    // Print result
-    QString temp_str;
-    temp_str = QString::fromStdString(std::to_string(1 - resClassify[0]));
-    ui->textAccuracy->setText(temp_str);
-    temp_str = QString::fromStdString(std::to_string((int)resClassify[1]));
-    ui->textTp->setText(temp_str);
-    temp_str = QString::fromStdString(std::to_string((int)resClassify[2]));
-    ui->textTn->setText(temp_str);
-    temp_str = QString::fromStdString(std::to_string((int)resClassify[3]));
-    ui->textFp->setText(temp_str);
-    temp_str = QString::fromStdString(std::to_string((int)resClassify[4]));
-    ui->textFn->setText(temp_str);
-
-    // Delete memory
-    for (int i = 0; i < nSample; i++) {
-        delete[] dsF[i];
-    } delete[] dsF;
-    qDebug() << "Process end\n";
-}
-
 void MainFrame::on_pushRtMatrix_clicked()
 {
+
     int left_cam_num = 1;
     int right_cam_num = 2;
 
@@ -872,17 +551,144 @@ void MainFrame::on_pushRtMatrix_clicked()
 
     KRotation Rt;
     Rt.FromRodrigues(buf[0], buf[1], buf[2]);
-
     cout <<  "RT_" << left_cam_num << right_cam_num << "_Matrix =" <<endl;
-     for(int i=0; i<3; i++)
-     {
-         for(int j=0; j<3; j++)
-         {
-             cout<< Rt[i][j] << " ";
-         }
-         cout << endl;
-     }
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            cout<< Rt[i][j] << " ";
+        }
+        cout << endl;
+    }
 
-     cout << "t1:" << buf[3] << " t2:" << buf[4] << " t3:" << buf[5] << endl;
+    cout << "t1:" << buf[3] << " t2:" << buf[4] << " t3:" << buf[5] << endl;
+
+}
+
+
+void MainFrame::on_RT_product_clicked()
+{
+    int left_cam_num = 1;
+    int main_cam_num = 2;
+    int right_cam_num = 3;
+
+/*
+*************************************************** T12*****************************************************************
+*/
+    string RT_path12 = data_dir + "RTtxt/RT_";
+    RT_path12 += to_string(left_cam_num);
+    RT_path12 += to_string(main_cam_num);
+    RT_path12 += ".txt";
+
+    string str12;
+    double buf12[6] = {0,};
+    ifstream RT_fname12(RT_path12);
+    if (RT_fname12.is_open()) {
+        int i =0;
+        while (getline(RT_fname12, str12))
+        {
+            buf12[i] = stod(str12);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname12.close();
+
+    KRotation Rt12;
+    Rt12.FromRodrigues(buf12[0], buf12[1], buf12[2]);
+
+    //cout
+    cout <<  "RT_" << left_cam_num << main_cam_num << "_Matrix =" <<endl;
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            cout<< Rt12[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << "t1:" << buf12[3] << " t2:" << buf12[4] << " t3:" << buf12[5] << endl;
+
+
+
+    // T23
+    string RT_path23 = data_dir + "RTtxt/RT_";
+    RT_path23 += to_string(main_cam_num);
+    RT_path23 += to_string(right_cam_num);
+    RT_path23 += ".txt";
+
+    string str23;
+    double buf23[6] = {0,};
+    ifstream RT_fname23(RT_path23);
+    if (RT_fname23.is_open()) {
+        int i =0;
+        while (getline(RT_fname23, str23))
+        {
+            buf23[i] = stod(str23);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname23.close();
+
+    KRotation Rt23;
+    Rt23.FromRodrigues(buf23[0], buf23[1], buf23[2]);
+
+    //cout
+    cout <<  "RT_" << main_cam_num << right_cam_num << "_Matrix =" <<endl;
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            cout<< Rt23[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << "t1:" << buf23[3] << " t2:" << buf23[4] << " t3:" << buf23[5] << endl;
+
+    // T13
+
+    KMatrix RT(3,3);
+    //update R
+    KRotation Rt13;
+    Rt13 = Rt12 * Rt23;
+    //update T
+    double buf13[3] = {0,};
+    buf13[0] = buf12[3] + buf23[3]; buf13[1] = buf12[4] + buf23[4]; buf13[2] = buf12[5] + buf23[5];
+
+    //cout
+    cout <<  "RT_" << left_cam_num << right_cam_num << "_Matrix =" <<endl;
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            cout<< Rt13[i][j] << " ";
+            RT[i][j] = Rt13[i][j];
+        }
+        cout << endl;
+    }
+
+    RT |= KVector(buf13[0],buf13[1],buf13[2]);
+
+    RT ^= KVector(0,0,0,1).Tr();
+
+    cout << "t1:" << buf13[0] << " t2:" << buf13[1] << " t3:" << buf13[2] << endl;
+
+    //view
+    cout << "RT:" << endl;
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<4; j++)
+        {
+            cout<< RT[i][j] << " ";
+
+        }
+        cout << endl;
+    }
+
 }
 

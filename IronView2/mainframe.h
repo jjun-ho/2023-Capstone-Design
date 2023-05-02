@@ -45,11 +45,10 @@ private slots:
 
     void on_pushStereoCalib_clicked();
 
-    void on_pushRect_clicked();
-
-    void on_pushAdaBoost_clicked();
-
     void on_pushRtMatrix_clicked();
+
+
+    void on_RT_product_clicked();
 
 protected:
     void closeEvent(QCloseEvent* event);

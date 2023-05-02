@@ -73,6 +73,8 @@ public:
     int cnt = 0;
     double dError;
 
+    //double RT_product(const KVector& vXL,const KVector& vXR);
+
 protected:
     virtual double Erf(const KVector& vX);
 };

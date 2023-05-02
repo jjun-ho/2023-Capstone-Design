@@ -442,120 +442,7 @@ KMatrix ImageProjection(KMatrix mA, KVector vK, KHomogeneous hP, KMatrix mM) {
     return mF;
 }
 
-//////////
-// HW03 //
-//////////
-KVector OpticalCenter(KMatrix mP) {
-    // Projection matrix P
-    // P = A[R|t]
-    //   = [Q|q]
-    KMatrix mQ = mP.Cut(0, 0, 2, 2);
-    KMatrix mq = mP.Cut(0, 3, 2, 3);
 
-    // C = -P(1:3, 1:3).Inv * P(:,4)
-    return -mQ.Iv() * mq;
-}
-
-KVector BilinearInterpolation(QImage* _img, int width, int height, KMatrix mT, KVector vP) {
-    // mT: Translation matrix(3x3), vP: Warped image point(int, 3x1: [x, y, 1.0])
-    vP = mT.Iv() * vP;  // flaot, [x, y, 1.0]
-
-    float x = vP[0], y = vP[1];
-    if (0 < x && x < width - 1 && 0 < y && y < height - 1) {
-        // y1--(1,1)---(1,2)----
-        //       |  *    |
-        //       |       |
-        //       |       |
-        // y2--(2,1)---(2,2)----
-        //      x1      x2
-        int x1 = vP[0], x2 = x1 + 1;
-        int y1 = vP[1], y2 = y1 + 1;
-
-        QColor c11 = _img->pixelColor(x1, y1);
-        QColor c12 = _img->pixelColor(x2, y1);
-        QColor c21 = _img->pixelColor(x1, y2);
-        QColor c22 = _img->pixelColor(x2, y2);
-
-        float r = (c11.red()*(x2-x)*(y2-y) +
-                  c12.red()*(x-x1)*(y2-y) +
-                  c21.red()*(x2-x)*(y-y1) +
-                  c22.red()*(x-x1)*(y-y1)) / ((x2-x1) * (y2-y1));
-        float g = (c11.green()*(x2-x)*(y2-y) +
-                  c12.green()*(x-x1)*(y2-y) +
-                  c21.green()*(x2-x)*(y-y1) +
-                  c22.green()*(x-x1)*(y-y1)) / ((x2-x1) * (y2-y1));
-        float b = (c11.blue()*(x2-x)*(y2-y) +
-                  c12.blue()*(x-x1)*(y2-y) +
-                  c21.blue()*(x2-x)*(y-y1) +
-                  c22.blue()*(x-x1)*(y-y1)) / ((x2-x1) * (y2-y1));
-
-        return KVector((char)r, (char)g, (char)b);
-    }
-
-    // Return black
-    return KVector((char)0, (char)0, (char)0);
-}
-
-//////////
-// HW04 //
-//////////
-KVector AdaBoost(int nSample, int nFeature, double**& dsF, int nWeak) {
-    if (nWeak == 0) nWeak = 10;
-    KVector vW(nSample);
-    KVector vY(nSample);
-    KList<KVector> lX;
-    KList<KFeatureCoord> lF(nFeature - 1);      // nFeature = feature + label = 10 + 1
-    for (int i = 0; i < lF.Capacity(); i++) {
-        KFeatureCoord temp(i);
-        lF.Add(temp);
-    }
-
-    // Repeat for samples
-    for (unsigned int i = 0; i < vW.Size(); i++) {
-        // Init weight
-        vW[i] = (double)1/nSample;
-        // Set ground truth
-        vY[i] = dsF[i][10];
-
-        // Set features
-        KVector temp;
-        for (int j = 0; j < nFeature; j++) {
-            temp.Tailed(dsF[i][j]);
-        }
-        lX.Add(temp);
-    }
-
-    // Train
-    KVector vOut;
-    KStrongClassifierCoord classifier;
-    double dError = classifier.Train(lX, vY, lF, nWeak, 0.05);
-    vOut.Tailed(dError);
-
-    // Classify
-    KVector vPred = classifier.Classify(lX);
-    int TP = 0;
-    int TN = 0;
-    int FP = 0;
-    int FN = 0;
-    for (int i = 0; i < nSample; i++) {
-        if (dsF[i][10] == 1 && vPred[i] == 1) {
-            TP++;
-        }
-        else if (dsF[i][10] == -1 && vPred[i] == -1) {
-            TN++;
-        }
-        else if (dsF[i][10] == -1 && vPred[i] == 1) {
-            FP++;
-        }
-        else if (dsF[i][10] == 1 && vPred[i] == -1) {
-            FN++;
-        }
-    }
-    vOut.Tailed(TP).Tailed(TN).Tailed(FP).Tailed(FN);
-
-    // Return: {Error, TP, TN, FP, FN}
-    return vOut;
-}
 }
 
 double KCalibrationZhang::Erf(const KVector& vX) {
@@ -654,3 +541,4 @@ double KCalibrationStereo::Erf(const KVector& vX) {
     //qDebug() << cnt++ << dError << "|" << vX[0] << vX[1] << vX[2] << vX[3] << vX[4] << vX[5];
     return dError;
 }
+
