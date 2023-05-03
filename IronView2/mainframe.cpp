@@ -597,10 +597,6 @@ void MainFrame::on_RT_product_clicked()
     KRotation Rt12;
     Rt12.FromRodrigues(buf12[0], buf12[1], buf12[2]);
 
-
-
-
-
     // T23
     string RT_path23 = data_dir + "RTtxt/RT_";
     RT_path23 += to_string(main_cam_num);
@@ -655,4 +651,8 @@ void MainFrame::on_RT_product_clicked()
     }
 }
 
+void Trans()
+{
 
+
+}

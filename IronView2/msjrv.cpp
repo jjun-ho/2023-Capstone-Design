@@ -542,3 +542,22 @@ double KCalibrationStereo::Erf(const KVector& vX) {
     return dError;
 }
 
+KMatrix make_3DCameraCoord (KVector& vX, KVector Img)
+{
+//    mA[0][0] = vX[0];   // alpha
+//    mA[1][1] = vX[1];   // beta
+//    mA[0][2] = vX[2];   // u0
+//    mA[1][2] = vX[3];   // v0
+
+    KMatrix Xi;
+    for (int i = 0; i < Img.Size(); i++){
+
+    Xi[0][i] = Img[i].dx - vX[2]; // u - ui
+    Xi[1][i] = Img[i].dy - vX[3]; // v - vi
+    Xi[2][i] = vX[0];
+    Xi[3][i] = 1;
+
+    }
+    return Xi;
+
+}
