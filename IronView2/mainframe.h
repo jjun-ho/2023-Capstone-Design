@@ -47,7 +47,6 @@ private slots:
 
     void on_pushRtMatrix_clicked();
 
-
     void on_RT_product_clicked();
 
 protected:

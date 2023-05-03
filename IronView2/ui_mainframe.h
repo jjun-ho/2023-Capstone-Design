@@ -19,7 +19,6 @@
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
@@ -64,22 +63,7 @@ public:
     QPushButton *pushRtMatrix;
     QPushButton *RT_product;
     QWidget *tab_3;
-    QPushButton *pushAdaBoost;
-    QLabel *label_3;
-    QTextEdit *textAccuracy;
-    QLabel *label_4;
-    QSpinBox *spinWeakclassifier;
-    QLabel *label_5;
-    QLabel *label_6;
-    QLabel *label_7;
-    QLabel *label_8;
-    QTextEdit *textTp;
-    QTextEdit *textFn;
-    QTextEdit *textFp;
-    QTextEdit *textTn;
-    QLabel *label_9;
     QWidget *tab;
-    QPushButton *pushRect;
     QWidget *tab_4;
     QWidget *tab_5;
     QListWidget *listWidget;
@@ -294,55 +278,9 @@ public:
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
-        pushAdaBoost = new QPushButton(tab_3);
-        pushAdaBoost->setObjectName("pushAdaBoost");
-        pushAdaBoost->setGeometry(QRect(80, 20, 131, 31));
-        label_3 = new QLabel(tab_3);
-        label_3->setObjectName("label_3");
-        label_3->setGeometry(QRect(20, 280, 71, 20));
-        textAccuracy = new QTextEdit(tab_3);
-        textAccuracy->setObjectName("textAccuracy");
-        textAccuracy->setGeometry(QRect(20, 300, 111, 31));
-        label_4 = new QLabel(tab_3);
-        label_4->setObjectName("label_4");
-        label_4->setGeometry(QRect(160, 60, 131, 20));
-        spinWeakclassifier = new QSpinBox(tab_3);
-        spinWeakclassifier->setObjectName("spinWeakclassifier");
-        spinWeakclassifier->setGeometry(QRect(160, 80, 121, 31));
-        spinWeakclassifier->setMaximum(99999);
-        label_5 = new QLabel(tab_3);
-        label_5->setObjectName("label_5");
-        label_5->setGeometry(QRect(20, 140, 31, 20));
-        label_6 = new QLabel(tab_3);
-        label_6->setObjectName("label_6");
-        label_6->setGeometry(QRect(20, 200, 31, 20));
-        label_7 = new QLabel(tab_3);
-        label_7->setObjectName("label_7");
-        label_7->setGeometry(QRect(160, 140, 31, 20));
-        label_8 = new QLabel(tab_3);
-        label_8->setObjectName("label_8");
-        label_8->setGeometry(QRect(160, 200, 31, 20));
-        textTp = new QTextEdit(tab_3);
-        textTp->setObjectName("textTp");
-        textTp->setGeometry(QRect(20, 160, 111, 31));
-        textFn = new QTextEdit(tab_3);
-        textFn->setObjectName("textFn");
-        textFn->setGeometry(QRect(160, 160, 111, 31));
-        textFp = new QTextEdit(tab_3);
-        textFp->setObjectName("textFp");
-        textFp->setGeometry(QRect(20, 220, 111, 31));
-        textTn = new QTextEdit(tab_3);
-        textTn->setObjectName("textTn");
-        textTn->setGeometry(QRect(160, 220, 111, 31));
-        label_9 = new QLabel(tab_3);
-        label_9->setObjectName("label_9");
-        label_9->setGeometry(QRect(20, 120, 111, 20));
         tabWidget->addTab(tab_3, QString());
         tab = new QWidget();
         tab->setObjectName("tab");
-        pushRect = new QPushButton(tab);
-        pushRect->setObjectName("pushRect");
-        pushRect->setGeometry(QRect(60, 20, 171, 31));
         tabWidget->addTab(tab, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName("tab_4");
@@ -520,56 +458,7 @@ public:
         pushRtMatrix->setText(QCoreApplication::translate("MainFrame", "RT Matrix", nullptr));
         RT_product->setText(QCoreApplication::translate("MainFrame", "RT_product", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("MainFrame", "2 ", nullptr));
-        pushAdaBoost->setText(QCoreApplication::translate("MainFrame", "Implement AdaBoost", nullptr));
-        label_3->setText(QCoreApplication::translate("MainFrame", "Accuracy", nullptr));
-        textAccuracy->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
-        label_4->setText(QCoreApplication::translate("MainFrame", "Weak Classifier Num", nullptr));
-        label_5->setText(QCoreApplication::translate("MainFrame", "TP", nullptr));
-        label_6->setText(QCoreApplication::translate("MainFrame", "FP ", nullptr));
-        label_7->setText(QCoreApplication::translate("MainFrame", "FN", nullptr));
-        label_8->setText(QCoreApplication::translate("MainFrame", "TN", nullptr));
-        textTp->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
-        textFn->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
-        textFp->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
-        textTn->setHtml(QCoreApplication::translate("MainFrame", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'\353\247\221\354\235\200 \352\263\240\353\224\225'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0.0</p></body></html>", nullptr));
-        label_9->setText(QCoreApplication::translate("MainFrame", "Confusion Matrix", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainFrame", "3", nullptr));
-        pushRect->setText(QCoreApplication::translate("MainFrame", "Rectification", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainFrame", "4", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainFrame", "5 ", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_5), QCoreApplication::translate("MainFrame", "6 ", nullptr));

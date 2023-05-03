@@ -139,8 +139,8 @@ string data_dir = "C:/Users/ksh99/k_docu/2023-Capstone-Design/IronView2/data/";
 ////////// Mono Camera Calibration
 void MainFrame::on_calib_btn_clicked()
 {
-    int nImg = 7;
-    int nFeature = 156;
+    int nImg = 4;
+    int nFeature = 54;
 
     KPoint** psF;
     KPoint* psM;
@@ -153,7 +153,7 @@ void MainFrame::on_calib_btn_clicked()
 
     // Get Model coordinates
     //QString defaultPath = QCoreApplication::applicationDirPath();
-    string model_path = data_dir + "hw01//Model.txt";
+    string model_path = data_dir + "Cam123txt/model.txt";
     ifstream model_file(model_path);
     if (model_file.is_open()) {
         for (int i = 0; i < nFeature; i++) {
@@ -169,7 +169,7 @@ void MainFrame::on_calib_btn_clicked()
     // Get images coordinates
     for (int i = 1; i <= nImg; i++) {
         // Iterate for 7 images
-        string fname = data_dir + "hw01//Image";
+        string fname = data_dir + "Cam123txt/left";
         fname += to_string(i);
         fname += ".txt";
 
@@ -226,10 +226,10 @@ void MainFrame::on_calib_btn_clicked()
     }
 
     // 출력을 위한 ImageForm 생성
-    ImageForm* q_pForm[7] = {0,};
-    string wName[] = {"Image1", "Image2", "Image3", "Image4", "Image5", "Image6", "Image7"};
+    ImageForm* q_pForm[4] = {0,};
+    string wName[] = {"Image1", "Image2", "Image3", "Image4"};
     for (int i = 0; i < nImg; i++) {
-        KImageColor icMain(480, 640);
+        KImageColor icMain(1024, 1280);
         for (unsigned int ii = 0; ii < _plpImageForm->Count(); ii++) {
             if ((*_plpImageForm)[ii]->ID() == QString::fromStdString(wName[i])) {
                 q_pForm[i] = (*_plpImageForm)[ii];
@@ -290,7 +290,7 @@ void MainFrame::on_calib_btn_clicked()
 ////////// Stereo Camera Calibration
 void MainFrame::on_pushStereoCalib_clicked()
 {
-    int left_cam_num = 2;
+    int left_cam_num = 1;
     int right_cam_num = 3;
 
     int nImg = 4;
@@ -329,7 +329,7 @@ void MainFrame::on_pushStereoCalib_clicked()
     for (int i = 1; i <= nImg; i++) {
         // Iterate for 15 images
         // For left images
-        string fname = data_dir + "Cam123txt/main";
+        string fname = data_dir + "Cam123txt/left";
         fname += to_string(i);
         fname += ".txt";
         ifstream image_file_L(fname);
@@ -438,9 +438,9 @@ void MainFrame::on_pushStereoCalib_clicked()
 
     // 출력을 위한 ImageForm 생성
     ImageForm* q_pForm[4] = {0,};
-    string wName[] = {"main1", "main2", "main3", "main4"};
+    string wName[] = {"left1", "left2", "left3", "left4"};
     for (int i = 0; i < nImg; i++) {
-        string sImgName = data_dir + "Cam123txt/main";
+        string sImgName = data_dir + "Cam123txt/left";
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
@@ -572,9 +572,7 @@ void MainFrame::on_RT_product_clicked()
     int main_cam_num = 2;
     int right_cam_num = 3;
 
-/*
-*************************************************** T12*****************************************************************
-*/
+    //T12
     string RT_path12 = data_dir + "RTtxt/RT_";
     RT_path12 += to_string(left_cam_num);
     RT_path12 += to_string(main_cam_num);
@@ -599,17 +597,7 @@ void MainFrame::on_RT_product_clicked()
     KRotation Rt12;
     Rt12.FromRodrigues(buf12[0], buf12[1], buf12[2]);
 
-    //cout
-    cout <<  "RT_" << left_cam_num << main_cam_num << "_Matrix =" <<endl;
-    for(int i=0; i<3; i++)
-    {
-        for(int j=0; j<3; j++)
-        {
-            cout<< Rt12[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << "t1:" << buf12[3] << " t2:" << buf12[4] << " t3:" << buf12[5] << endl;
+
 
 
 
@@ -638,45 +626,21 @@ void MainFrame::on_RT_product_clicked()
     KRotation Rt23;
     Rt23.FromRodrigues(buf23[0], buf23[1], buf23[2]);
 
-    //cout
-    cout <<  "RT_" << main_cam_num << right_cam_num << "_Matrix =" <<endl;
-    for(int i=0; i<3; i++)
-    {
-        for(int j=0; j<3; j++)
-        {
-            cout<< Rt23[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << "t1:" << buf23[3] << " t2:" << buf23[4] << " t3:" << buf23[5] << endl;
 
     // T13
+    KMatrix RT12(3,3);
+    KMatrix RT23(3,3);
+    KMatrix RT13(4,4);
 
-    KMatrix RT(3,3);
-    //update R
-    KRotation Rt13;
-    Rt13 = Rt12 * Rt23;
-    //update T
-    double buf13[3] = {0,};
-    buf13[0] = buf12[3] + buf23[3]; buf13[1] = buf12[4] + buf23[4]; buf13[2] = buf12[5] + buf23[5];
+    RT12 = KMatrix(Rt12);
+    RT23 = KMatrix(Rt23);
 
-    //cout
-    cout <<  "RT_" << left_cam_num << right_cam_num << "_Matrix =" <<endl;
-    for(int i=0; i<3; i++)
-    {
-        for(int j=0; j<3; j++)
-        {
-            cout<< Rt13[i][j] << " ";
-            RT[i][j] = Rt13[i][j];
-        }
-        cout << endl;
-    }
+    RT12 |= KVector(buf12[3],buf12[4],buf12[5]);
+    RT12 ^= KVector(0,0,0,1).Tr();
+    RT23 |= KVector(buf23[3],buf23[4],buf23[5]);
+    RT23 ^= KVector(0,0,0,1).Tr();
 
-    RT |= KVector(buf13[0],buf13[1],buf13[2]);
-
-    RT ^= KVector(0,0,0,1).Tr();
-
-    cout << "t1:" << buf13[0] << " t2:" << buf13[1] << " t3:" << buf13[2] << endl;
+    RT13 = RT12 * RT23;
 
     //view
     cout << "RT:" << endl;
@@ -684,11 +648,11 @@ void MainFrame::on_RT_product_clicked()
     {
         for(int j=0; j<4; j++)
         {
-            cout<< RT[i][j] << " ";
+            cout<< RT13[i][j] << " ";
 
         }
         cout << endl;
     }
-
 }
+
 
