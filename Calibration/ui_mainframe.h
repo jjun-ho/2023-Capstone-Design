@@ -109,6 +109,8 @@ public:
     QWidget *tab;
     QPushButton *pushRtMatrix;
     QPushButton *RT_product;
+    QPushButton *CameraBtn;
+    QPushButton *Checker_Corner;
     QListWidget *listWidget;
 
     void setupUi(QDialog *MainFrame)
@@ -449,10 +451,16 @@ public:
         tab->setObjectName("tab");
         pushRtMatrix = new QPushButton(tab);
         pushRtMatrix->setObjectName("pushRtMatrix");
-        pushRtMatrix->setGeometry(QRect(160, 50, 231, 51));
+        pushRtMatrix->setGeometry(QRect(160, 200, 231, 51));
         RT_product = new QPushButton(tab);
         RT_product->setObjectName("RT_product");
-        RT_product->setGeometry(QRect(160, 130, 231, 51));
+        RT_product->setGeometry(QRect(160, 280, 231, 51));
+        CameraBtn = new QPushButton(tab);
+        CameraBtn->setObjectName("CameraBtn");
+        CameraBtn->setGeometry(QRect(180, 60, 191, 51));
+        Checker_Corner = new QPushButton(tab);
+        Checker_Corner->setObjectName("Checker_Corner");
+        Checker_Corner->setGeometry(QRect(180, 130, 191, 51));
         tabWidget->addTab(tab, QString());
 
         horizontalLayout->addWidget(tabWidget);
@@ -896,6 +904,8 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("MainFrame", "Stereo Calibration", nullptr));
         pushRtMatrix->setText(QCoreApplication::translate("MainFrame", "RT Matrix", nullptr));
         RT_product->setText(QCoreApplication::translate("MainFrame", "RT Product", nullptr));
+        CameraBtn->setText(QCoreApplication::translate("MainFrame", "Camera", nullptr));
+        Checker_Corner->setText(QCoreApplication::translate("MainFrame", "CheckerBoard to Points", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainFrame", "Page", nullptr));
     } // retranslateUi
 

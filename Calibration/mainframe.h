@@ -41,6 +41,10 @@ private slots:
     void on_tabWidget_currentChanged(int index);               
     void on_buttonShowList_clicked();
 
+    void on_CameraBtn_clicked();
+
+    void on_Checker_Corner_clicked();
+
     void on_zhang_clicked();
 
     void on_plot_point_clicked();
@@ -50,6 +54,7 @@ private slots:
     void on_pushRtMatrix_clicked();
 
     void on_RT_product_clicked();
+
 
 protected:
     void closeEvent(QCloseEvent* event);

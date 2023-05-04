@@ -133,7 +133,7 @@ void MainFrame::on_buttonShowList_clicked()
     }
 }
 
-string data_dir = "C:/Users/ksh99/k_docu/2023-Capstone-Design/IronView2/data/";
+string data_dir = "C:/Users/ironview/Desktop/2023-Capstone-Design/IronView2/data/";
 //////////
 // HW01 //
 ////////// Mono Camera Calibration
@@ -565,7 +565,6 @@ void MainFrame::on_pushRtMatrix_clicked()
 
 }
 
-
 void MainFrame::on_RT_product_clicked()
 {
     int left_cam_num = 1;
@@ -649,10 +648,4 @@ void MainFrame::on_RT_product_clicked()
         }
         cout << endl;
     }
-}
-
-void Trans()
-{
-
-
 }

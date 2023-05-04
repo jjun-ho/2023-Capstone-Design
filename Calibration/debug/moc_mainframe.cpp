@@ -26,7 +26,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_MainFrame_t {
-    uint offsetsAndSizes[24];
+    uint offsetsAndSizes[28];
     char stringdata0[10];
     char stringdata1[22];
     char stringdata2[1];
@@ -34,11 +34,13 @@ struct qt_meta_stringdata_MainFrame_t {
     char stringdata4[28];
     char stringdata5[6];
     char stringdata6[26];
-    char stringdata7[17];
-    char stringdata8[22];
-    char stringdata9[30];
-    char stringdata10[24];
-    char stringdata11[22];
+    char stringdata7[21];
+    char stringdata8[26];
+    char stringdata9[17];
+    char stringdata10[22];
+    char stringdata11[30];
+    char stringdata12[24];
+    char stringdata13[22];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_MainFrame_t::offsetsAndSizes) + ofs), len 
@@ -51,11 +53,13 @@ Q_CONSTINIT static const qt_meta_stringdata_MainFrame_t qt_meta_stringdata_MainF
         QT_MOC_LITERAL(65, 27),  // "on_tabWidget_currentChanged"
         QT_MOC_LITERAL(93, 5),  // "index"
         QT_MOC_LITERAL(99, 25),  // "on_buttonShowList_clicked"
-        QT_MOC_LITERAL(125, 16),  // "on_zhang_clicked"
-        QT_MOC_LITERAL(142, 21),  // "on_plot_point_clicked"
-        QT_MOC_LITERAL(164, 29),  // "on_stereo_calibration_clicked"
-        QT_MOC_LITERAL(194, 23),  // "on_pushRtMatrix_clicked"
-        QT_MOC_LITERAL(218, 21)   // "on_RT_product_clicked"
+        QT_MOC_LITERAL(125, 20),  // "on_CameraBtn_clicked"
+        QT_MOC_LITERAL(146, 25),  // "on_Checker_Corner_clicked"
+        QT_MOC_LITERAL(172, 16),  // "on_zhang_clicked"
+        QT_MOC_LITERAL(189, 21),  // "on_plot_point_clicked"
+        QT_MOC_LITERAL(211, 29),  // "on_stereo_calibration_clicked"
+        QT_MOC_LITERAL(241, 23),  // "on_pushRtMatrix_clicked"
+        QT_MOC_LITERAL(265, 21)   // "on_RT_product_clicked"
     },
     "MainFrame",
     "on_buttonOpen_clicked",
@@ -64,6 +68,8 @@ Q_CONSTINIT static const qt_meta_stringdata_MainFrame_t qt_meta_stringdata_MainF
     "on_tabWidget_currentChanged",
     "index",
     "on_buttonShowList_clicked",
+    "on_CameraBtn_clicked",
+    "on_Checker_Corner_clicked",
     "on_zhang_clicked",
     "on_plot_point_clicked",
     "on_stereo_calibration_clicked",
@@ -79,7 +85,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainFrame[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -87,20 +93,24 @@ Q_CONSTINIT static const uint qt_meta_data_MainFrame[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   68,    2, 0x08,    1 /* Private */,
-       3,    0,   69,    2, 0x08,    2 /* Private */,
-       4,    1,   70,    2, 0x08,    3 /* Private */,
-       6,    0,   73,    2, 0x08,    5 /* Private */,
-       7,    0,   74,    2, 0x08,    6 /* Private */,
-       8,    0,   75,    2, 0x08,    7 /* Private */,
-       9,    0,   76,    2, 0x08,    8 /* Private */,
-      10,    0,   77,    2, 0x08,    9 /* Private */,
-      11,    0,   78,    2, 0x08,   10 /* Private */,
+       1,    0,   80,    2, 0x08,    1 /* Private */,
+       3,    0,   81,    2, 0x08,    2 /* Private */,
+       4,    1,   82,    2, 0x08,    3 /* Private */,
+       6,    0,   85,    2, 0x08,    5 /* Private */,
+       7,    0,   86,    2, 0x08,    6 /* Private */,
+       8,    0,   87,    2, 0x08,    7 /* Private */,
+       9,    0,   88,    2, 0x08,    8 /* Private */,
+      10,    0,   89,    2, 0x08,    9 /* Private */,
+      11,    0,   90,    2, 0x08,   10 /* Private */,
+      12,    0,   91,    2, 0x08,   11 /* Private */,
+      13,    0,   92,    2, 0x08,   12 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    5,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -129,6 +139,10 @@ Q_CONSTINIT const QMetaObject MainFrame::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'on_buttonShowList_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_CameraBtn_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_Checker_Corner_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_zhang_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_plot_point_clicked'
@@ -153,11 +167,13 @@ void MainFrame::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 1: _t->on_buttonDeleteContents_clicked(); break;
         case 2: _t->on_tabWidget_currentChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
         case 3: _t->on_buttonShowList_clicked(); break;
-        case 4: _t->on_zhang_clicked(); break;
-        case 5: _t->on_plot_point_clicked(); break;
-        case 6: _t->on_stereo_calibration_clicked(); break;
-        case 7: _t->on_pushRtMatrix_clicked(); break;
-        case 8: _t->on_RT_product_clicked(); break;
+        case 4: _t->on_CameraBtn_clicked(); break;
+        case 5: _t->on_Checker_Corner_clicked(); break;
+        case 6: _t->on_zhang_clicked(); break;
+        case 7: _t->on_plot_point_clicked(); break;
+        case 8: _t->on_stereo_calibration_clicked(); break;
+        case 9: _t->on_pushRtMatrix_clicked(); break;
+        case 10: _t->on_RT_product_clicked(); break;
         default: ;
         }
     }
@@ -182,13 +198,13 @@ int MainFrame::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 11)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 9;
+        _id -= 11;
     }
     return _id;
 }

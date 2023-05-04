@@ -7,10 +7,17 @@
 #include <QImageReader>
 #include <random>
 
+#include "opencv2/calib3d.hpp"
+#include "opencv2/core/types.hpp"
+
 #include "mainframe.h"
 #include "ui_mainframe.h"
 #include "imageform.h"
 #include "rv0171.h"
+#include "HikCamera.cpp"
+
+#define __PI 3.141592
+#define __2PI 6.283185307179586477
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -170,6 +177,221 @@ void MainFrame::on_buttonShowList_clicked()
     }
 }
 
+void MainFrame::on_CameraBtn_clicked()
+{
+    int show_flag = 1;
+    int cam_num  = 8;
+
+    void* handle1;
+    void* handle2;
+    void* handle3;
+    void* handle4;
+    void* handle5;
+    void* handle6;
+    void* handle7;
+    void* handle8;
+
+    double setFrame = 13.0f;
+
+    handle1 = CreateCamera("Cam01");            // Create Handle and Open
+    handle2 = CreateCamera("Cam02");            // Create Handle and Open
+    handle3 = CreateCamera("Cam03");            // Create Handle and Open
+    handle4 = CreateCamera("Cam04");            // Create Handle and Open
+    handle5 = CreateCamera("Cam05");            // Create Handle and Open
+    handle6 = CreateCamera("Cam06");            // Create Handle and Open
+    handle7 = CreateCamera("Cam07");            // Create Handle and Open
+    handle8 = CreateCamera("Cam08");            // Create Handle and Open
+
+    SetExposureAuto(handle1, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle1, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle2, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle2, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle3, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle3, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle4, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle4, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle5, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle5, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle6, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle6, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle7, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle7, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle8, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle8, setFrame);                    // set Frame rate
+
+    // data type : BayerRG8
+    MV_CC_SetEnumValue(handle1, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle2, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle3, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle4, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle5, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle6, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle7, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle8, "PixelFormat", 0x01080009);
+
+    GrabCamera(handle1);
+    GrabCamera(handle2);
+    GrabCamera(handle3);
+    GrabCamera(handle4);
+    GrabCamera(handle5);
+    GrabCamera(handle6);
+    GrabCamera(handle7);
+    GrabCamera(handle8);
+
+    Mat img1, img2, img3, img4, img5, img6, img7, img8;
+    Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
+
+
+    while (true) {
+        img1 = GetMatFrame(handle1);                                // get frame
+        img2 = GetMatFrame(handle2);
+        img3 = GetMatFrame(handle3);
+        img4 = GetMatFrame(handle4);
+        img5 = GetMatFrame(handle5);
+        img6 = GetMatFrame(handle6);
+        img7 = GetMatFrame(handle7);
+        img8 = GetMatFrame(handle8);
+
+        if(show_flag == 1)
+        {
+            cv::resize(img1, show_img1, Size(img1.cols/2, img1.rows/2));        // resize
+            cv::resize(img2, show_img2, Size(img2.cols/2, img2.rows/2));        // resize
+            cv::resize(img3, show_img3, Size(img3.cols/2, img3.rows/2));        // resize
+            cv::resize(img4, show_img4, Size(img4.cols/2, img4.rows/2));        // resize
+            cv::resize(img5, show_img5, Size(img5.cols/2, img5.rows/2));        // resize
+            cv::resize(img6, show_img6, Size(img6.cols/2, img6.rows/2));        // resize
+            cv::resize(img7, show_img7, Size(img7.cols/2, img7.rows/2));        // resize
+            cv::resize(img8, show_img8, Size(img8.cols/2, img8.rows/2));        // resize
+
+            imshow("camera1", show_img1);
+            imshow("camera2", show_img2);
+            imshow("camera3", show_img3);
+            imshow("camera4", show_img4);
+            imshow("camera5", show_img5);
+            imshow("camera6", show_img6);
+            imshow("camera7", show_img7);
+            imshow("camera8", show_img8);
+        }
+
+        char c = (char)waitKey(10);
+        if (c == 27)
+        { // ESC
+            StopCamera(handle1);                        // stop camera
+            StopCamera(handle2);                        // stop camera
+            StopCamera(handle3);                        // stop camera
+            StopCamera(handle4);                        // stop camera
+            StopCamera(handle5);                        // stop camera
+            StopCamera(handle6);                        // stop camera
+            StopCamera(handle7);                        // stop camera
+            StopCamera(handle8);                        // stop camera
+
+            CloseCamera(handle1);                    // close camera
+            CloseCamera(handle2);                    // close camera
+            CloseCamera(handle3);                    // close camera
+            CloseCamera(handle4);                    // close camera
+            CloseCamera(handle5);                    // close camera
+            CloseCamera(handle6);                    // close camera
+            CloseCamera(handle7);                    // close camera
+            CloseCamera(handle8);                    // close camera
+            break;
+        }
+        else if (c ==  32)
+        { // SPASE
+            imwrite("CamImage/1.bmp", img1);
+            imwrite("CamImage/2.bmp", img2);
+            imwrite("CamImage/3.bmp", img3);
+            imwrite("CamImage/4.bmp", img4);
+            imwrite("CamImage/5.bmp", img5);
+            imwrite("CamImage/6.bmp", img6);
+            imwrite("CamImage/7.bmp", img7);
+            imwrite("CamImage/8.bmp", img8);
+        }
+    }
+}
+
+
+void MainFrame::on_Checker_Corner_clicked()
+{
+    int numCornerHor = 9;
+    int numCornerVer = 6;
+    //int oneSqureLen = 40;
+    int numBoards = 4;
+
+    int numSquares = numCornerHor *  numCornerVer;
+    Size board_sz = Size(numCornerHor, numCornerVer);
+
+    int success = 0;
+
+    for(int i=0; i<numBoards; i++)
+    {
+        vector<vector<Point3f>> object_Points;
+        vector<vector<Point2f>> image_Points;
+
+        vector<Point2f> corners;
+        Mat image;
+        Mat gray_image;
+
+        string iname = rvdir + "cam1/left/";
+        iname += to_string(success+1);
+        iname += ".bmp";
+
+        image = imread(iname);
+
+        vector<Point3d> obj;
+        for(int j=0; j<numSquares; j++)
+            obj.push_back(Point3d(j/numCornerHor, j%numCornerHor, 0.0f));
+
+        cvtColor(image, gray_image, COLOR_BGR2GRAY);
+
+        bool found = findChessboardCorners(image, board_sz, corners,CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FILTER_QUADS);
+
+        if(found)
+        {
+            cornerSubPix(gray_image, corners, Size(11,11), Size(-1,-1), TermCriteria(TermCriteria::MAX_ITER |TermCriteria::EPS, 30, 0.1 ));
+            drawChessboardCorners(gray_image, board_sz, corners, found);
+
+            success++;
+        }
+
+        cv::resize(gray_image, gray_image, Size(gray_image.cols/2, gray_image.rows/2));
+
+        string winname = "win_";
+        winname += to_string(success);
+        imshow(winname, gray_image);
+
+        ofstream ofs;
+        string fname = rvdir + "Points/points_";
+        fname += to_string(success);
+        fname += ".txt";
+
+        ofs.open(fname);
+        if(ofs.fail())
+        {
+            cout<<"File Error"<<endl;
+        }
+        //ofs << corners;
+        for(int i=0;i<corners.size();i++)
+        {
+            ofs<<double(corners.at(i).x)<< " " << corners.at(i).y << endl;
+        }
+        ofs.close();
+    }
+}
 
 
 //////////////////////////////
@@ -261,7 +483,7 @@ void MainFrame::on_plot_point_clicked()
 {
     int nImg = 4;
     int nFeature = 54;
-    int row = 1024;
+    int row = 720;
     int col = 1280;
 
     // Load Image & Model Points to vector
@@ -484,10 +706,10 @@ void MainFrame::on_stereo_calibration_clicked()
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
-        KImageColor icMain(1024, 1280);
+        KImageColor icMain(720, 1280);
         QImage* _img = new QImage();        //이미지를 로드하기 위한 QImage 선언
         if (_img->load(QString::fromStdString(sImgName))) {
-            for (int ii = 0; ii < 1024; ii++) {
+            for (int ii = 0; ii < 720; ii++) {
                 for (int jj = 0; jj < 1280; jj++) {
                     QColor color = _img->pixelColor(jj,ii);
                     icMain[ii][jj].r = color.red();
@@ -591,122 +813,121 @@ void MainFrame::on_pushRtMatrix_clicked()
 void MainFrame::on_RT_product_clicked()
 {
     int left_cam_num = 1;
-       int main_cam_num = 2;
-       int right_cam_num = 3;
+    int main_cam_num = 2;
+    int right_cam_num = 3;
 
-       //T12
-       string RT_path12 = rvdir + "RTtxt/RT_";
-       RT_path12 += to_string(left_cam_num);
-       RT_path12 += to_string(main_cam_num);
-       RT_path12 += ".txt";
+    //T12
+    string RT_path12 = rvdir + "RTtxt/RT_";
+    RT_path12 += to_string(left_cam_num);
+    RT_path12 += to_string(main_cam_num);
+    RT_path12 += ".txt";
 
-       string str12;
-       double buf12[6] = {0,};
-       ifstream RT_fname12(RT_path12);
-       if (RT_fname12.is_open()) {
-           int i =0;
-           while (getline(RT_fname12, str12))
-           {
-               buf12[i] = stod(str12);
-               i++;
-           }
-       }
-       else {
-           qDebug() << "File open error!\n";
-       }
-       RT_fname12.close();
+    string str12;
+    double buf12[6] = {0,};
+    ifstream RT_fname12(RT_path12);
+    if (RT_fname12.is_open()) {
+        int i =0;
+        while (getline(RT_fname12, str12))
+        {
+            buf12[i] = stod(str12);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname12.close();
 
-       KRotation R12;
-       R12.FromRodrigues(buf12[0], buf12[1], buf12[2]);
+    KRotation R12;
+    R12.FromRodrigues(buf12[0], buf12[1], buf12[2]);
 
-       // T23
-       string RT_path23 = rvdir + "RTtxt/RT_";
-       RT_path23 += to_string(main_cam_num);
-       RT_path23 += to_string(right_cam_num);
-       RT_path23 += ".txt";
+    // T23
+    string RT_path23 = rvdir + "RTtxt/RT_";
+    RT_path23 += to_string(main_cam_num);
+    RT_path23 += to_string(right_cam_num);
+    RT_path23 += ".txt";
 
-       string str23;
-       double buf23[6] = {0,};
-       ifstream RT_fname23(RT_path23);
-       if (RT_fname23.is_open()) {
-           int i =0;
-           while (getline(RT_fname23, str23))
-           {
-               buf23[i] = stod(str23);
-               i++;
-           }
-       }
-       else {
-           qDebug() << "File open error!\n";
-       }
-       RT_fname23.close();
+    string str23;
+    double buf23[6] = {0,};
+    ifstream RT_fname23(RT_path23);
+    if (RT_fname23.is_open()) {
+        int i =0;
+        while (getline(RT_fname23, str23))
+        {
+            buf23[i] = stod(str23);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname23.close();
 
-       KRotation R23;
-       R23.FromRodrigues(buf23[0], buf23[1], buf23[2]);
+    KRotation R23;
+    R23.FromRodrigues(buf23[0], buf23[1], buf23[2]);
 
-       // T13
-       KRotation R13;
-       R13 = R12 * R23;
+    // T13
+    KRotation R13;
+    R13 = R12 * R23;
 
-       KMatrix RT12(3,3);
-       KMatrix RT23(3,3);
-       KMatrix RT13(4,4);
+    KMatrix RT12(3,3);
+    KMatrix RT23(3,3);
+    KMatrix RT13(4,4);
 
-       RT12 = KMatrix(R12);
-       RT23 = KMatrix(R23);
+    RT12 = KMatrix(R12);
+    RT23 = KMatrix(R23);
 
-       RT12 |= KVector(buf12[3],buf12[4],buf12[5]);
-       RT12 ^= KVector(0,0,0,1).Tr();
-       RT23 |= KVector(buf23[3],buf23[4],buf23[5]);
-       RT23 ^= KVector(0,0,0,1).Tr();
+    RT12 |= KVector(buf12[3],buf12[4],buf12[5]);
+    RT12 ^= KVector(0,0,0,1).Tr();
+    RT23 |= KVector(buf23[3],buf23[4],buf23[5]);
+    RT23 ^= KVector(0,0,0,1).Tr();
 
-       RT13 = RT12 * RT23; // 4x4
+    RT13 = RT12 * RT23; // 4x4
 
-       KVector vT13;
-       vT13.Tailed(RT13[0][3]); vT13.Tailed(RT13[1][3]); vT13.Tailed(RT13[2][3]); // 아래로붙임 3x1
+    KVector vT13;
+    vT13.Tailed(RT13[0][3]); vT13.Tailed(RT13[1][3]); vT13.Tailed(RT13[2][3]); // 아래로붙임 3x1
 
-       KRotation rR13(R13); //3x3
-       KHomogeneous hP(rR13, vT13); //4x4
+    KRotation rR13(R13); //3x3
+    KHomogeneous hP(rR13, vT13); //4x4
 
-       KVector vX;
-       vX.Tailed(hP.RT(_RODRIGUES));
+    KVector vX;
+    vX.Tailed(hP.RT(_RODRIGUES));
 
-       for(int i = 0; i < vX.Size(); i++)
-       {
-           cout << "i: " << vX[i] << " ";
-       }
-       cout << endl;
+    for(int i = 0; i < vX.Size(); i++)
+    {
+        cout << "i: " << vX[i] << " ";
+    }
+    cout << endl;
 
-       //RT save
-       ofstream ofs;
-       string RT_fname = rvdir + "RTtxt/RT_";
-       RT_fname += to_string(left_cam_num);
-       RT_fname += to_string(right_cam_num);
-       RT_fname += ".txt";
+    //RT save
+    ofstream ofs;
+    string RT_fname = rvdir + "RTtxt/RT_";
+    RT_fname += to_string(left_cam_num);
+    RT_fname += to_string(right_cam_num);
+    RT_fname += ".txt";
 
-       ofs.open(RT_fname);
-       if(ofs.fail())
-       {
-           cout<<"File Error"<<endl;
-       }
-       //ofs << corners;
-       for(int i=0;i<6;i++)
-       {
-           ofs<< vX[i] << endl;
-       }
+    ofs.open(RT_fname);
+    if(ofs.fail())
+    {
+        cout<<"File Error"<<endl;
+    }
+    //ofs << corners;
+    for(int i=0;i<6;i++)
+    {
+        ofs<< vX[i] << endl;
+    }
 
-       ofs.close();
+    ofs.close();
 
-       // 만들어진 T확인하기
-       cout << "RT:" << endl;
-       for(int i=0; i<4; i++)
-       {
-           for(int j=0; j<4; j++)
-           {
-               cout<< RT13[i][j] << " ";
-           }
-           cout << endl;
-       }
+    // 만들어진 T확인하기
+    cout << "RT:" << endl;
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<4; j++)
+        {
+            cout<< RT13[i][j] << " ";
+        }
+        cout << endl;
+    }
 
 }
-

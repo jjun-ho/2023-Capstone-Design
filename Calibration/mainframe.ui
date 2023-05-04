@@ -1522,7 +1522,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="geometry">
           <rect>
            <x>160</x>
-           <y>50</y>
+           <y>200</y>
            <width>231</width>
            <height>51</height>
           </rect>
@@ -1535,13 +1535,39 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="geometry">
           <rect>
            <x>160</x>
-           <y>130</y>
+           <y>280</y>
            <width>231</width>
            <height>51</height>
           </rect>
          </property>
          <property name="text">
           <string>RT Product</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="CameraBtn">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>60</y>
+           <width>191</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Camera</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="Checker_Corner">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>130</y>
+           <width>191</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>CheckerBoard to Points</string>
          </property>
         </widget>
        </widget>
