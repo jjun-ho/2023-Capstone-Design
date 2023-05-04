@@ -317,7 +317,7 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 1;
+    int left_cam_num = 2;
     int right_cam_num = 3;
 
     int nImg = 4;
@@ -329,13 +329,13 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "Cam123txt/left";
+            dir += "cam2/left_txt/";
             dir += to_string(i);
             dir += ".txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "Cam123txt/model.txt";
+            dir += "cam2/left_txt/model.txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -344,13 +344,13 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "Cam123txt/right";
+            dir += "cam3/right_txt/";
             dir += to_string(i);
             dir += ".txt";
             right_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "Cam123txt/model.txt";
+            dir += "cam3/right_txt/model.txt";
             right_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -437,7 +437,7 @@ void MainFrame::on_stereo_calibration_clicked()
 
     //RT save
     ofstream ofs;
-    string RT_fname = rvdir + "RTtxt/RT_";
+    string RT_fname = rvdir + "buf/RT_";
     RT_fname += to_string(left_cam_num);
     RT_fname += to_string(right_cam_num);
     RT_fname += ".txt";
@@ -480,7 +480,7 @@ void MainFrame::on_stereo_calibration_clicked()
     string wName[] = {"left1", "left2", "left3", "left4"};
     for (int i = 0; i < nImg; i++) {
         string sImgName = rvdir;
-        sImgName += "Cam123txt/left";
+        sImgName += "cam2/left/";
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
@@ -591,128 +591,122 @@ void MainFrame::on_pushRtMatrix_clicked()
 void MainFrame::on_RT_product_clicked()
 {
     int left_cam_num = 1;
-    int main_cam_num = 2;
-    int right_cam_num = 3;
+       int main_cam_num = 2;
+       int right_cam_num = 3;
 
-    //T12
-    string RT_path12 = rvdir + "RTtxt/RT_";
-    RT_path12 += to_string(left_cam_num);
-    RT_path12 += to_string(main_cam_num);
-    RT_path12 += ".txt";
+       //T12
+       string RT_path12 = rvdir + "RTtxt/RT_";
+       RT_path12 += to_string(left_cam_num);
+       RT_path12 += to_string(main_cam_num);
+       RT_path12 += ".txt";
 
-    string str12;
-    double buf12[6] = {0,};
-    ifstream RT_fname12(RT_path12);
-    if (RT_fname12.is_open()) {
-        int i =0;
-        while (getline(RT_fname12, str12))
-        {
-            buf12[i] = stod(str12);
-            i++;
-        }
-    }
-    else {
-        qDebug() << "File open error!\n";
-    }
-    RT_fname12.close();
+       string str12;
+       double buf12[6] = {0,};
+       ifstream RT_fname12(RT_path12);
+       if (RT_fname12.is_open()) {
+           int i =0;
+           while (getline(RT_fname12, str12))
+           {
+               buf12[i] = stod(str12);
+               i++;
+           }
+       }
+       else {
+           qDebug() << "File open error!\n";
+       }
+       RT_fname12.close();
 
-    KRotation R12;
-    R12.FromRodrigues(buf12[0], buf12[1], buf12[2]);
+       KRotation R12;
+       R12.FromRodrigues(buf12[0], buf12[1], buf12[2]);
 
-    // T23
-    string RT_path23 = rvdir + "RTtxt/RT_";
-    RT_path23 += to_string(main_cam_num);
-    RT_path23 += to_string(right_cam_num);
-    RT_path23 += ".txt";
+       // T23
+       string RT_path23 = rvdir + "RTtxt/RT_";
+       RT_path23 += to_string(main_cam_num);
+       RT_path23 += to_string(right_cam_num);
+       RT_path23 += ".txt";
 
-    string str23;
-    double buf23[6] = {0,};
-    ifstream RT_fname23(RT_path23);
-    if (RT_fname23.is_open()) {
-        int i =0;
-        while (getline(RT_fname23, str23))
-        {
-            buf23[i] = stod(str23);
-            i++;
-        }
-    }
-    else {
-        qDebug() << "File open error!\n";
-    }
-    RT_fname23.close();
+       string str23;
+       double buf23[6] = {0,};
+       ifstream RT_fname23(RT_path23);
+       if (RT_fname23.is_open()) {
+           int i =0;
+           while (getline(RT_fname23, str23))
+           {
+               buf23[i] = stod(str23);
+               i++;
+           }
+       }
+       else {
+           qDebug() << "File open error!\n";
+       }
+       RT_fname23.close();
 
-    KRotation R23;
-    R23.FromRodrigues(buf23[0], buf23[1], buf23[2]);
+       KRotation R23;
+       R23.FromRodrigues(buf23[0], buf23[1], buf23[2]);
 
-    KRotation R13;
-    R13 = R12 * R23;
+       // T13
+       KRotation R13;
+       R13 = R12 * R23;
 
-    KVector vR13(3, 1);
-    vR13 = R13.Rodrigues();
+       KMatrix RT12(3,3);
+       KMatrix RT23(3,3);
+       KMatrix RT13(4,4);
 
-    // T13
-    KMatrix RT12(3,3);
-    KMatrix RT23(3,3);
-    KMatrix RT13(4,4);
+       RT12 = KMatrix(R12);
+       RT23 = KMatrix(R23);
 
-    RT12 = KMatrix(R12);
-    RT23 = KMatrix(R23);
+       RT12 |= KVector(buf12[3],buf12[4],buf12[5]);
+       RT12 ^= KVector(0,0,0,1).Tr();
+       RT23 |= KVector(buf23[3],buf23[4],buf23[5]);
+       RT23 ^= KVector(0,0,0,1).Tr();
 
-    RT12 |= KVector(buf12[3],buf12[4],buf12[5]);
-    RT12 ^= KVector(0,0,0,1).Tr();
-    RT23 |= KVector(buf23[3],buf23[4],buf23[5]);
-    RT23 ^= KVector(0,0,0,1).Tr();
+       RT13 = RT12 * RT23; // 4x4
 
-    RT13 = RT12 * RT23; // 4x4
+       KVector vT13;
+       vT13.Tailed(RT13[0][3]); vT13.Tailed(RT13[1][3]); vT13.Tailed(RT13[2][3]); // 아래로붙임 3x1
 
-    KVector vT13;
-    vT13.Tailed(RT13[0][3]); vT13.Tailed(RT13[1][3]); vT13.Tailed(RT13[2][3]);
-    vT13 = vT13.Tr();
-    for(int i = 0; i < vT13.Col(); i++)
-        cout << vT13[i] << " ";
-    cout << endl;
+       KRotation rR13(R13); //3x3
+       KHomogeneous hP(rR13, vT13); //4x4
 
-    KRotation rR13(R13);
-    KHomogeneous hP(rR13, vT13);
+       KVector vX;
+       vX.Tailed(hP.RT(_RODRIGUES));
 
-    KVector vX;
-    vX.Tailed(hP.R().Rodrigues());
-    vX.Tailed(vT13);
+       for(int i = 0; i < vX.Size(); i++)
+       {
+           cout << "i: " << vX[i] << " ";
+       }
+       cout << endl;
 
-    for(int i = 0; i < vX.Size(); i++)
-    {
-        cout << "i: " << vX[i] << " ";
-    }
-    cout << endl;
+       //RT save
+       ofstream ofs;
+       string RT_fname = rvdir + "RTtxt/RT_";
+       RT_fname += to_string(left_cam_num);
+       RT_fname += to_string(right_cam_num);
+       RT_fname += ".txt";
 
-    //RT save
-    ofstream ofs;
-    string RT_fname = rvdir + "RTtxt/RT_";
-    RT_fname += to_string(left_cam_num);
-    RT_fname += to_string(right_cam_num);
-    RT_fname += ".txt";
+       ofs.open(RT_fname);
+       if(ofs.fail())
+       {
+           cout<<"File Error"<<endl;
+       }
+       //ofs << corners;
+       for(int i=0;i<6;i++)
+       {
+           ofs<< vX[i] << endl;
+       }
 
-    ofs.open(RT_fname);
-    if(ofs.fail())
-    {
-        cout<<"File Error"<<endl;
-    }
-    //ofs << corners;
-    for(int i=0;i<6;i++)
-    {
-        ofs<< vX[i] << endl;
-    }
+       ofs.close();
 
-    ofs.close();
+       // 만들어진 T확인하기
+       cout << "RT:" << endl;
+       for(int i=0; i<4; i++)
+       {
+           for(int j=0; j<4; j++)
+           {
+               cout<< RT13[i][j] << " ";
+           }
+           cout << endl;
+       }
 
-    cout << "RT:" << endl;
-    for(int i=0; i<4; i++)
-    {
-        for(int j=0; j<4; j++)
-        {
-            cout<< RT13[i][j] << " ";
-        }
-        cout << endl;
-    }
 }
 
