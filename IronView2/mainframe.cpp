@@ -567,6 +567,64 @@ void MainFrame::on_pushRtMatrix_clicked()
 
 void MainFrame::on_RT_product_clicked()
 {
+    // 출력을 위한 ImageForm 생성
+    ImageForm* q_pForm[1];
+    string wName[] = {"left1", "left2", "left3", "left4"};
+
+    string sImgName = data_dir + "Cam123txt/left";
+    sImgName += to_string(1);
+    sImgName += ".bmp";
+
+    KImageColor icMain(1024, 1280);
+    QImage* _img = new QImage();        //이미지를 로드하기 위한 QImage 선언
+    if(_img->load(QString::fromStdString(sImgName))) {
+        for (int ii = 0; ii < 1024; ii++) {
+            for (int jj = 0; jj < 1280; jj++) {
+                QColor color = _img->pixelColor(jj,ii);
+                icMain[ii][jj].r = color.red();
+                icMain[ii][jj].g = color.green();
+                icMain[ii][jj].b = color.blue();
+            }
+        }
+    }
+    else {
+        qDebug() << "Image load Error";
+    }
+
+    // Display window
+
+    q_pForm[0] = new ImageForm(icMain, QString::fromStdString(wName[0]), this);
+
+    q_pForm[0]->show();
+    _plpImageForm->Add(q_pForm[0]);
+
+    //*************************************************************************
+    //*************************************************************************
+    //*************************************************************************
+    // Making real 3D Camera Coord
+
+    // KImageColor Img(1024, 1280);
+    KMatrix Xi[4][1024*1280];
+
+    for(int x = 0; x < icMain.Size(); x++)
+    {
+        for(int i = 0; i < 1024; i++)
+        {
+            for(int j = 0; j < 1280; j++)
+            {
+                Xi[0][x] = i - icMain.Row()/2;
+                Xi[1][x] = j - icMain.Col()/2;
+                Xi[2][x] = 1185.200;
+                Xi[3][x] = 1;
+            }
+        }
+    }
+
+    //*************************************************************************
+    //*************************************************************************
+    //*************************************************************************
+    // Making RT Matrix
+
     int left_cam_num = 1;
     int main_cam_num = 2;
     int right_cam_num = 3;
@@ -648,4 +706,27 @@ void MainFrame::on_RT_product_clicked()
         }
         cout << endl;
     }
+
+    //*****************************************************************
+    //*****************************************************************
+    //*****************************************************************
+    // Making Virtual Image plane
+
+    KMatrix Xvi[3][1024*1280];
+    KMatrix Ui[3][1024*1280];
+
+    // 이거 u0, v0 = 0
+    KMatrix A1[3][3];
+    A1[0][0] = 1185.201766; A1[1][1] = 1188.212736; A1[2][2] = 1;
+
+    for(int i = 0; i < 1024*1280; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            Ui[j][i] = (A1[0][0] * Xvi[0][i] + A1[1][1] * Xvi[1][i] + Xvi[2][i]);
+        }
+    }
+
+    // UI 활성화 갱신
+        UpdateUI();
 }

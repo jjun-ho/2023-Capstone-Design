@@ -7,6 +7,8 @@
 #include <QImageReader>
 #include <random>
 
+#include <windows.h>
+
 #include "opencv2/calib3d.hpp"
 #include "opencv2/core/types.hpp"
 
@@ -177,6 +179,18 @@ void MainFrame::on_buttonShowList_clicked()
     }
 }
 
+int img_width = 1280;
+int img_height = 1024;
+
+KImageColor icCam1(img_height, img_width);
+KImageColor icCam2(img_height, img_width);
+KImageColor icCam3(img_height, img_width);
+KImageColor icCam4(img_height, img_width);
+KImageColor icCam5(img_height, img_width);
+KImageColor icCam6(img_height, img_width);
+KImageColor icCam7(img_height, img_width);
+KImageColor icCam8(img_height, img_width);
+
 void MainFrame::on_CameraBtn_clicked()
 {
     int show_flag = 1;
@@ -253,9 +267,11 @@ void MainFrame::on_CameraBtn_clicked()
     GrabCamera(handle7);
     GrabCamera(handle8);
 
+
     Mat img1, img2, img3, img4, img5, img6, img7, img8;
     Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
 
+    ImageForm* q_pForm[8] = {0,};
 
     while (true) {
         img1 = GetMatFrame(handle1);                                // get frame
@@ -266,6 +282,45 @@ void MainFrame::on_CameraBtn_clicked()
         img6 = GetMatFrame(handle6);
         img7 = GetMatFrame(handle7);
         img8 = GetMatFrame(handle8);
+
+        for(unsigned int i=0; i<img_width; i++)
+        {
+            for(unsigned int j=0; j<img_height; j++)
+            {
+                icCam1[j][i].b = img1.at<cv::Vec3b>(j,i)[0];
+                icCam1[j][i].g = img1.at<cv::Vec3b>(j,i)[1];
+                icCam1[j][i].r = img1.at<cv::Vec3b>(j,i)[2];
+
+                icCam2[j][i].b = img2.at<cv::Vec3b>(j,i)[0];
+                icCam2[j][i].g = img2.at<cv::Vec3b>(j,i)[1];
+                icCam2[j][i].r = img2.at<cv::Vec3b>(j,i)[2];
+
+                icCam3[j][i].b = img3.at<cv::Vec3b>(j,i)[0];
+                icCam3[j][i].g = img3.at<cv::Vec3b>(j,i)[1];
+                icCam3[j][i].r = img3.at<cv::Vec3b>(j,i)[2];
+
+                icCam4[j][i].b = img4.at<cv::Vec3b>(j,i)[0];
+                icCam4[j][i].g = img4.at<cv::Vec3b>(j,i)[1];
+                icCam4[j][i].r = img4.at<cv::Vec3b>(j,i)[2];
+
+                icCam5[j][i].b = img5.at<cv::Vec3b>(j,i)[0];
+                icCam5[j][i].g = img5.at<cv::Vec3b>(j,i)[1];
+                icCam5[j][i].r = img5.at<cv::Vec3b>(j,i)[2];
+
+                icCam6[j][i].b = img6.at<cv::Vec3b>(j,i)[0];
+                icCam6[j][i].g = img6.at<cv::Vec3b>(j,i)[1];
+                icCam6[j][i].r = img6.at<cv::Vec3b>(j,i)[2];
+
+                icCam7[j][i].b = img7.at<cv::Vec3b>(j,i)[0];
+                icCam7[j][i].g = img7.at<cv::Vec3b>(j,i)[1];
+                icCam7[j][i].r = img7.at<cv::Vec3b>(j,i)[2];
+
+                icCam8[j][i].b = img8.at<cv::Vec3b>(j,i)[0];
+                icCam8[j][i].g = img8.at<cv::Vec3b>(j,i)[1];
+                icCam8[j][i].r = img8.at<cv::Vec3b>(j,i)[2];
+            }
+
+        }
 
         if(show_flag == 1)
         {
@@ -286,6 +341,72 @@ void MainFrame::on_CameraBtn_clicked()
             imshow("camera6", show_img6);
             imshow("camera7", show_img7);
             imshow("camera8", show_img8);
+        }
+        else if(show_flag == 2)
+        {
+            if (q_pForm[0]) {
+                q_pForm[0]->Update(icCam1);
+            }
+            else{
+                q_pForm[0] = new ImageForm(icCam1, "K_camera1", this);
+                q_pForm[0]->show();
+            }
+
+            if (q_pForm[1]) {
+                q_pForm[1]->Update(icCam2);
+            }
+            else{
+                q_pForm[1] = new ImageForm(icCam2, "K_camera2", this);
+                q_pForm[1]->show();
+            }
+
+            if (q_pForm[2]) {
+                q_pForm[2]->Update(icCam3);
+            }
+            else{
+                q_pForm[2] = new ImageForm(icCam3, "K_camera3", this);
+                q_pForm[2]->show();
+            }
+
+            if (q_pForm[3]) {
+                q_pForm[3]->Update(icCam4);
+            }
+            else{
+                q_pForm[3] = new ImageForm(icCam4, "K_camera4", this);
+                q_pForm[3]->show();
+            }
+
+            if (q_pForm[4]) {
+                q_pForm[4]->Update(icCam5);
+            }
+            else{
+                q_pForm[4] = new ImageForm(icCam5, "K_camera5", this);
+                q_pForm[4]->show();
+            }
+
+            if (q_pForm[5]) {
+                q_pForm[5]->Update(icCam6);
+            }
+            else{
+                q_pForm[5] = new ImageForm(icCam6, "K_camera6", this);
+                q_pForm[5]->show();
+            }
+
+            if (q_pForm[6]) {
+                q_pForm[6]->Update(icCam7);
+            }
+            else{
+                q_pForm[6] = new ImageForm(icCam7, "K_camera7", this);
+                q_pForm[6]->show();
+            }
+
+            if (q_pForm[7]) {
+                q_pForm[7]->Update(icCam8);
+            }
+            else{
+                q_pForm[7] = new ImageForm(icCam8, "K_camera8", this);
+                q_pForm[7]->show();
+            }
         }
 
         char c = (char)waitKey(10);
@@ -330,7 +451,7 @@ void MainFrame::on_Checker_Corner_clicked()
     int numCornerHor = 9;
     int numCornerVer = 6;
     //int oneSqureLen = 40;
-    int numBoards = 4;
+    int numBoards = 1;
 
     int numSquares = numCornerHor *  numCornerVer;
     Size board_sz = Size(numCornerHor, numCornerVer);

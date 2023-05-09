@@ -1667,7 +1667,7 @@ public:
     KImageColor(int row,int col) : KArray<KCOLOR32>(row,col){ }
     KImageColor(const KImageColor& icImg) : KArray<KCOLOR32>(icImg.Row(),icImg.Col(),icImg.Address()){ }
     KImageColor(int row,int col,KCOLOR32* p,int t=_ALLOC) : KArray<KCOLOR32>(row,col,p,t){ }
-    virtual ~KImageColor(){ }
+    virtual ~   KImageColor(){ }
 
     void            Create(int row,int col){ KArray<KCOLOR32>::Create(row,col); }
     void            Create(int row,int col,KCOLOR32* p,int t=_ALLOC){ KArray<KCOLOR32>::Create(row,col,p,t); }
