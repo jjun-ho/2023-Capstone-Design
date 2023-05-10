@@ -446,7 +446,7 @@ void MainFrame::on_CameraBtn_clicked()
 
 void MainFrame::on_Checker_Corner_clicked()
 {
-    int cam_num = 4;
+    int cam_num = 5;
     string direction = "right";
 
     int numCornerHor = 9;
@@ -456,8 +456,6 @@ void MainFrame::on_Checker_Corner_clicked()
 
     int numSquares = numCornerHor *  numCornerVer;
     Size board_sz = Size(numCornerHor, numCornerVer);
-
-    int success = 0;
 
     for(int i=0; i<numBoards; i++)
     {
@@ -469,7 +467,7 @@ void MainFrame::on_Checker_Corner_clicked()
         Mat gray_image;
 
         string iname = rvdir + "cam" + to_string(cam_num) + "/" + direction + "/";
-        iname += to_string(success+1);
+        iname += to_string(i+1);
         iname += ".bmp";
 
         image = imread(iname);
@@ -486,19 +484,17 @@ void MainFrame::on_Checker_Corner_clicked()
         {
             cornerSubPix(gray_image, corners, Size(11,11), Size(-1,-1), TermCriteria(TermCriteria::MAX_ITER |TermCriteria::EPS, 30, 0.1 ));
             drawChessboardCorners(gray_image, board_sz, corners, found);
-
-            success++;
         }
 
         cv::resize(gray_image, gray_image, Size(gray_image.cols/2, gray_image.rows/2));
 
         string winname = "win_";
-        winname += to_string(success);
+        winname += to_string(i+1);
         imshow(winname, gray_image);
 
         ofstream ofs;
         string fname = rvdir + "cam" + to_string(cam_num) +  "/" + direction + "_txt/";
-        fname += to_string(success);
+        fname += to_string(i+1);
         fname += ".txt";
 
         ofs.open(fname);
@@ -661,13 +657,13 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 5;
-    int right_cam_num = 1;
+    int left_cam_num = 4;
+    int right_cam_num = 2;
 
     int row = 1024;
     int col = 1280;
 
-    int nImg = 3;
+    int nImg = 1;
     int nFeature = 54; // Feature점 개수: 100
     int nItr = 100;
 
@@ -676,13 +672,13 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam"+ to_string(left_cam_num) + "/left_txt/";
+            dir += "cam"+ to_string(left_cam_num) + "_2/left_txt/";
             dir += to_string(i);
             dir += ".txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "cam"+ to_string(left_cam_num) + "/left_txt/model.txt";
+            dir += "cam"+ to_string(left_cam_num) + "_2/left_txt/model.txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -827,7 +823,7 @@ void MainFrame::on_stereo_calibration_clicked()
     string wName[] = {"left1", "left2", "left3", "left4"};
     for (int i = 0; i < nImg; i++) {
         string sImgName = rvdir;
-        sImgName += "cam" + to_string(left_cam_num) +"/left/";
+        sImgName += "cam" + to_string(left_cam_num) +"_2/left/";
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
@@ -895,7 +891,7 @@ void MainFrame::on_stereo_calibration_clicked()
 
 void MainFrame::on_pushRtMatrix_clicked()
 {
-    int left_cam_num = 1;
+    int left_cam_num = 4;
     int right_cam_num = 2;
 
     string RT_path = rvdir + "RTtxt/RT_";
