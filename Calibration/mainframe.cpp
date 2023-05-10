@@ -7,8 +7,6 @@
 #include <QImageReader>
 #include <random>
 
-#include <windows.h>
-
 #include "opencv2/calib3d.hpp"
 #include "opencv2/core/types.hpp"
 
@@ -37,7 +35,7 @@ MainFrame::MainFrame(QWidget *parent) :
     //객체 맴버의 초기화
 
 
-    //리스트 출력창을 안보이게    
+    //리스트 출력창을 안보이게
     ui->listWidget->setVisible(false);
     this->adjustSize();
 
@@ -46,8 +44,8 @@ MainFrame::MainFrame(QWidget *parent) :
 }
 
 MainFrame::~MainFrame()
-{ 
-    delete ui;         
+{
+    delete ui;
 
     for(auto& item : _lImageForm)
         delete item;
@@ -74,15 +72,15 @@ void MainFrame::CloseImageForm(ImageForm *pForm)
 }
 
 void MainFrame::UpdateUI()
-{    
+{
     if(ui->tabWidget->currentIndex() == 0)
     {
     }
     else if(ui->tabWidget->currentIndex() == 1)
-    {  
+    {
     }
     else if(ui->tabWidget->currentIndex() == 2)
-    {        
+    {
     }
     else if(ui->tabWidget->currentIndex() == 3)
     {
@@ -120,7 +118,7 @@ void MainFrame::on_buttonOpen_clicked()
     if(q_stFile.length() == 0)
         return;
 
-    //이미지 출력을 위한 ImageForm 생성    
+    //이미지 출력을 위한 ImageForm 생성
     ImageForm*              q_pForm   = new ImageForm(q_stFile, "OPEN", this);
 
     _lImageForm.push_back(q_pForm);
@@ -171,7 +169,7 @@ void MainFrame::on_buttonShowList_clicked()
         this->adjustSize();
     }
     else
-    {        
+    {
         ui->listWidget->show();
         QRect q_rcWin = this->geometry();
 
@@ -179,17 +177,17 @@ void MainFrame::on_buttonShowList_clicked()
     }
 }
 
-int img_width = 1280;
-int img_height = 1024;
+int col = 1280;
+int row = 1024;
 
-KImageColor icCam1(img_height, img_width);
-KImageColor icCam2(img_height, img_width);
-KImageColor icCam3(img_height, img_width);
-KImageColor icCam4(img_height, img_width);
-KImageColor icCam5(img_height, img_width);
-KImageColor icCam6(img_height, img_width);
-KImageColor icCam7(img_height, img_width);
-KImageColor icCam8(img_height, img_width);
+KImageColor icCam1(row, col);
+KImageColor icCam2(row, col);
+KImageColor icCam3(row, col);
+KImageColor icCam4(row, col);
+KImageColor icCam5(row, col);
+KImageColor icCam6(row, col);
+KImageColor icCam7(row, col);
+KImageColor icCam8(row, col);
 
 void MainFrame::on_CameraBtn_clicked()
 {
@@ -283,9 +281,9 @@ void MainFrame::on_CameraBtn_clicked()
         img7 = GetMatFrame(handle7);
         img8 = GetMatFrame(handle8);
 
-        for(unsigned int i=0; i<img_width; i++)
+        for(unsigned int i=0; i<col; i++)
         {
-            for(unsigned int j=0; j<img_height; j++)
+            for(unsigned int j=0; j<row; j++)
             {
                 icCam1[j][i].b = img1.at<cv::Vec3b>(j,i)[0];
                 icCam1[j][i].g = img1.at<cv::Vec3b>(j,i)[1];
@@ -448,10 +446,13 @@ void MainFrame::on_CameraBtn_clicked()
 
 void MainFrame::on_Checker_Corner_clicked()
 {
+    int cam_num = 4;
+    string direction = "right";
+
     int numCornerHor = 9;
     int numCornerVer = 6;
     //int oneSqureLen = 40;
-    int numBoards = 1;
+    int numBoards = 4;
 
     int numSquares = numCornerHor *  numCornerVer;
     Size board_sz = Size(numCornerHor, numCornerVer);
@@ -467,7 +468,7 @@ void MainFrame::on_Checker_Corner_clicked()
         Mat image;
         Mat gray_image;
 
-        string iname = rvdir + "cam1/left/";
+        string iname = rvdir + "cam" + to_string(cam_num) + "/" + direction + "/";
         iname += to_string(success+1);
         iname += ".bmp";
 
@@ -496,7 +497,7 @@ void MainFrame::on_Checker_Corner_clicked()
         imshow(winname, gray_image);
 
         ofstream ofs;
-        string fname = rvdir + "Points/points_";
+        string fname = rvdir + "cam" + to_string(cam_num) +  "/" + direction + "_txt/";
         fname += to_string(success);
         fname += ".txt";
 
@@ -604,7 +605,7 @@ void MainFrame::on_plot_point_clicked()
 {
     int nImg = 4;
     int nFeature = 54;
-    int row = 720;
+    int row = 1024;
     int col = 1280;
 
     // Load Image & Model Points to vector
@@ -660,10 +661,13 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 2;
-    int right_cam_num = 3;
+    int left_cam_num = 5;
+    int right_cam_num = 1;
 
-    int nImg = 4;
+    int row = 1024;
+    int col = 1280;
+
+    int nImg = 3;
     int nFeature = 54; // Feature점 개수: 100
     int nItr = 100;
 
@@ -672,13 +676,13 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam2/left_txt/";
+            dir += "cam"+ to_string(left_cam_num) + "/left_txt/";
             dir += to_string(i);
             dir += ".txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "cam2/left_txt/model.txt";
+            dir += "cam"+ to_string(left_cam_num) + "/left_txt/model.txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -687,13 +691,13 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam3/right_txt/";
+            dir += "cam" + to_string(right_cam_num) + "/right_txt/";
             dir += to_string(i);
             dir += ".txt";
             right_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "cam3/right_txt/model.txt";
+            dir += "cam" + to_string(right_cam_num) + "/right_txt/model.txt";
             right_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -780,7 +784,7 @@ void MainFrame::on_stereo_calibration_clicked()
 
     //RT save
     ofstream ofs;
-    string RT_fname = rvdir + "buf/RT_";
+    string RT_fname = rvdir + "RTtxt/RT_";
     RT_fname += to_string(left_cam_num);
     RT_fname += to_string(right_cam_num);
     RT_fname += ".txt";
@@ -823,15 +827,15 @@ void MainFrame::on_stereo_calibration_clicked()
     string wName[] = {"left1", "left2", "left3", "left4"};
     for (int i = 0; i < nImg; i++) {
         string sImgName = rvdir;
-        sImgName += "cam2/left/";
+        sImgName += "cam" + to_string(left_cam_num) +"/left/";
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
-        KImageColor icMain(720, 1280);
+        KImageColor icMain(row, col);
         QImage* _img = new QImage();        //이미지를 로드하기 위한 QImage 선언
         if (_img->load(QString::fromStdString(sImgName))) {
-            for (int ii = 0; ii < 720; ii++) {
-                for (int jj = 0; jj < 1280; jj++) {
+            for (int ii = 0; ii < row; ii++) {
+                for (int jj = 0; jj < col; jj++) {
                     QColor color = _img->pixelColor(jj,ii);
                     icMain[ii][jj].r = color.red();
                     icMain[ii][jj].g = color.green();
