@@ -548,3 +548,223 @@ double KCalibrationStereo::Erf(const KVector& vH)
 
     return dError;
 }
+
+Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
+    //imshow("L", matLeftImage);
+    //imshow("R", matRightImage);
+    waitKey(1);
+
+    Mat matGrayLImage;
+    Mat matGrayRImage;
+
+    //Gray 이미지로 변환
+    cvtColor(matLeftImage, matGrayLImage, COLOR_RGB2GRAY);
+    cvtColor(matRightImage, matGrayRImage, COLOR_RGB2GRAY);
+
+    //step 1 SURF이용해서 특징점 추출
+    int nMinHessian =300; // threshold (한계점)
+    Ptr<SurfFeatureDetector> Detector = SURF::create(nMinHessian);
+
+    vector <KeyPoint> vtKeypointsObject, vtKeypointsScene;
+
+    Detector->detect(matGrayLImage, vtKeypointsObject);
+    Detector->detect(matGrayRImage, vtKeypointsScene);
+
+    Mat matLImageKeypoints;
+    Mat matRImageKeypoints;
+    drawKeypoints(matGrayLImage, vtKeypointsObject, matLImageKeypoints, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+    drawKeypoints(matGrayRImage, vtKeypointsScene, matRImageKeypoints, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+
+    //imshow("LK", matLImageKeypoints);
+    //imshow("RK", matRImageKeypoints);
+    waitKey(1);
+
+    //step 2 기술자
+    Ptr<SurfDescriptorExtractor> Extractor = SURF::create();
+    //Ptr<SurfDescriptorExtractor> Extractor = SURF::create(100, 4, 3, false,true);
+
+    Mat matDescriptorsObject, matDescriptorsScene;
+
+    Extractor->compute(matGrayLImage, vtKeypointsObject, matDescriptorsObject);
+    Extractor->compute(matGrayRImage, vtKeypointsScene, matDescriptorsScene);
+    //descriptor(기술자)들 사이의 매칭 결과를 matches에 저장한다.
+    FlannBasedMatcher Matcher; //kd트리를 사용하여 매칭을 빠르게 수행
+    vector <DMatch> matches;
+    Matcher.match(matDescriptorsObject, matDescriptorsScene, matches);
+
+    Mat matAllMatches;
+    drawMatches(matGrayLImage, vtKeypointsObject, matGrayRImage, vtKeypointsScene, matches, matAllMatches, Scalar::all(-1), Scalar::all(-1), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+    //imshow("allmatches", matAllMatches);
+    waitKey(1);
+    double dMaxDist = matches[0].distance;
+    double dMinDist = matches[0].distance;
+    double dDistance;
+
+    // 두 개의 keypoint 사이에서 min-max를 계산한다 (min값만 사용)
+    for (int i = 0; i < matDescriptorsObject.rows; i++) {
+        dDistance = matches[i].distance;
+
+        if (dDistance < dMinDist) dMinDist = dDistance;
+        if (dDistance > dMaxDist) dMaxDist = dDistance;
+    }
+    printf("max_dist : %f \n", dMaxDist);
+    printf("min_dist : %f \n", dMinDist);
+
+    //match의 distance 값이 작을수록 matching이 잘 된 것
+    //min의 값의 3배 또는 good_matches.size() > 60 까지만 goodmatch로 인정해준다.
+    vector<DMatch>good_matches;
+    int distance = 10;
+    do {
+        vector<DMatch>good_matches2;
+        for (int i = 0; i < matDescriptorsObject.rows; i++) {
+            if (matches[i].distance < distance * dMinDist)
+                good_matches2.push_back(matches[i]);
+        }
+        good_matches = good_matches2;
+        distance -= 1;
+    } while (distance != 2 && good_matches.size() > 60);
+
+    //keypoint들과 matching 결과 ("good" matched point)를 선으로 연결하여 이미지에 그려 표시
+    Mat matGoodMatches;
+    drawMatches(matGrayLImage, vtKeypointsObject, matGrayRImage, vtKeypointsScene, good_matches, matGoodMatches, Scalar::all(-1), Scalar::all(-1), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+    //imshow("good-matches", matGoodMatches);
+    waitKey(3000);
+
+    //Point2f형으로 변환
+    vector <Point2f> obj;
+    vector <Point2f> scene;
+
+    // goodmatch에서의 keypoint를 저장
+    for (int i = 0; i < good_matches.size();i++) {
+        obj.push_back(vtKeypointsObject[good_matches[i].queryIdx].pt);
+        scene.push_back(vtKeypointsScene[good_matches[i].trainIdx].pt);
+    }
+    Mat HomoMatrix = findHomography(scene, obj, FM_RANSAC);
+    //RANSAC기법을 이용하여 첫 번째 매개변수와 두번째 매개변수 사이의 3*3 크기의 투영행렬변환 H를 구한다
+    cout << HomoMatrix << endl;
+
+    //Homograpy matrix를 사용하여 이미지를 삐뚤게
+    Mat matResult;
+    warpPerspective(matRightImage, matResult, HomoMatrix, Size(matLeftImage.cols*2, matLeftImage.rows*1.2), INTER_CUBIC);
+
+    Mat matPanorama;
+    matPanorama = matResult.clone(); //복사본 대입
+
+    //imshow("wrap", matResult);
+    waitKey(3000);
+
+    Mat matROI(matPanorama, Rect(0, 0, matLeftImage.cols, matLeftImage.rows));
+    matLeftImage.copyTo(matROI);
+
+    //imshow("Panorama", matPanorama);
+    //검은 여백 잘라내기
+
+    int colorx = 0, colory = 0;
+    for (int y = 0; y < matPanorama.rows; y++) {
+        for (int x = 0; x < matPanorama.cols; x++) {
+            if (matPanorama.at<Vec3b>(y, x)[0] == 0 && matPanorama.at<Vec3b>(y, x)[1] == 0 && matPanorama.at<Vec3b>(y, x)[2] == 0) {
+                continue;
+            }
+            if (colorx < x) {
+                colorx = x;
+            }
+            if (colory < y){
+                colory = y;
+            }
+        }
+    }
+
+    Mat blackCutPanorama;
+    blackCutPanorama = matPanorama(Range(0, colory), Range(0, colorx));
+    //imshow("cutblack", blackCutPanorama);
+    return blackCutPanorama;
+}
+
+//Cylinderical_Warping//
+////////////////////////////////////////////////
+//
+// img를 어떻게 받아올 것인가? , vX는 camera 각각의 intrinsic matrix
+vector<vector<KVector>> rv0171::make_3DCameraCoord(KVector vX, KImageColor Img)
+{
+
+    //Img(u,v) -> u*v = 이미지좌표계 픽셀개수
+    KVector vXi(4);
+
+
+    vector<vector<KVector>> vvXi;
+
+    vector<KVector> subvvXi;
+
+
+
+    for(int i=0; i<Img.Row(); i++) //1024
+    {
+        for(int j=0; j<Img.Col(); j++)//1280
+        {
+            vXi[0] = j - (int)(Img.Col()/2) ; // u - ui
+            vXi[1] = i - (int)(Img.Row()/2); // v - vi
+            vXi[2] = vX[0]; // f
+            vXi[3] = 1;
+
+            subvvXi.push_back(vXi); // 1x1280
+        }
+        vvXi.push_back(subvvXi); //1024x1280
+        subvvXi.clear();
+    }
+
+    return vvXi;
+}
+
+void rv0171::make_3DCameraCoord_virtual(vector<vector<KVector>> &virtual_vvXi_tilt,KMatrix RT)
+{
+
+    for(int i =0; i<virtual_vvXi_tilt.size();i++) //1024
+    {
+        for(int j =0; j<virtual_vvXi_tilt.at(0).size();j++) // 1280
+        {
+            virtual_vvXi_tilt.at(i).at(j) = RT*virtual_vvXi_tilt[i][j] ; //3x1 이 계속 들어감
+        }
+    }
+
+}
+
+void rv0171::make_imageCoord_virtual(KVector vX,vector<vector<KVector>> &ui)
+{
+    KMatrix mA(3,3);
+
+    //fv? ->fv는 가상으로 정하는데 카메라 각각의 focal length 의 평균값으로 써라.
+
+    mA[0][0] = vX[0]; //fi
+    mA[1][1] = vX[0]; //fi
+    mA[2][2] = 1.0;
+
+
+
+    for(int i =0; i<ui.size();i++) //1024
+    {
+        for(int j =0; j<ui.at(0).size();j++) // 1280
+        {
+            ui.at(i).at(j) = ((mA*ui[i][j])/ui.at(i).at(j)._ppA[2][0]); //intrinsic matrix를 곱히고 scale로 나눠줘서 s(u,v,1) 로 만들어준다.
+        }
+    }
+
+}
+
+void rv0171::Cylinderical_Warp(KVector vX,vector<vector<KVector>> &ui)
+{
+    // V0(uv,vv) // 가상 좌표계를 만들고  (가상의 방향) 이것으로 virtual camera 를 만든다  virtual camera의  중심을 optical center (V0)로 했다
+    //N개의 카메라가 있다면 각각의 optical center가 있는데 그것의  중점이 world coordinate 의 중심으로   (uv,vv) 로 둿다.
+
+    double fv = vX[0];
+
+    for(int i =0; i<ui.size();i++) //1024
+    {
+        for(int j =0; j<ui.at(0).size();j++) // 1280
+        {
+            ui.at(i).at(j)._ppA[0][0] = fv * atan2( ui.at(i).at(j)._ppA[0][0],fv);
+            ui.at(i).at(j)._ppA[1][0] = fv * ( ui.at(i).at(j)._ppA[1][0] / sqrt(ui.at(i).at(j)._ppA[0][0]*ui.at(i).at(j)._ppA[0][0] + fv*fv));
+        }
+    }
+
+}
+

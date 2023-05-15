@@ -55,6 +55,9 @@ private slots:
 
     void on_RT_product_clicked();
 
+    void on_pushPanorama_clicked();
+
+    void on_Cylinderical_Warp_clicked();
 
 protected:
     void closeEvent(QCloseEvent* event);

@@ -1571,6 +1571,37 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </property>
         </widget>
        </widget>
+       <widget class="QWidget" name="tab_3">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <widget class="QPushButton" name="pushPanorama">
+         <property name="geometry">
+          <rect>
+           <x>210</x>
+           <y>130</y>
+           <width>131</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Panorama</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="Cylinderical_Warp">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>200</y>
+           <width>151</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Cylindrical Warp</string>
+         </property>
+        </widget>
+       </widget>
       </widget>
      </item>
      <item>

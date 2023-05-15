@@ -7,9 +7,6 @@
 #include <QImageReader>
 #include <random>
 
-#include "opencv2/calib3d.hpp"
-#include "opencv2/core/types.hpp"
-
 #include "mainframe.h"
 #include "ui_mainframe.h"
 #include "imageform.h"
@@ -19,7 +16,9 @@
 #define __PI 3.141592
 #define __2PI 6.283185307179586477
 
+using namespace cv;
 using namespace std;
+using namespace cv::xfeatures2d;
 namespace fs = std::filesystem;
 
 string rvdir = "C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/";
@@ -1052,3 +1051,278 @@ void MainFrame::on_RT_product_clicked()
     }
 
 }
+
+
+void MainFrame::on_pushPanorama_clicked()
+{
+    Mat matImage1;
+    Mat matImage2;
+    Mat matImage3;
+    Mat matImage4;
+
+    Mat result1;
+    Mat result2;
+    Mat result3;
+s
+    Mat result;
+
+    //가운데 image가 중심이므로 가운데 image를 기준으로 좌/우에 image stitching
+    matImage1 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/left3.bmp", IMREAD_COLOR);
+    matImage2 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/main3.bmp", IMREAD_COLOR);
+    matImage3 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/main3.bmp", IMREAD_COLOR);
+    matImage4 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/right3.bmp", IMREAD_COLOR);
+
+    //if (matImage1.empty() || matImage2.empty() || matImage3.empty()) return -1;
+
+    //flip(matImage1, result2, 1);
+    //flip(matImage2, result3, 1);
+    result1 = makePanorama(matImage1, matImage2);
+    //flip(result1, result, 1);
+    result2 = makePanorama(matImage4, matImage3);
+    result3 = makePanorama(result1, result2);
+
+    imshow("Result", result1);
+    imshow("Result2", result2);
+    imshow("Result3", result3);
+}
+
+void MainFrame::on_Cylinderical_Warp_clicked()
+{
+    // 16(left)->0  13(right)->1 12(right)->2
+    int left_cam_num = 16;
+    int right_cam_num = 13;
+
+    int left_cam_num2 = 16;
+    int right_cam_num2 = 12;
+
+    //Image 1
+    KImageColor Img(1024,1280);
+    string sImgName = rvdir;
+    sImgName += "cam13/right/1.bmp";
+
+    QImage* _img = new QImage();
+    if(_img->load(QString::fromStdString(sImgName)))
+    {
+        for(int r = 0; r < Img.Row(); r++)
+        {
+            for(int c = 0; c < Img.Col(); c++)
+            {
+                QColor color = _img->pixelColor(c,r);
+                Img[r][c].r = color.red();
+                Img[r][c].g = color.green();
+                Img[r][c].b = color.blue();
+            }
+        }
+    }
+    else {
+        qDebug() << "Image 1 load Error!!!";
+    }
+
+    //Image 2
+    KImageColor Img2(1024,1280);
+    string sImgName2 = rvdir;
+    sImgName2 += "cam12/right/1.bmp";
+
+    QImage* _img2 = new QImage();
+    if(_img2->load(QString::fromStdString(sImgName2)))
+    {
+        for(int r = 0; r < Img2.Row(); r++)
+        {
+            for(int c = 0; c < Img2.Col(); c++)
+            {
+                QColor color2 = _img2->pixelColor(c,r);
+                Img2[r][c].r = color2.red();
+                Img2[r][c].g = color2.green();
+                Img2[r][c].b = color2.blue();
+            }
+        }
+    }
+    else {
+        qDebug() << "Image 2 load Error!!!";
+    }
+
+
+//    int nImg = 1;
+
+//    KImageColor icMain[nImg];
+//    for(int i =0 ; i < nImg; i++)
+//    {
+//        icMain[i].Create(1024, 1280);
+//    }
+//    // 출력할 이미지 불러옴(몇번 이미지를 원기둥에 띄울건가?)
+//    ImageForm* Warping_ImgForm[nImg] = {0, };  // 이미지 몇장 불러올건지
+//    string wName[] = {"left1"};
+//    for(int i = 0; i < nImg; i++)
+//    {
+//        string sImgName = rvdir;
+//        sImgName += ;
+//        sImgName += ;
+//        sImgName += "extensions";   // 확장자
+
+//        QImage* _img = new QImage();
+//        if(_img->load(QString::fromStdString(sImgName)))
+//        {
+//            for(int r = 0; r < icMain[i].Row(); r++)
+//            {
+//                for(int c = 0; c < icMain[i].Col(); c++)
+//                {
+//                    QColor color = _img->pixelColor(c,r);
+//                    icMain[i][r][c].r = color.red();
+//                    icMain[i][r][c].g = color.green();
+//                    icMain[i][r][c].b = color.blue();
+//                }
+//            }
+//        }
+//        else {
+//            qDebug() << "Image " << i << " load Error!!!";
+//        }
+//    }
+//    // 여기까지 띄우고 싶은 이미지를 불러왔다.
+
+
+
+    /////////////////////////////// R,t 불러오기//////////////////////////////////
+    //Image 1
+    string RT_path = rvdir + "RTtxt/RT_";
+    RT_path += to_string(left_cam_num);
+    RT_path += to_string(right_cam_num);
+    RT_path += ".txt";
+
+    string str;
+    double buf[6] = {0,};
+    ifstream RT_fname(RT_path);
+    if (RT_fname.is_open()) {
+        int i =0;
+        while (getline(RT_fname, str))
+        {
+            buf[i] = stod(str);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname.close();
+
+    KRotation rT;
+    rT.FromRodrigues(buf[0], buf[1], buf[2]); // 3x3
+
+    KVector vT;
+    vT.Tailed(buf[3]).Tailed(buf[4]).Tailed(buf[5]); // 아래로붙임 3x1
+
+    rT |= vT; //3x4 RT
+
+    KVector vX;
+
+    vX.Tailed(1165); // alpha, beta //f = 1165 fv 는 가상의 카메라랑 virtual image plane 의 거리다
+    //vX.Tailed(u0); //u
+    //vX.Tailed(v0); //v
+
+    //Image 2
+    string RT_path2 = rvdir + "RTtxt/RT_";
+    RT_path2 += to_string(left_cam_num2);
+    RT_path2 += to_string(right_cam_num2);
+    RT_path2 += ".txt";
+
+    string str2;
+    double buf2[6] = {0,};
+    ifstream RT_fname2(RT_path2);
+    if (RT_fname2.is_open()) {
+        int i =0;
+        while (getline(RT_fname2, str2))
+        {
+            buf2[i] = stod(str2);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname2.close();
+
+    KRotation rT2;
+    rT2.FromRodrigues(buf2[0], buf2[1], buf2[2]); // 3x3
+
+    KVector vT2;
+    vT2.Tailed(buf2[3]).Tailed(buf2[4]).Tailed(buf2[5]); // 아래로붙임 3x1
+
+    rT2 |= vT2; //3x4 RT
+
+    KVector vX2;
+
+    vX2.Tailed(1165); // alpha, beta //f = 1165 fv 는 가상의 카메라랑 virtual image plane 의 거리다
+    //vX2.Tailed(u0); //u
+    //vX2.Tailed(v0); //v
+
+
+    /////////////////////////////// Cylindrical Warping//////////////////////////////////
+    //Image 1
+    //카메라 좌표계 생성
+    vector<vector<KVector>> vvXi_tilt;
+    vvXi_tilt = rv0171::make_3DCameraCoord(vX, Img); //3차원 카메라 좌표계
+
+    //가상 카메라 좌표계 생성
+    rv0171::make_3DCameraCoord_virtual(vvXi_tilt,rT);
+
+    //virtual image plane으로 투영
+    rv0171::make_imageCoord_virtual(vX,vvXi_tilt);
+
+    // cylinderical warping
+    rv0171::Cylinderical_Warp(vX,vvXi_tilt);
+
+    //Image 1
+    cout << vvXi_tilt.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+
+    //Image 2
+    //카메라 좌표계 생성
+    vector<vector<KVector>> vvXi_tilt2;
+    vvXi_tilt2 = rv0171::make_3DCameraCoord(vX2, Img2); //3차원 카메라 좌표계
+
+    //가상 카메라 좌표계 생성
+    rv0171::make_3DCameraCoord_virtual(vvXi_tilt2,rT2);
+
+    //virtual image plane으로 투영
+    rv0171::make_imageCoord_virtual(vX2,vvXi_tilt2);
+
+    // cylinderical warping
+    rv0171::Cylinderical_Warp(vX2,vvXi_tilt2);
+
+    //Image 2
+    cout << vvXi_tilt2.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+
+
+
+    KImageColor result(1024,3000); // (세로길이, 가로길이)
+
+    for(int i=0; i<Img.Row(); i++)
+    {
+        for(int j=0; j<Img.Col(); j++)
+        {
+            result[i][j].r = Img[i][j].r;
+            result[i][j].g = Img[i][j].g;
+            result[i][j].b = Img[i][j].b;
+        }
+        for(int k=0; k<Img2.Col()-130; k++)
+        {
+            result[i][k+1280].r = Img2[i][k+130].r;
+            result[i][k+1280].g = Img2[i][k+130].g;
+            result[i][k+1280].b = Img2[i][k+130].b;
+        }
+    }
+
+    ImageForm* cylinderical_imgform =  new ImageForm(result, "cylinderical_result", this);
+    cylinderical_imgform->show();
+
+    //UI 활성화 갱신
+    cout << "cylinderical Process Finished!" << endl;
+    UpdateUI();
+
+}
+
+

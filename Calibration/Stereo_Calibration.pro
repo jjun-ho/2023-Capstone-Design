@@ -35,12 +35,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += C:\openCV4.7.0\opencv\build_qt\install\include\
 
-LIBS += C:\openCV4.7.0\opencv\build_qt\bin\libopencv_core470d.dll
-LIBS += C:\openCV4.7.0\opencv\build_qt\bin\libopencv_highgui470d.dll
-LIBS += C:\openCV4.7.0\opencv\build_qt\bin\libopencv_imgcodecs470d.dll
-LIBS += C:\openCV4.7.0\opencv\build_qt\bin\libopencv_imgproc470d.dll
-LIBS += C:\openCV4.7.0\opencv\build_qt\bin\libopencv_features2d470d.dll
-LIBS += C:\openCV4.7.0\opencv\build_qt\bin\libopencv_calib3d470d.dll
+LIBS += C:\openCV4.7.0\opencv\build_qt\bin\libopencv_world470.dll
 
 INCLUDEPATH += "C:\Program Files (x86)\MVS\Development\Includes"
 

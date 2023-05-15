@@ -111,6 +111,9 @@ public:
     QPushButton *RT_product;
     QPushButton *CameraBtn;
     QPushButton *Checker_Corner;
+    QWidget *tab_3;
+    QPushButton *pushPanorama;
+    QPushButton *Cylinderical_Warp;
     QListWidget *listWidget;
 
     void setupUi(QDialog *MainFrame)
@@ -462,6 +465,15 @@ public:
         Checker_Corner->setObjectName("Checker_Corner");
         Checker_Corner->setGeometry(QRect(180, 130, 191, 51));
         tabWidget->addTab(tab, QString());
+        tab_3 = new QWidget();
+        tab_3->setObjectName("tab_3");
+        pushPanorama = new QPushButton(tab_3);
+        pushPanorama->setObjectName("pushPanorama");
+        pushPanorama->setGeometry(QRect(210, 130, 131, 51));
+        Cylinderical_Warp = new QPushButton(tab_3);
+        Cylinderical_Warp->setObjectName("Cylinderical_Warp");
+        Cylinderical_Warp->setGeometry(QRect(200, 200, 151, 51));
+        tabWidget->addTab(tab_3, QString());
 
         horizontalLayout->addWidget(tabWidget);
 
@@ -907,6 +919,9 @@ public:
         CameraBtn->setText(QCoreApplication::translate("MainFrame", "Camera", nullptr));
         Checker_Corner->setText(QCoreApplication::translate("MainFrame", "CheckerBoard to Points", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainFrame", "Page", nullptr));
+        pushPanorama->setText(QCoreApplication::translate("MainFrame", "Panorama", nullptr));
+        Cylinderical_Warp->setText(QCoreApplication::translate("MainFrame", "Cylindrical Warp", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainFrame", "Page", nullptr));
     } // retranslateUi
 
 };
