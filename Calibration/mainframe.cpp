@@ -1179,10 +1179,10 @@ void MainFrame::on_pushPanorama_clicked()
     Mat result3;
 
     //가운데 image가 중심이므로 가운데 image를 기준으로 좌/우에 image stitching
-    matImage1 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam13/right/3.bmp", IMREAD_COLOR);
-    matImage2 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam12/right/3.bmp", IMREAD_COLOR);
-    matImage3 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/main3.bmp", IMREAD_COLOR);
-    matImage4 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/right3.bmp", IMREAD_COLOR);
+    matImage1 = imread("./data/Cam13/right/3.bmp", IMREAD_COLOR);
+    matImage2 = imread("./data/Cam12/right/3.bmp", IMREAD_COLOR);
+    matImage3 = imread("./data/Cam123/main3.bmp", IMREAD_COLOR);
+    matImage4 = imread("./data/Cam123/right3.bmp", IMREAD_COLOR);
 
     //if (matImage1.empty() || matImage2.empty() || matImage3.empty()) return -1;
 
@@ -1320,7 +1320,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rT.FromRodrigues(buf[0], buf[1], buf[2]); // 3x3
 
     KVector vT;
-    vT.Tailed(buf[3]*0.378).Tailed(buf[4]*0.378).Tailed(buf[5]*0.378); // 아래로붙임 3x1
+    vT.Tailed(buf[3]).Tailed(buf[4]).Tailed(buf[5]); // 아래로붙임 3x1
 
     rT |= vT; //3x4 RT
 
@@ -1356,7 +1356,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rT2.FromRodrigues(buf2[0], buf2[1], buf2[2]); // 3x3
 
     KVector vT2;
-    vT2.Tailed(buf2[3]*0.378).Tailed(buf2[4]*0.378).Tailed(buf2[5]*0.378); // 아래로붙임 3x1
+    vT2.Tailed(buf2[3]).Tailed(buf2[4]).Tailed(buf2[5]); // 아래로붙임 3x1
 
     rT2 |= vT2; //3x4 RT
 
@@ -1439,31 +1439,6 @@ void MainFrame::on_Cylinderical_Warp_clicked()
 
     //dot_form->resize(500,500);
     dot_form->show();
-
-
-
-
-
-//    KImageColor result(1024,3000); // (세로길이, 가로길이)
-
-//    for(int i=0; i<Img.Row(); i++)
-//    {
-//        for(int j=0; j<Img.Col(); j++)
-//        {
-//            result[i][j].r = Img[i][j].r;
-//            result[i][j].g = Img[i][j].g;
-//            result[i][j].b = Img[i][j].b;
-//        }
-//        for(int k=0; k<Img2.Col()-130; k++)
-//        {
-//            result[i][k+1280].r = Img2[i][k+130].r;
-//            result[i][k+1280].g = Img2[i][k+130].g;
-//            result[i][k+1280].b = Img2[i][k+130].b;
-//        }
-//    }
-
-//    ImageForm* cylinderical_imgform =  new ImageForm(result, "cylinderical_result", this);
-//    cylinderical_imgform->show();
 
     //UI 활성화 갱신
     cout << "cylinderical Process Finished!" << endl;
