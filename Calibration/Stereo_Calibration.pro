@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         mainframe.cpp \
     imageform.cpp \
     kfc.cpp \
-    rv0171.cpp
+    rv0171.cpp \
+    serial.cpp
 
 HEADERS  += mainframe.h \
     HikCamera.h \

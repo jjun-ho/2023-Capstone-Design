@@ -380,7 +380,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>3</number>
        </property>
        <property name="iconSize">
         <size>
@@ -1599,6 +1599,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </property>
          <property name="text">
           <string>Cylindrical Warp</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="IMUButton">
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>80</y>
+           <width>91</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>IMU</string>
          </property>
         </widget>
        </widget>

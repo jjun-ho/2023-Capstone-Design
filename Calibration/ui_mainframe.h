@@ -114,6 +114,7 @@ public:
     QWidget *tab_3;
     QPushButton *pushPanorama;
     QPushButton *Cylinderical_Warp;
+    QPushButton *IMUButton;
     QListWidget *listWidget;
 
     void setupUi(QDialog *MainFrame)
@@ -473,6 +474,9 @@ public:
         Cylinderical_Warp = new QPushButton(tab_3);
         Cylinderical_Warp->setObjectName("Cylinderical_Warp");
         Cylinderical_Warp->setGeometry(QRect(200, 200, 151, 51));
+        IMUButton = new QPushButton(tab_3);
+        IMUButton->setObjectName("IMUButton");
+        IMUButton->setGeometry(QRect(230, 80, 91, 41));
         tabWidget->addTab(tab_3, QString());
 
         horizontalLayout->addWidget(tabWidget);
@@ -532,7 +536,7 @@ public:
 
         retranslateUi(MainFrame);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainFrame);
@@ -921,6 +925,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainFrame", "Page", nullptr));
         pushPanorama->setText(QCoreApplication::translate("MainFrame", "Panorama", nullptr));
         Cylinderical_Warp->setText(QCoreApplication::translate("MainFrame", "Cylindrical Warp", nullptr));
+        IMUButton->setText(QCoreApplication::translate("MainFrame", "IMU", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainFrame", "Page", nullptr));
     } // retranslateUi
 

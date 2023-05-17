@@ -562,7 +562,7 @@ Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
     cvtColor(matRightImage, matGrayRImage, COLOR_RGB2GRAY);
 
     //step 1 SURF이용해서 특징점 추출
-    int nMinHessian =300; // threshold (한계점)
+    int nMinHessian =400; // threshold (한계점)
     Ptr<SurfFeatureDetector> Detector = SURF::create(nMinHessian);
 
     vector <KeyPoint> vtKeypointsObject, vtKeypointsScene;
@@ -641,7 +641,20 @@ Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
     }
     Mat HomoMatrix = findHomography(scene, obj, FM_RANSAC);
     //RANSAC기법을 이용하여 첫 번째 매개변수와 두번째 매개변수 사이의 3*3 크기의 투영행렬변환 H를 구한다
-    cout << HomoMatrix << endl;
+
+//    KRotation rT;
+//    rT.FromRodrigues(0.115867, 0.468524, -0.0275208); // 3x3
+//    Mat HomoMatrix(3, 3, CV_64F);
+
+//    for(int i = 0; i<3; i++)
+//    {
+//        for(int j = 0; j<3; j++)
+//        {
+//            HomoMatrix.at<double>(Point(j, i)) = rT[i][j];
+//        }
+//    }
+
+//    cout << HomoMatrix << endl;
 
     //Homograpy matrix를 사용하여 이미지를 삐뚤게
     Mat matResult;
@@ -650,7 +663,7 @@ Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
     Mat matPanorama;
     matPanorama = matResult.clone(); //복사본 대입
 
-    //imshow("wrap", matResult);
+    imshow("wrap", matResult);
     waitKey(3000);
 
     Mat matROI(matPanorama, Rect(0, 0, matLeftImage.cols, matLeftImage.rows));

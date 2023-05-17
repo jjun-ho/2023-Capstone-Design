@@ -59,6 +59,8 @@ private slots:
 
     void on_Cylinderical_Warp_clicked();
 
+    void on_IMUButton_clicked();
+
 protected:
     void closeEvent(QCloseEvent* event);
 };

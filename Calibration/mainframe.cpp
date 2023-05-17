@@ -6,12 +6,20 @@
 #include <QString>
 #include <QImageReader>
 #include <random>
+#include <Windows.h>
+#include <iostream>
+#include <string>
+#include <cmath>
 
 #include "mainframe.h"
 #include "ui_mainframe.h"
 #include "imageform.h"
 #include "rv0171.h"
 #include "HikCamera.cpp"
+#include "serial.cpp"
+
+#define MY_SERIALPORT  3  // 연결된 시리얼 포트번호
+#define SBUF_SIZE 2000
 
 #define __PI 3.141592
 #define __2PI 6.283185307179586477
@@ -21,7 +29,113 @@ using namespace std;
 using namespace cv::xfeatures2d;
 namespace fs = std::filesystem;
 
-string rvdir = "C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/";
+string rvdir = "./data/";
+
+using namespace std;
+
+char sbuf[SBUF_SIZE];
+signed int sbuf_cnt = 0;
+
+struct Quaternion {
+    double w, x, y, z;
+};
+
+struct EulerAngles {
+    double roll, pitch, yaw;
+};
+
+// this implementation assumes normalized quaternion
+// converts to Euler angles in 3-2-1 sequence
+EulerAngles ToEulerAngles(Quaternion q) {
+    EulerAngles angles;
+
+    // roll (x-axis rotation)
+    double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+    double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+    angles.roll = std::atan2(sinr_cosp, cosr_cosp) * 57.2958; // rad to deg
+
+    // pitch (y-axis rotation)
+    double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+    double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+    angles.pitch = 2 * std::atan2(sinp, cosp) - M_PI / 2 * 57.2958; // rad to deg
+
+    // yaw (z-axis rotation)
+    double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+    double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+    angles.yaw = std::atan2(siny_cosp, cosy_cosp) * 57.2958; // rad to deg
+
+    return angles;
+}
+
+char* my_strtok(char * str, char dm, int *result)
+{
+    int n;
+
+    *result = 0;
+
+    for (n = 0; n<100; n++)
+    {
+        if (str[n] == dm) { *result = 1;  break; }
+        if (str[n] == NULL) break;
+    }
+
+    return &str[n+1];
+}
+
+int EBimuAsciiParser(int *id, float *item, unsigned int number_of_item)
+{
+    SERIALREADDATA srd;
+    unsigned int n, i;
+    char *addr;
+    int result = 0;
+    int ret;
+
+    //	char *context;
+
+    if (ReadSerialPort(MY_SERIALPORT, &srd) == ERR_OK)	// -7 == 0
+    {
+        if (srd.nSize) // 100
+        {
+            for (n = 0; n<srd.nSize; n++)
+            {
+                //printf("%d ", sbuf_cnt);
+                //////////////////////////////////////////////////////////////////////
+                sbuf[sbuf_cnt] = srd.szData[n];	//  initial sbuf_cnt = 0
+                //printf("%c", srd.szData[n]);
+                if (sbuf[sbuf_cnt] == '\r')  // 1줄 수신완료
+                {
+                    {
+                        addr = my_strtok(sbuf, '-' ,&ret);
+                        if (ret)
+                        {
+                            *id = (float)atoi(addr);
+
+                            addr = my_strtok(sbuf, ',', &ret);
+                            for (i = 0; i<number_of_item; i++)
+                            {
+                                item[i] = (float)atof(addr);
+                                addr = my_strtok(addr, ',', &ret);
+                            }
+
+                            result = 1;
+                        }
+                    }
+                }
+                else if (sbuf[sbuf_cnt] == '\n')
+                {
+                    sbuf_cnt = -1;
+                }
+
+                sbuf_cnt++;
+                if (sbuf_cnt >= SBUF_SIZE) sbuf_cnt = 0;
+                ///////////////////////////////////////////////////////////////////////
+            }
+        }
+    }
+
+    return result;
+}
+
 
 MainFrame::MainFrame(QWidget *parent) :
     QDialog(parent),
@@ -656,13 +770,13 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 4;
-    int right_cam_num = 2;
+    int left_cam_num = 13;
+    int right_cam_num = 12;
 
     int row = 1024;
     int col = 1280;
 
-    int nImg = 1;
+    int nImg = 4;
     int nFeature = 54; // Feature점 개수: 100
     int nItr = 100;
 
@@ -671,13 +785,13 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam"+ to_string(left_cam_num) + "_2/left_txt/";
+            dir += "cam"+ to_string(left_cam_num) + "/left_txt/";
             dir += to_string(i);
             dir += ".txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "cam"+ to_string(left_cam_num) + "_2/left_txt/model.txt";
+            dir += "cam"+ to_string(left_cam_num) + "/left_txt/model.txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -890,8 +1004,8 @@ void MainFrame::on_stereo_calibration_clicked()
 
 void MainFrame::on_pushRtMatrix_clicked()
 {
-    int left_cam_num = 4;
-    int right_cam_num = 2;
+    int left_cam_num = 13;
+    int right_cam_num = 12;
 
     string RT_path = rvdir + "RTtxt/RT_";
     RT_path += to_string(left_cam_num);
@@ -932,9 +1046,9 @@ void MainFrame::on_pushRtMatrix_clicked()
 
 void MainFrame::on_RT_product_clicked()
 {
-    int left_cam_num = 1;
-    int main_cam_num = 2;
-    int right_cam_num = 3;
+    int left_cam_num = 16;
+    int main_cam_num = 13;
+    int right_cam_num = 12;
 
     //T12
     string RT_path12 = rvdir + "RTtxt/RT_";
@@ -1063,12 +1177,10 @@ void MainFrame::on_pushPanorama_clicked()
     Mat result1;
     Mat result2;
     Mat result3;
-s
-    Mat result;
 
     //가운데 image가 중심이므로 가운데 image를 기준으로 좌/우에 image stitching
-    matImage1 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/left3.bmp", IMREAD_COLOR);
-    matImage2 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/main3.bmp", IMREAD_COLOR);
+    matImage1 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam13/right/3.bmp", IMREAD_COLOR);
+    matImage2 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam12/right/3.bmp", IMREAD_COLOR);
     matImage3 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/main3.bmp", IMREAD_COLOR);
     matImage4 = imread("C:/Users/ironview/Desktop/2023-Capstone-Design/Calibration/data/Cam123/right3.bmp", IMREAD_COLOR);
 
@@ -1078,12 +1190,12 @@ s
     //flip(matImage2, result3, 1);
     result1 = makePanorama(matImage1, matImage2);
     //flip(result1, result, 1);
-    result2 = makePanorama(matImage4, matImage3);
-    result3 = makePanorama(result1, result2);
+    //result2 = makePanorama(matImage4, matImage3);
+    //result3 = makePanorama(result1, result2);
 
     imshow("Result", result1);
-    imshow("Result2", result2);
-    imshow("Result3", result3);
+    //imshow("Result2", result2);
+    //imshow("Result3", result3);
 }
 
 void MainFrame::on_Cylinderical_Warp_clicked()
@@ -1208,7 +1320,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rT.FromRodrigues(buf[0], buf[1], buf[2]); // 3x3
 
     KVector vT;
-    vT.Tailed(buf[3]).Tailed(buf[4]).Tailed(buf[5]); // 아래로붙임 3x1
+    vT.Tailed(buf[3]*0.378).Tailed(buf[4]*0.378).Tailed(buf[5]*0.378); // 아래로붙임 3x1
 
     rT |= vT; //3x4 RT
 
@@ -1244,7 +1356,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rT2.FromRodrigues(buf2[0], buf2[1], buf2[2]); // 3x3
 
     KVector vT2;
-    vT2.Tailed(buf2[3]).Tailed(buf2[4]).Tailed(buf2[5]); // 아래로붙임 3x1
+    vT2.Tailed(buf2[3]*0.378).Tailed(buf2[4]*0.378).Tailed(buf2[5]*0.378); // 아래로붙임 3x1
 
     rT2 |= vT2; //3x4 RT
 
@@ -1276,6 +1388,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     cout << vvXi_tilt.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
 
+    cout << endl;
     //Image 2
     //카메라 좌표계 생성
     vector<vector<KVector>> vvXi_tilt2;
@@ -1291,33 +1404,66 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rv0171::Cylinderical_Warp(vX2,vvXi_tilt2);
 
     //Image 2
-    cout << vvXi_tilt2.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
-    cout << vvXi_tilt2.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-    cout << vvXi_tilt2.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
-    cout << vvXi_tilt2.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt2.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt2.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt2.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt2.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+
+    int image_count = 2;
+    //출력을 위한 imageform 생성
+
+    ImageForm* dot_form;
+    KImageColor icMain(1024, 1280*image_count);
+
+    dot_form = new ImageForm(icMain,"point",this);
+
+    QPoint mp;
+    QPoint mp2;
 
 
-
-    KImageColor result(1024,3000); // (세로길이, 가로길이)
-
-    for(int i=0; i<Img.Row(); i++)
+    for(int i=0; i<1024; i++)
     {
-        for(int j=0; j<Img.Col(); j++)
+        for(int j=0; j<1280; j++)
         {
-            result[i][j].r = Img[i][j].r;
-            result[i][j].g = Img[i][j].g;
-            result[i][j].b = Img[i][j].b;
-        }
-        for(int k=0; k<Img2.Col()-130; k++)
-        {
-            result[i][k+1280].r = Img2[i][k+130].r;
-            result[i][k+1280].g = Img2[i][k+130].g;
-            result[i][k+1280].b = Img2[i][k+130].b;
+            QColor color_img = _img->pixelColor(j,i);
+            mp.setX((int)(vvXi_tilt.at(i).at(j)._ppA[0][0])+(int)(Img.Col()/2));
+            mp.setY((int)(vvXi_tilt.at(i).at(j)._ppA[1][0])+(int)(Img.Row()/2));
+            dot_form->DrawEllipse(mp,1,1, color_img);
+
+            QColor color_img2 = _img2->pixelColor(j,i);
+            mp2.setX((int)(vvXi_tilt2.at(i).at(j)._ppA[0][0])+(int)(Img2.Col()/2));
+            mp2.setY((int)(vvXi_tilt2.at(i).at(j)._ppA[1][0])+(int)(Img2.Row()/2));
+            dot_form->DrawEllipse(mp2,1,1, color_img2);
         }
     }
 
-    ImageForm* cylinderical_imgform =  new ImageForm(result, "cylinderical_result", this);
-    cylinderical_imgform->show();
+    //dot_form->resize(500,500);
+    dot_form->show();
+
+
+
+
+
+//    KImageColor result(1024,3000); // (세로길이, 가로길이)
+
+//    for(int i=0; i<Img.Row(); i++)
+//    {
+//        for(int j=0; j<Img.Col(); j++)
+//        {
+//            result[i][j].r = Img[i][j].r;
+//            result[i][j].g = Img[i][j].g;
+//            result[i][j].b = Img[i][j].b;
+//        }
+//        for(int k=0; k<Img2.Col()-130; k++)
+//        {
+//            result[i][k+1280].r = Img2[i][k+130].r;
+//            result[i][k+1280].g = Img2[i][k+130].g;
+//            result[i][k+1280].b = Img2[i][k+130].b;
+//        }
+//    }
+
+//    ImageForm* cylinderical_imgform =  new ImageForm(result, "cylinderical_result", this);
+//    cylinderical_imgform->show();
 
     //UI 활성화 갱신
     cout << "cylinderical Process Finished!" << endl;
@@ -1325,4 +1471,35 @@ void MainFrame::on_Cylinderical_Warp_clicked()
 
 }
 
+
+
+void MainFrame::on_IMUButton_clicked()
+{
+    int id;
+    float item[100];
+
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
+
+    Quaternion q;
+    EulerAngles e;
+
+    while (1)
+    {
+        if (EBimuAsciiParser(&id,item, 5))
+        {
+            q.z = item[0];
+            q.y = item[1];
+            q.x = item[2];
+            q.w = item[3];
+            printf("Quaternion: z:%f y:%f x:%f w:%f,  ", q.z, q.y, q.x, q.w);
+
+            e = ToEulerAngles(q);
+            printf("Yaw: %f\n", e.yaw);
+        }
+    }
+}
 
