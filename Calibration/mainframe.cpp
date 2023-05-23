@@ -1210,7 +1210,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     //Image 1
     KImageColor Img(1024,1280);
     string sImgName = rvdir;
-    sImgName += "cam13/right/1.bmp";
+    sImgName += "realtime/1.bmp";
 
     QImage* _img = new QImage();
     if(_img->load(QString::fromStdString(sImgName)))
@@ -1233,7 +1233,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     //Image 2
     KImageColor Img2(1024,1280);
     string sImgName2 = rvdir;
-    sImgName2 += "cam12/right/1.bmp";
+    sImgName2 += "realtime/2.bmp";
 
     QImage* _img2 = new QImage();
     if(_img2->load(QString::fromStdString(sImgName2)))
@@ -1319,6 +1319,8 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     KRotation rT;
     rT.FromRodrigues(buf[0], buf[1], buf[2]); // 3x3
 
+    KRotation R1 = rT;
+
     KVector vT;
     vT.Tailed(buf[3]).Tailed(buf[4]).Tailed(buf[5]); // 아래로붙임 3x1
 
@@ -1355,6 +1357,8 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     KRotation rT2;
     rT2.FromRodrigues(buf2[0], buf2[1], buf2[2]); // 3x3
 
+    KRotation R2 = rT2;
+
     KVector vT2;
     vT2.Tailed(buf2[3]).Tailed(buf2[4]).Tailed(buf2[5]); // 아래로붙임 3x1
 
@@ -1374,12 +1378,49 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     vvXi_tilt = rv0171::make_3DCameraCoord(vX, Img); //3차원 카메라 좌표계
 
     //가상 카메라 좌표계 생성
-    rv0171::make_3DCameraCoord_virtual(vvXi_tilt,rT);
+    //rv0171::make_3DCameraCoord_virtual(vvXi_tilt,rT);
 
     //virtual image plane으로 투영
-    rv0171::make_imageCoord_virtual(vX,vvXi_tilt);
+    //rv0171::make_imageCoord_virtual(vX,vvXi_tilt);
 
-    // cylinderical warping
+    //zero center image plane으로 투영
+    KMatrix mA(3,3);
+
+    mA[0][0] = vX[0]; //fi
+    mA[1][1] = vX[0]; //fi
+    mA[2][2] = 1.0;
+    mA[0][2] = 321.583;
+    mA[1][2] = 252.409;
+
+    KRotation R01T = R1.Iv();
+
+    cout << vT[0] <<", "<< vT[1] <<", "<<vT[2] <<", " <<endl;
+
+    KMatrix temp(3,1);
+    KMatrix temp2(3,1);
+
+    for(int i =0; i<vvXi_tilt.size();i++) //1024
+    {
+        for(int j =0; j<vvXi_tilt.at(0).size();j++) // 1280
+        {
+            temp = mA*R01T*(mA.Iv()*vvXi_tilt[i][j]);
+
+            vvXi_tilt[i][j] = temp/temp[2][0];
+        }
+    }
+
+    for(int i =0; i<vvXi_tilt.size();i++) //1024
+    {
+        for(int j =0; j<vvXi_tilt.at(0).size();j++) // 1280
+        {
+            temp2 = -mA*R01T*vT;
+            vvXi_tilt[i][j] += temp2/temp2[2][0];
+
+        }
+    }
+
+
+    //cylinderical warping
     rv0171::Cylinderical_Warp(vX,vvXi_tilt);
 
     //Image 1
@@ -1395,25 +1436,55 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     vvXi_tilt2 = rv0171::make_3DCameraCoord(vX2, Img2); //3차원 카메라 좌표계
 
     //가상 카메라 좌표계 생성
-    rv0171::make_3DCameraCoord_virtual(vvXi_tilt2,rT2);
+    //rv0171::make_3DCameraCoord_virtual(vvXi_tilt2,rT2);
 
     //virtual image plane으로 투영
-    rv0171::make_imageCoord_virtual(vX2,vvXi_tilt2);
+    //rv0171::make_imageCoord_virtual(vX2,vvXi_tilt2);
+
+    //zero center image plane으로 투영
+
+    KRotation R02T = R2.Iv();
+
+    KMatrix temp3(3,1);
+    KMatrix temp4(3,1);
+
+
+    for(int i =0; i<vvXi_tilt2.size();i++) //1024
+    {
+        for(int j =0; j<vvXi_tilt2.at(0).size();j++) // 1280
+        {
+            temp3 = (mA.Iv()*vvXi_tilt2[i][j]);
+
+            vvXi_tilt2[i][j] = (mA*R01T*temp3)/temp3[2][0];
+        }
+    }
+
+    for(int i =0; i<vvXi_tilt2.size();i++) //1024
+    {
+        for(int j =0; j<vvXi_tilt2.at(0).size();j++) // 1280
+        {
+            temp4 = -mA*R01T*vT2;
+            vvXi_tilt2[i][j] += temp4/temp4[2][0];
+
+        }
+    }
+
+
 
     // cylinderical warping
     rv0171::Cylinderical_Warp(vX2,vvXi_tilt2);
 
     //Image 2
-    cout << vvXi_tilt2.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt2.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt2.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt2.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt2.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-    cout << vvXi_tilt2.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt2.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
+    cout << vvXi_tilt2.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt2.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)    cout << vvXi_tilt2.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt2.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt2.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt2.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
 
     int image_count = 2;
     //출력을 위한 imageform 생성
 
     ImageForm* dot_form;
-    KImageColor icMain(1024, 1280*image_count);
+    KImageColor icMain(1024*1.5, 1280*image_count);
 
     dot_form = new ImageForm(icMain,"point",this);
 
@@ -1431,8 +1502,8 @@ void MainFrame::on_Cylinderical_Warp_clicked()
             dot_form->DrawEllipse(mp,1,1, color_img);
 
             QColor color_img2 = _img2->pixelColor(j,i);
-            mp2.setX((int)(vvXi_tilt2.at(i).at(j)._ppA[0][0])+(int)(Img2.Col()/2));
-            mp2.setY((int)(vvXi_tilt2.at(i).at(j)._ppA[1][0])+(int)(Img2.Row()/2));
+            mp2.setX((int)(vvXi_tilt2.at(i).at(j)._ppA[0][0])+(int)(Img2.Col()/2)+400);
+            mp2.setY((int)(vvXi_tilt2.at(i).at(j)._ppA[1][0])+(int)(Img2.Row()/2)+400);
             dot_form->DrawEllipse(mp2,1,1, color_img2);
         }
     }

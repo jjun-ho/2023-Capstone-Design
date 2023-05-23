@@ -701,7 +701,8 @@ vector<vector<KVector>> rv0171::make_3DCameraCoord(KVector vX, KImageColor Img)
 {
 
     //Img(u,v) -> u*v = 이미지좌표계 픽셀개수
-    KVector vXi(4);
+//    KVector vXi(4);
+    KVector vXi(3);
 
 
     vector<vector<KVector>> vvXi;
@@ -716,8 +717,10 @@ vector<vector<KVector>> rv0171::make_3DCameraCoord(KVector vX, KImageColor Img)
         {
             vXi[0] = j - (int)(Img.Col()/2) ; // u - ui
             vXi[1] = i - (int)(Img.Row()/2); // v - vi
-            vXi[2] = vX[0]; // f
-            vXi[3] = 1;
+            vXi[2] = 1;
+
+            //vXi[2] = vX[0]; // f
+            //vXi[3] = 1;
 
             subvvXi.push_back(vXi); // 1x1280
         }
@@ -751,18 +754,17 @@ void rv0171::make_imageCoord_virtual(KVector vX,vector<vector<KVector>> &ui)
     mA[1][1] = vX[0]; //fi
     mA[2][2] = 1.0;
 
-
-
     for(int i =0; i<ui.size();i++) //1024
     {
         for(int j =0; j<ui.at(0).size();j++) // 1280
         {
-            ui.at(i).at(j) = ((mA*ui[i][j])/ui.at(i).at(j)._ppA[2][0]); //intrinsic matrix를 곱히고 scale로 나눠줘서 s(u,v,1) 로 만들어준다.
+            ui.at(i).at(j) = (mA*ui[i][j]); //intrinsic matrix를 곱히고 scale로 나눠줘서 s(u,v,1) 로 만들어준다.
+            //ui.at(i).at(j) = ((mA*ui[i][j])/ui.at(i).at(j)._ppA[2][0]); //intrinsic matrix를 곱히고 scale로 나눠줘서 s(u,v,1) 로 만들어준다.
         }
     }
 
 }
-
+\
 void rv0171::Cylinderical_Warp(KVector vX,vector<vector<KVector>> &ui)
 {
     // V0(uv,vv) // 가상 좌표계를 만들고  (가상의 방향) 이것으로 virtual camera 를 만든다  virtual camera의  중심을 optical center (V0)로 했다
