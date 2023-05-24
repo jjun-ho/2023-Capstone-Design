@@ -55,12 +55,14 @@ namespace rv0171
     KMatrix ImageProjection(KMatrix mA, KVector vK, KHomogeneous hP, KMatrix mM);
 
     //Cylinderical_Warping
-    vector<vector<KVector>> make_3DCameraCoord (KVector vX, KImageColor Img);
-    void make_3DCameraCoord_virtual(vector<vector<KVector>> &virtual_vvXi_tilt,KMatrix RT);
-    void make_imageCoord_virtual(KVector vX,vector<vector<KVector>> &ui);
-    void Cylinderical_Warp(KVector vX,vector<vector<KVector>> &ui);
-}
+    KMatrix Import_mAi(int cam_num);
+    KRotation Import_rRi(int l_cam_num, int r_cam_num);
+    KVector Import_vTi(int l_cam_num, int r_cam_num);
 
+    vector<vector<KVector>> make_3DCameraCoord (KImageColor Img);
+    void make_Surround_View_Stitching(KMatrix mA, KMatrix mAi, KRotation rRi, KVector vTi, vector<vector<KVector>> &ui);
+    void make_Cylinderical_Warp(double f, vector<vector<KVector>> &ui);
+}
 
 
 // Camera Calibration(HW1)
@@ -79,7 +81,6 @@ public:
 protected:
     virtual double Erf(const KVector& vX);
 };
-
 
 
 // Stereo Camera Calibration(HW2)

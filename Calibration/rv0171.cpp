@@ -694,86 +694,167 @@ Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
 }
 
 //Cylinderical_Warping//
-////////////////////////////////////////////////
-//
-// img를 어떻게 받아올 것인가? , vX는 camera 각각의 intrinsic matrix
-vector<vector<KVector>> rv0171::make_3DCameraCoord(KVector vX, KImageColor Img)
+//Import_mAi
+KMatrix rv0171::Import_mAi(int cam_num)
 {
+    string mAi_path = "./data/Caltxt/Cal_";
+    mAi_path += to_string(cam_num);
+    mAi_path += "_right.txt";
 
-    //Img(u,v) -> u*v = 이미지좌표계 픽셀개수
-//    KVector vXi(4);
+    string str;
+    double buf[4] = {0,};
+    ifstream mAi_fname(mAi_path);
+    if (mAi_fname.is_open()) {
+        int i =0;
+        while (i<4)
+        {
+            getline(mAi_fname, str);
+            buf[i] = stod(str);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    mAi_fname.close();
+
+    KMatrix mAi(3,3);
+    mAi[0][0] = buf[0];   // alpha
+    mAi[1][1] = buf[1];   // beta
+    mAi[0][2] = buf[2];   // u0
+    mAi[1][2] = buf[3];   // v0
+    mAi[2][2] = 1.0;     // scale
+
+    return mAi;
+}
+
+//Import_rRi
+KRotation rv0171::Import_rRi(int l_cam_num, int r_cam_num)
+{
+    int left_cam_num = l_cam_num;
+    int right_cam_num = r_cam_num;
+
+    string RT_path = "./data/RTtxt/RT_";
+    RT_path += to_string(left_cam_num);
+    RT_path += to_string(right_cam_num);
+    RT_path += ".txt";
+
+    string str;
+    double buf[6] = {0,};
+    ifstream RT_fname(RT_path);
+    if (RT_fname.is_open()) {
+        int i =0;
+        while (getline(RT_fname, str))
+        {
+            buf[i] = stod(str);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname.close();
+
+    KRotation rRi;
+    rRi.FromRodrigues(buf[0], buf[1], buf[2]); // 3x3
+
+    return rRi;
+}
+
+////Import_vTi
+KVector rv0171::Import_vTi(int l_cam_num, int r_cam_num)
+{
+    int left_cam_num = l_cam_num;
+    int right_cam_num = r_cam_num;
+
+    string RT_path = "./data/RTtxt/RT_";
+    RT_path += to_string(left_cam_num);
+    RT_path += to_string(right_cam_num);
+    RT_path += ".txt";
+
+    string str;
+    double buf[6] = {0,};
+    ifstream RT_fname(RT_path);
+    if (RT_fname.is_open()) {
+        int i =0;
+        while (getline(RT_fname, str))
+        {
+            buf[i] = stod(str);
+            i++;
+        }
+    }
+    else {
+        qDebug() << "File open error!\n";
+    }
+    RT_fname.close();
+
+    KVector vTi;
+    vTi.Tailed(buf[3]).Tailed(buf[4]).Tailed(buf[5]); // 아래로붙임 3x1
+
+    return vTi;
+}
+
+
+vector<vector<KVector>> rv0171::make_3DCameraCoord(KImageColor Img)
+{
     KVector vXi(3);
-
-
     vector<vector<KVector>> vvXi;
-
     vector<KVector> subvvXi;
-
-
 
     for(int i=0; i<Img.Row(); i++) //1024
     {
         for(int j=0; j<Img.Col(); j++)//1280
         {
-//            vXi[0] = j - (int)(Img.Col()/2) ; // u - ui
-//            vXi[1] = i - (int)(Img.Row()/2); // v - vi
-//            vXi[2] = 1;
+
             vXi[0] = j; // u - ui
             vXi[1] = i; // v - vi
             vXi[2] = 1;
-
-            //vXi[2] = vX[0]; // f
-            //vXi[3] = 1;
 
             subvvXi.push_back(vXi); // 1x1280
         }
         vvXi.push_back(subvvXi); //1024x1280
         subvvXi.clear();
     }
-
     return vvXi;
 }
 
-void rv0171::make_3DCameraCoord_virtual(vector<vector<KVector>> &virtual_vvXi_tilt,KMatrix RT)
+
+
+void rv0171::make_Surround_View_Stitching(KMatrix mA, KMatrix mAi, KRotation rRi, KVector vTi, vector<vector<KVector>> &ui)
 {
-
-    for(int i =0; i<virtual_vvXi_tilt.size();i++) //1024
-    {
-        for(int j =0; j<virtual_vvXi_tilt.at(0).size();j++) // 1280
-        {
-            virtual_vvXi_tilt.at(i).at(j) = RT*virtual_vvXi_tilt[i][j] ; //3x1 이 계속 들어감
-        }
-    }
-
-}
-
-void rv0171::make_imageCoord_virtual(KVector vX,vector<vector<KVector>> &ui)
-{
-    KMatrix mA(3,3);
-
-    //fv? ->fv는 가상으로 정하는데 카메라 각각의 focal length 의 평균값으로 써라.
-
-    mA[0][0] = vX[0]; //fi
-    mA[1][1] = vX[0]; //fi
-    mA[2][2] = 1.0;
+    KMatrix temp(3,1);
+    KMatrix temp2(3,1);
 
     for(int i =0; i<ui.size();i++) //1024
     {
         for(int j =0; j<ui.at(0).size();j++) // 1280
         {
-            ui.at(i).at(j) = (mA*ui[i][j]); //intrinsic matrix를 곱히고 scale로 나눠줘서 s(u,v,1) 로 만들어준다.
-            //ui.at(i).at(j) = ((mA*ui[i][j])/ui.at(i).at(j)._ppA[2][0]); //intrinsic matrix를 곱히고 scale로 나눠줘서 s(u,v,1) 로 만들어준다.
+            temp = mA*rRi.Iv()*(mAi.Iv()*ui[i][j]);
+            //내꺼
+//            temp = mA*(rRi.Iv()*mAi.Iv())*vvXi_tilt[i][j];
+            ui[i][j] = temp/temp[2][0];
         }
     }
 
+    for(int i =0; i<ui.size();i++) //1024
+    {
+        for(int j =0; j<ui.at(0).size();j++) // 1280
+        {
+            temp2 = -mA*rRi.Iv()*vTi;
+            //내꺼
+//            temp2 = mA*(rRi.Iv()*mAi.Iv())*(-mAi*vTi);
+            ui[i][j] += temp2/temp2[2][0];
+        }
+    }
 }
-\
-void rv0171::Cylinderical_Warp(KVector vX,vector<vector<KVector>> &ui)
+
+
+void rv0171::make_Cylinderical_Warp(double f, vector<vector<KVector>> &ui)
 {
     // V0(uv,vv) // 가상 좌표계를 만들고  (가상의 방향) 이것으로 virtual camera 를 만든다  virtual camera의  중심을 optical center (V0)로 했다
     //N개의 카메라가 있다면 각각의 optical center가 있는데 그것의  중점이 world coordinate 의 중심으로   (uv,vv) 로 둿다.
 
-    double fv = vX[0];
+    double fv = f;
 
     for(int i =0; i<ui.size();i++) //1024
     {
