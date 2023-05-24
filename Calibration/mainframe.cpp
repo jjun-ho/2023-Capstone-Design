@@ -316,7 +316,7 @@ void MainFrame::on_CameraBtn_clicked()
     void* handle7;
     void* handle8;
 
-    double setFrame = 13.0f;
+    double setFrame = 30.0f;
 
     handle1 = CreateCamera("Cam01");            // Create Handle and Open
     handle2 = CreateCamera("Cam02");            // Create Handle and Open
@@ -394,44 +394,44 @@ void MainFrame::on_CameraBtn_clicked()
         img7 = GetMatFrame(handle7);
         img8 = GetMatFrame(handle8);
 
-        for(unsigned int i=0; i<col; i++)
-        {
-            for(unsigned int j=0; j<row; j++)
-            {
-                icCam1[j][i].b = img1.at<cv::Vec3b>(j,i)[0];
-                icCam1[j][i].g = img1.at<cv::Vec3b>(j,i)[1];
-                icCam1[j][i].r = img1.at<cv::Vec3b>(j,i)[2];
+//        for(unsigned int i=0; i<col; i++)
+//        {
+//            for(unsigned int j=0; j<row; j++)
+//            {
+//                icCam1[j][i].b = img1.at<cv::Vec3b>(j,i)[0];
+//                icCam1[j][i].g = img1.at<cv::Vec3b>(j,i)[1];
+//                icCam1[j][i].r = img1.at<cv::Vec3b>(j,i)[2];
 
-                icCam2[j][i].b = img2.at<cv::Vec3b>(j,i)[0];
-                icCam2[j][i].g = img2.at<cv::Vec3b>(j,i)[1];
-                icCam2[j][i].r = img2.at<cv::Vec3b>(j,i)[2];
+//                icCam2[j][i].b = img2.at<cv::Vec3b>(j,i)[0];
+//                icCam2[j][i].g = img2.at<cv::Vec3b>(j,i)[1];
+//                icCam2[j][i].r = img2.at<cv::Vec3b>(j,i)[2];
 
-                icCam3[j][i].b = img3.at<cv::Vec3b>(j,i)[0];
-                icCam3[j][i].g = img3.at<cv::Vec3b>(j,i)[1];
-                icCam3[j][i].r = img3.at<cv::Vec3b>(j,i)[2];
+//                icCam3[j][i].b = img3.at<cv::Vec3b>(j,i)[0];
+//                icCam3[j][i].g = img3.at<cv::Vec3b>(j,i)[1];
+//                icCam3[j][i].r = img3.at<cv::Vec3b>(j,i)[2];
 
-                icCam4[j][i].b = img4.at<cv::Vec3b>(j,i)[0];
-                icCam4[j][i].g = img4.at<cv::Vec3b>(j,i)[1];
-                icCam4[j][i].r = img4.at<cv::Vec3b>(j,i)[2];
+//                icCam4[j][i].b = img4.at<cv::Vec3b>(j,i)[0];
+//                icCam4[j][i].g = img4.at<cv::Vec3b>(j,i)[1];
+//                icCam4[j][i].r = img4.at<cv::Vec3b>(j,i)[2];
 
-                icCam5[j][i].b = img5.at<cv::Vec3b>(j,i)[0];
-                icCam5[j][i].g = img5.at<cv::Vec3b>(j,i)[1];
-                icCam5[j][i].r = img5.at<cv::Vec3b>(j,i)[2];
+//                icCam5[j][i].b = img5.at<cv::Vec3b>(j,i)[0];
+//                icCam5[j][i].g = img5.at<cv::Vec3b>(j,i)[1];
+//                icCam5[j][i].r = img5.at<cv::Vec3b>(j,i)[2];
 
-                icCam6[j][i].b = img6.at<cv::Vec3b>(j,i)[0];
-                icCam6[j][i].g = img6.at<cv::Vec3b>(j,i)[1];
-                icCam6[j][i].r = img6.at<cv::Vec3b>(j,i)[2];
+//                icCam6[j][i].b = img6.at<cv::Vec3b>(j,i)[0];
+//                icCam6[j][i].g = img6.at<cv::Vec3b>(j,i)[1];
+//                icCam6[j][i].r = img6.at<cv::Vec3b>(j,i)[2];
 
-                icCam7[j][i].b = img7.at<cv::Vec3b>(j,i)[0];
-                icCam7[j][i].g = img7.at<cv::Vec3b>(j,i)[1];
-                icCam7[j][i].r = img7.at<cv::Vec3b>(j,i)[2];
+//                icCam7[j][i].b = img7.at<cv::Vec3b>(j,i)[0];
+//                icCam7[j][i].g = img7.at<cv::Vec3b>(j,i)[1];
+//                icCam7[j][i].r = img7.at<cv::Vec3b>(j,i)[2];
 
-                icCam8[j][i].b = img8.at<cv::Vec3b>(j,i)[0];
-                icCam8[j][i].g = img8.at<cv::Vec3b>(j,i)[1];
-                icCam8[j][i].r = img8.at<cv::Vec3b>(j,i)[2];
-            }
+//                icCam8[j][i].b = img8.at<cv::Vec3b>(j,i)[0];
+//                icCam8[j][i].g = img8.at<cv::Vec3b>(j,i)[1];
+//                icCam8[j][i].r = img8.at<cv::Vec3b>(j,i)[2];
+//            }
 
-        }
+//        }
 
         if(show_flag == 1)
         {
@@ -559,7 +559,7 @@ void MainFrame::on_CameraBtn_clicked()
 
 void MainFrame::on_Checker_Corner_clicked()
 {
-    int cam_num = 5;
+    int cam_num = 2;
     string direction = "right";
 
     int numCornerHor = 9;
@@ -628,10 +628,12 @@ void MainFrame::on_Checker_Corner_clicked()
 //////////////////////////////
 //// Zhang's Method (HW1) ////
 //////////////////////////////
+
+int cal_cam_num = 2;
+string cal_direction = "right";
+
 void MainFrame::on_zhang_clicked()
 {
-    int cal_cam_num = 1;
-
     int nImg = 4;
     int nFeature = 54;
     int nItr = 1000;
@@ -641,13 +643,13 @@ void MainFrame::on_zhang_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "Cam123txt/left";
+            dir += "cam" + to_string(cal_cam_num) +  "/" + cal_direction + "_txt/";
             dir += to_string(i);
             dir += ".txt";
             pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "Cam123txt/model.txt";
+            dir += "model.txt";
             pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -672,6 +674,8 @@ void MainFrame::on_zhang_clicked()
     ofstream ofs;
     string Cal_fname = rvdir + "Caltxt/Ca1_";
     Cal_fname += to_string(cal_cam_num);
+    Cal_fname += "_";
+    Cal_fname += cal_direction;
     Cal_fname += ".txt";
 
     ofs.open(Cal_fname);
@@ -722,13 +726,13 @@ void MainFrame::on_plot_point_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "Cam123txt/left";
+            dir += "cam" + to_string(cal_cam_num) +  "/" + cal_direction + "_txt/";
             dir += to_string(i);
             dir += ".txt";
             pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "Cam123txt/model.txt";
+            dir += "model.txt";
             pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -770,8 +774,8 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 13;
-    int right_cam_num = 12;
+    int left_cam_num = 28;
+    int right_cam_num = 2;
 
     int row = 1024;
     int col = 1280;
@@ -791,7 +795,7 @@ void MainFrame::on_stereo_calibration_clicked()
             left_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "cam"+ to_string(left_cam_num) + "/left_txt/model.txt";
+            dir += "model.txt";
             left_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -806,7 +810,7 @@ void MainFrame::on_stereo_calibration_clicked()
             right_pointzip.push_back(rv0171::PointList(dir));
         }
         else {
-            dir += "cam" + to_string(right_cam_num) + "/right_txt/model.txt";
+            dir += "model.txt";
             right_pointzip.push_back(rv0171::PointList(dir));
         }
     }
@@ -1046,9 +1050,9 @@ void MainFrame::on_pushRtMatrix_clicked()
 
 void MainFrame::on_RT_product_clicked()
 {
-    int left_cam_num = 16;
-    int main_cam_num = 13;
-    int right_cam_num = 12;
+    int left_cam_num = 18;
+    int main_cam_num = 1;
+    int right_cam_num = 3;
 
     //T12
     string RT_path12 = rvdir + "RTtxt/RT_";
