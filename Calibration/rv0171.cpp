@@ -562,7 +562,7 @@ Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
     cvtColor(matRightImage, matGrayRImage, COLOR_RGB2GRAY);
 
     //step 1 SURF이용해서 특징점 추출
-    int nMinHessian =400; // threshold (한계점)
+    int nMinHessian =1500; // threshold (한계점)
     Ptr<SurfFeatureDetector> Detector = SURF::create(nMinHessian);
 
     vector <KeyPoint> vtKeypointsObject, vtKeypointsScene;
@@ -715,8 +715,11 @@ vector<vector<KVector>> rv0171::make_3DCameraCoord(KVector vX, KImageColor Img)
     {
         for(int j=0; j<Img.Col(); j++)//1280
         {
-            vXi[0] = j - (int)(Img.Col()/2) ; // u - ui
-            vXi[1] = i - (int)(Img.Row()/2); // v - vi
+//            vXi[0] = j - (int)(Img.Col()/2) ; // u - ui
+//            vXi[1] = i - (int)(Img.Row()/2); // v - vi
+//            vXi[2] = 1;
+            vXi[0] = j; // u - ui
+            vXi[1] = i; // v - vi
             vXi[2] = 1;
 
             //vXi[2] = vX[0]; // f

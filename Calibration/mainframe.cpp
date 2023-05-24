@@ -629,7 +629,7 @@ void MainFrame::on_Checker_Corner_clicked()
 //// Zhang's Method (HW1) ////
 //////////////////////////////
 
-int cal_cam_num = 2;
+int cal_cam_num = 1;
 string cal_direction = "right";
 
 void MainFrame::on_zhang_clicked()
@@ -774,8 +774,8 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 28;
-    int right_cam_num = 2;
+    int left_cam_num = 3;
+    int right_cam_num = 1;
 
     int row = 1024;
     int col = 1280;
@@ -1050,9 +1050,9 @@ void MainFrame::on_pushRtMatrix_clicked()
 
 void MainFrame::on_RT_product_clicked()
 {
-    int left_cam_num = 18;
+    int left_cam_num = 3;
     int main_cam_num = 1;
-    int right_cam_num = 3;
+    int right_cam_num = 18;
 
     //T12
     string RT_path12 = rvdir + "RTtxt/RT_";
@@ -1183,10 +1183,10 @@ void MainFrame::on_pushPanorama_clicked()
     Mat result3;
 
     //가운데 image가 중심이므로 가운데 image를 기준으로 좌/우에 image stitching
-    matImage1 = imread("./data/Cam13/right/3.bmp", IMREAD_COLOR);
-    matImage2 = imread("./data/Cam12/right/3.bmp", IMREAD_COLOR);
-    matImage3 = imread("./data/Cam123/main3.bmp", IMREAD_COLOR);
-    matImage4 = imread("./data/Cam123/right3.bmp", IMREAD_COLOR);
+    matImage1 = imread("./data/realtime/1.bmp", IMREAD_COLOR);
+    matImage2 = imread("./data/realtime/3.bmp", IMREAD_COLOR);
+//    matImage3 = imread("./data/Cam123/main3.bmp", IMREAD_COLOR);
+//    matImage4 = imread("./data/Cam123/right3.bmp", IMREAD_COLOR);
 
     //if (matImage1.empty() || matImage2.empty() || matImage3.empty()) return -1;
 
@@ -1205,11 +1205,11 @@ void MainFrame::on_pushPanorama_clicked()
 void MainFrame::on_Cylinderical_Warp_clicked()
 {
     // 16(left)->0  13(right)->1 12(right)->2
-    int left_cam_num = 16;
-    int right_cam_num = 13;
+    int left_cam_num = 1;
+    int right_cam_num = 18;
 
-    int left_cam_num2 = 16;
-    int right_cam_num2 = 12;
+    int left_cam_num2 = 3;
+    int right_cam_num2 = 18;
 
     //Image 1
     KImageColor Img(1024,1280);
@@ -1237,7 +1237,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     //Image 2
     KImageColor Img2(1024,1280);
     string sImgName2 = rvdir;
-    sImgName2 += "realtime/2.bmp";
+    sImgName2 += "realtime/3.bmp";
 
     QImage* _img2 = new QImage();
     if(_img2->load(QString::fromStdString(sImgName2)))
@@ -1389,12 +1389,27 @@ void MainFrame::on_Cylinderical_Warp_clicked()
 
     //zero center image plane으로 투영
     KMatrix mA(3,3);
-
-    mA[0][0] = vX[0]; //fi
-    mA[1][1] = vX[0]; //fi
+    mA[0][0] = 1165; //fi
+    mA[1][1] = 1165; //fi
     mA[2][2] = 1.0;
-    mA[0][2] = 321.583;
-    mA[1][2] = 252.409;
+    mA[0][2] = 0;
+    mA[1][2] = 0;
+
+//    mA[0][0] = vX[0]; //fi
+//    mA[1][1] = vX[0]; //fi
+//    mA[2][2] = 1.0;
+////    mA[0][2] = 321.583;
+////    mA[1][2] = 252.409;
+//    mA[0][2] = 553.88;
+//    mA[1][2] = 614.01;
+
+    KMatrix mA1(3,3);
+    mA1[0][0] = 1157.06;   // alpha
+    mA1[0][1] = 0.0;
+    mA1[1][1] = 1146.59;   // beta
+    mA1[0][2] = 553.88;   // u0
+    mA1[1][2] = 614.012;   // v0
+    mA1[2][2] = 1.0;     // scale
 
     KRotation R01T = R1.Iv();
 
@@ -1407,8 +1422,10 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     {
         for(int j =0; j<vvXi_tilt.at(0).size();j++) // 1280
         {
-            temp = mA*R01T*(mA.Iv()*vvXi_tilt[i][j]);
+            temp = mA*R01T*(mA1.Iv()*vvXi_tilt[i][j]);
 
+            //내꺼
+//            temp = mA*(R01T*mA1.Iv())*vvXi_tilt[i][j];
             vvXi_tilt[i][j] = temp/temp[2][0];
         }
     }
@@ -1418,8 +1435,10 @@ void MainFrame::on_Cylinderical_Warp_clicked()
         for(int j =0; j<vvXi_tilt.at(0).size();j++) // 1280
         {
             temp2 = -mA*R01T*vT;
-            vvXi_tilt[i][j] += temp2/temp2[2][0];
 
+            //내꺼
+//            temp2 = mA*(R01T*mA1.Iv())*(-mA1*vT);
+            vvXi_tilt[i][j] += temp2/temp2[2][0];
         }
     }
 
@@ -1452,14 +1471,23 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     KMatrix temp3(3,1);
     KMatrix temp4(3,1);
 
+    KMatrix mA2(3,3);
+    mA2[0][0] = 1007.52;   // alpha
+    mA2[0][1] = 0.0;
+    mA2[1][1] = 1036.06;   // beta
+    mA2[0][2] = 653.634;   // u0
+    mA2[1][2] = 480.009;   // v0
+    mA2[2][2] = 1.0;     // scale
 
     for(int i =0; i<vvXi_tilt2.size();i++) //1024
     {
         for(int j =0; j<vvXi_tilt2.at(0).size();j++) // 1280
         {
-            temp3 = (mA.Iv()*vvXi_tilt2[i][j]);
+            temp3 = mA*R02T*(mA2.Iv()*vvXi_tilt2[i][j]);
 
-            vvXi_tilt2[i][j] = (mA*R01T*temp3)/temp3[2][0];
+            //내꺼
+//            temp3 = mA*(R02T*mA2.Iv())*vvXi_tilt2[i][j];
+            vvXi_tilt2[i][j] = temp3/temp3[2][0];
         }
     }
 
@@ -1467,9 +1495,11 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     {
         for(int j =0; j<vvXi_tilt2.at(0).size();j++) // 1280
         {
-            temp4 = -mA*R01T*vT2;
-            vvXi_tilt2[i][j] += temp4/temp4[2][0];
+            temp4 = -mA*R02T*vT2;
 
+            //내꺼
+//            temp4 = mA*(R02T*mA2.Iv())*(-mA2*vT);
+            vvXi_tilt2[i][j] += temp4/temp4[2][0];
         }
     }
 
@@ -1488,7 +1518,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     //출력을 위한 imageform 생성
 
     ImageForm* dot_form;
-    KImageColor icMain(1024*1.5, 1280*image_count);
+    KImageColor icMain(1024*3, 1280*3);
 
     dot_form = new ImageForm(icMain,"point",this);
 
@@ -1501,13 +1531,13 @@ void MainFrame::on_Cylinderical_Warp_clicked()
         for(int j=0; j<1280; j++)
         {
             QColor color_img = _img->pixelColor(j,i);
-            mp.setX((int)(vvXi_tilt.at(i).at(j)._ppA[0][0])+(int)(Img.Col()/2));
-            mp.setY((int)(vvXi_tilt.at(i).at(j)._ppA[1][0])+(int)(Img.Row()/2));
+            mp.setX((int)(vvXi_tilt.at(i).at(j)._ppA[0][0])+(int)(Img.Col()/2)+1000);
+            mp.setY((int)(vvXi_tilt.at(i).at(j)._ppA[1][0])+(int)(Img.Row()/2)+1000);
             dot_form->DrawEllipse(mp,1,1, color_img);
 
             QColor color_img2 = _img2->pixelColor(j,i);
-            mp2.setX((int)(vvXi_tilt2.at(i).at(j)._ppA[0][0])+(int)(Img2.Col()/2)+400);
-            mp2.setY((int)(vvXi_tilt2.at(i).at(j)._ppA[1][0])+(int)(Img2.Row()/2)+400);
+            mp2.setX((int)(vvXi_tilt2.at(i).at(j)._ppA[0][0])+(int)(Img2.Col()/2)+1000);
+            mp2.setY((int)(vvXi_tilt2.at(i).at(j)._ppA[1][0])+(int)(Img2.Row()/2)+1000);
             dot_form->DrawEllipse(mp2,1,1, color_img2);
         }
     }
