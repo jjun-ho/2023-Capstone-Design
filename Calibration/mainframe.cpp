@@ -136,7 +136,6 @@ int EBimuAsciiParser(int *id, float *item, unsigned int number_of_item)
     return result;
 }
 
-
 MainFrame::MainFrame(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MainFrame)
@@ -221,7 +220,6 @@ void MainFrame::closeEvent(QCloseEvent* event)
     _lImageForm.clear();
 }
 
-
 void MainFrame::on_buttonOpen_clicked()
 {
     //이미지 파일 선택
@@ -292,7 +290,6 @@ void MainFrame::on_buttonShowList_clicked()
 
 int col = 1280;
 int row = 1024;
-
 KImageColor icCam1(row, col);
 KImageColor icCam2(row, col);
 KImageColor icCam3(row, col);
@@ -377,7 +374,6 @@ void MainFrame::on_CameraBtn_clicked()
     GrabCamera(handle6);
     GrabCamera(handle7);
     GrabCamera(handle8);
-
 
     Mat img1, img2, img3, img4, img5, img6, img7, img8;
     Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
@@ -556,7 +552,6 @@ void MainFrame::on_CameraBtn_clicked()
     }
 }
 
-
 void MainFrame::on_Checker_Corner_clicked()
 {
     int cam_num = 2;
@@ -624,14 +619,11 @@ void MainFrame::on_Checker_Corner_clicked()
     }
 }
 
-
 //////////////////////////////
 //// Zhang's Method (HW1) ////
 //////////////////////////////
-
 int cal_cam_num = 1;
 string cal_direction = "right";
-
 void MainFrame::on_zhang_clicked()
 {
     int nImg = 4;
@@ -767,7 +759,6 @@ void MainFrame::on_plot_point_clicked()
     //UI 활성화 갱신
     UpdateUI();
 }
-
 
 //////////////////////////////
 // Stereo Calibration (HW2) //
@@ -1047,7 +1038,6 @@ void MainFrame::on_pushRtMatrix_clicked()
     cout << "t1:" << buf[3] << " t2:" << buf[4] << " t3:" << buf[5] << endl;
 }
 
-
 void MainFrame::on_RT_product_clicked()
 {
     int left_cam_num = 18;
@@ -1170,7 +1160,6 @@ void MainFrame::on_RT_product_clicked()
 
 }
 
-
 void MainFrame::on_pushPanorama_clicked()
 {
     Mat matImage1;
@@ -1202,6 +1191,7 @@ void MainFrame::on_pushPanorama_clicked()
     //imshow("Result3", result3);
 }
 
+//KImageColor icMain(1024*2.5, 1280*3);
 void MainFrame::on_Cylinderical_Warp_clicked()
 {
     int left_cam_num = 1;
@@ -1319,7 +1309,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rv0171::make_Surround_View_Stitching(mA, mA1, rR1, vT1, vvXi_tilt1);
 
     //cylinderical warping
-    rv0171::make_Cylinderical_Warp(1165, vvXi_tilt1);
+    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt1);
 
     cout << vvXi_tilt1.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt1.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt1.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt1.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
@@ -1337,7 +1327,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rv0171::make_Surround_View_Stitching(mA, mA3, rR3, vT3, vvXi_tilt3);
 
     // cylinderical warping
-    rv0171::make_Cylinderical_Warp(1165, vvXi_tilt3);
+    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt3);
 
     cout << vvXi_tilt3.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt3.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt3.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt3.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
@@ -1355,7 +1345,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rv0171::make_Surround_View_Stitching(mA, mA2, rR2, vT2, vvXi_tilt2);
 
     // cylinderical warping
-    rv0171::make_Cylinderical_Warp(1165, vvXi_tilt2);
+    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt2);
 
     cout << vvXi_tilt2.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt2.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt2.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt2.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
@@ -1379,8 +1369,8 @@ void MainFrame::on_Cylinderical_Warp_clicked()
         for(int j=0; j<1280; j++)
         {
             QColor color_img = _img->pixelColor(j,i);
-            mp.setX((int)(vvXi_tilt.at(i).at(j)._ppA[0][0])+(int)(Img.Col()/2)+1200);
-            mp.setY((int)(vvXi_tilt.at(i).at(j)._ppA[1][0])+(int)(Img.Row()/2)+1200);
+            mp.setX((int)(vvXi_tilt1.at(i).at(j)._ppA[0][0])+(int)(Img.Col()/2)+1200);
+            mp.setY((int)(vvXi_tilt1.at(i).at(j)._ppA[1][0])+(int)(Img.Row()/2)+1200);
             dot_form->DrawEllipse(mp,1,1, color_img);
 
             QColor color_img2 = _img2->pixelColor(j,i);
@@ -1400,7 +1390,6 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     cout << "cylinderical Process Finished!" << endl;
     UpdateUI();
 }
-
 
 void MainFrame::on_IMUButton_clicked()
 {
@@ -1432,3 +1421,100 @@ void MainFrame::on_IMUButton_clicked()
     }
 }
 
+void MainFrame::on_KernelButton_clicked()
+{
+    KImageColor icMain;
+    KImageColor icKernel;
+    icKernel.Create(1024, 1280);
+
+    if(_q_pFormFocused != 0 && _q_pFormFocused->ImageColor().Address() &&  _q_pFormFocused->ID() == "point")
+        icMain = _q_pFormFocused->ImageColor();
+    else
+        return;
+
+    int row = icKernel.Row();   // 1024
+    int col = icKernel.Col();   // 1280
+
+    int id;
+    float item[100];
+
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
+
+    Quaternion q;
+    EulerAngles e;
+
+    ImageForm*  q_pForm = new ImageForm(icKernel, "Kernel Applied", this);
+    _lImageForm.push_back(q_pForm);
+    q_pForm->show();
+    UpdateUI();
+
+    int data_row = 0;
+
+    while(1)   // data_row: 300 ~ 1300 까지
+    {
+        if (EBimuAsciiParser(&id,item, 5))
+        {
+            q.z = item[0];
+            q.y = item[1];
+            q.x = item[2];
+            q.w = item[3];
+
+            e = ToEulerAngles(q);
+            printf("Yaw: %f\n", e.yaw);
+
+            int data_row = (int)((e.yaw + 180)*(icMain.Col()/360));
+            //cout << "data_row: " << data_row << endl;
+
+            for(int c = 0; c < col; c++)        // 1280
+            {
+                for(int r = 0; r < row; r++)    // 1024
+                {
+                    if(data_row > icMain.Col())
+                    {
+                        icKernel[r][c].r = icMain[r][data_row + c - icMain.Col()].r;
+                        icKernel[r][c].g = icMain[r][data_row + c - icMain.Col()].g;
+                        icKernel[r][c].b = icMain[r][data_row + c - icMain.Col()].b;
+                    }
+                    else
+                    {
+                        icKernel[r][c].r = icMain[r][data_row + c].r;
+                        icKernel[r][c].g = icMain[r][data_row + c].g;
+                        icKernel[r][c].b = icMain[r][data_row + c].b;
+                    }
+                }
+            }
+            q_pForm->Update(icKernel);
+            UpdateUI();
+            QCoreApplication::processEvents();
+        }
+        else
+        {
+//            for(int c = 0; c < col; c++)        // 1280
+//            {
+//                for(int r = 0; r < row; r++)    // 1024
+//                {
+//                    if(data_row > icMain.Col())
+//                    {
+//                        icKernel[r][c].r = icMain[r][data_row + c - icMain.Col()].r;
+//                        icKernel[r][c].g = icMain[r][data_row + c - icMain.Col()].g;
+//                        icKernel[r][c].b = icMain[r][data_row + c - icMain.Col()].b;
+//                    }
+//                    else
+//                    {
+//                        icKernel[r][c].r = icMain[r][data_row + c].r;
+//                        icKernel[r][c].g = icMain[r][data_row + c].g;
+//                        icKernel[r][c].b = icMain[r][data_row + c].b;
+//                    }
+//                }
+//            }
+//            q_pForm->Update(icKernel);
+//            UpdateUI();
+//            QCoreApplication::processEvents();
+            cout << "Connection lost!! Turn on your IMU!!" << endl;
+        }
+    }
+}

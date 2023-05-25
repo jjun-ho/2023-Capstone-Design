@@ -849,19 +849,19 @@ void rv0171::make_Surround_View_Stitching(KMatrix mA, KMatrix mAi, KRotation rRi
 }
 
 
-void rv0171::make_Cylinderical_Warp(double f, vector<vector<KVector>> &ui)
+void rv0171::make_Cylinderical_Warp(KMatrix mA, vector<vector<KVector>> &ui)
 {
     // V0(uv,vv) // 가상 좌표계를 만들고  (가상의 방향) 이것으로 virtual camera 를 만든다  virtual camera의  중심을 optical center (V0)로 했다
     //N개의 카메라가 있다면 각각의 optical center가 있는데 그것의  중점이 world coordinate 의 중심으로   (uv,vv) 로 둿다.
 
-    double fv = f;
+    double fv = mA[0][0];
 
     for(int i =0; i<ui.size();i++) //1024
     {
         for(int j =0; j<ui.at(0).size();j++) // 1280
         {
-            ui.at(i).at(j)._ppA[0][0] = fv * atan2( ui.at(i).at(j)._ppA[0][0],fv);
-            ui.at(i).at(j)._ppA[1][0] = fv * ( ui.at(i).at(j)._ppA[1][0] / sqrt(ui.at(i).at(j)._ppA[0][0]*ui.at(i).at(j)._ppA[0][0] + fv*fv));
+            ui.at(i).at(j)._ppA[0][0] = fv * atan2( ui.at(i).at(j)._ppA[0][0],fv)+mA[0][2];
+            ui.at(i).at(j)._ppA[1][0] = fv * ( ui.at(i).at(j)._ppA[1][0] / sqrt(ui.at(i).at(j)._ppA[0][0]*ui.at(i).at(j)._ppA[0][0] + fv*fv))+mA[1][2];
         }
     }
 

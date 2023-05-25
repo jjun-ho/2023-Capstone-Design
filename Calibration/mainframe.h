@@ -61,6 +61,8 @@ private slots:
 
     void on_IMUButton_clicked();
 
+    void on_KernelButton_clicked();
+
 protected:
     void closeEvent(QCloseEvent* event);
 };
