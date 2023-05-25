@@ -699,7 +699,7 @@ KMatrix rv0171::Import_mAi(int cam_num)
 {
     string mAi_path = "./data/Caltxt/Cal_";
     mAi_path += to_string(cam_num);
-    mAi_path += "_right.txt";
+    mAi_path += ".txt";
 
     string str;
     double buf[4] = {0,};
@@ -805,7 +805,6 @@ vector<vector<KVector>> rv0171::make_3DCameraCoord(KImageColor Img)
     {
         for(int j=0; j<Img.Col(); j++)//1280
         {
-
             vXi[0] = j; // u - ui
             vXi[1] = i; // v - vi
             vXi[2] = 1;

@@ -575,6 +575,7 @@ void MainFrame::on_Checker_Corner_clicked()
         Mat gray_image;
 
         string iname = rvdir + "cam" + to_string(cam_num) + "/" + direction + "/";
+        //string iname = rvdir + "Zhang/cam" + to_string(cam_num) + "/";
         iname += to_string(i+1);
         iname += ".bmp";
 
@@ -602,6 +603,7 @@ void MainFrame::on_Checker_Corner_clicked()
 
         ofstream ofs;
         string fname = rvdir + "cam" + to_string(cam_num) +  "/" + direction + "_txt/";
+//        string fname = rvdir + "Zhang/cam" + to_string(cam_num) + "_txt/";
         fname += to_string(i+1);
         fname += ".txt";
 
@@ -636,6 +638,7 @@ void MainFrame::on_zhang_clicked()
         string dir = rvdir;
         if(i != nImg + 1) {
             dir += "cam" + to_string(cal_cam_num) +  "/" + cal_direction + "_txt/";
+            //dir += "Zhang/cam" + to_string(cal_cam_num) + "_txt/";
             dir += to_string(i);
             dir += ".txt";
             pointzip.push_back(rv0171::PointList(dir));
@@ -666,8 +669,6 @@ void MainFrame::on_zhang_clicked()
     ofstream ofs;
     string Cal_fname = rvdir + "Caltxt/Cal_";
     Cal_fname += to_string(cal_cam_num);
-    Cal_fname += "_";
-    Cal_fname += cal_direction;
     Cal_fname += ".txt";
 
     ofs.open(Cal_fname);
@@ -719,6 +720,7 @@ void MainFrame::on_plot_point_clicked()
         string dir = rvdir;
         if(i != nImg + 1) {
             dir += "cam" + to_string(cal_cam_num) +  "/" + cal_direction + "_txt/";
+            //dir += "Zhang/cam" + to_string(cal_cam_num) + "_txt/";
             dir += to_string(i);
             dir += ".txt";
             pointzip.push_back(rv0171::PointList(dir));
