@@ -554,13 +554,13 @@ void MainFrame::on_CameraBtn_clicked()
 
 void MainFrame::on_Checker_Corner_clicked()
 {
-    int cam_num = 2;
+    int cam_num = 28;
     string direction = "right";
 
     int numCornerHor = 9;
     int numCornerVer = 6;
     //int oneSqureLen = 40;
-    int numBoards = 4;
+    int numBoards = 10;
 
     int numSquares = numCornerHor *  numCornerVer;
     Size board_sz = Size(numCornerHor, numCornerVer);
@@ -574,7 +574,7 @@ void MainFrame::on_Checker_Corner_clicked()
         Mat image;
         Mat gray_image;
 
-        string iname = rvdir + "cam" + to_string(cam_num) + "/" + direction + "/";
+        string iname = rvdir + "Streo/cam" + to_string(cam_num) + "/" + direction + "/";
         //string iname = rvdir + "Zhang/cam" + to_string(cam_num) + "/";
         iname += to_string(i+1);
         iname += ".bmp";
@@ -602,7 +602,7 @@ void MainFrame::on_Checker_Corner_clicked()
         imshow(winname, gray_image);
 
         ofstream ofs;
-        string fname = rvdir + "cam" + to_string(cam_num) +  "/" + direction + "_txt/";
+        string fname = rvdir + "Streo/cam" + to_string(cam_num) +  "/" + direction + "_txt/";
 //        string fname = rvdir + "Zhang/cam" + to_string(cam_num) + "_txt/";
         fname += to_string(i+1);
         fname += ".txt";
@@ -663,23 +663,23 @@ void MainFrame::on_zhang_clicked()
     double dK2 = vX[5]; // k2
     double dError = vX[vX.Size() - 1];  // vX's last element is Err
 
-    //Calibration Matrix Save
-    ofstream ofs;
-    string Cal_fname = rvdir + "Caltxt/Cal_";
-    Cal_fname += to_string(cal_cam_num);
-    Cal_fname += ".txt";
+//    //Calibration Matrix Save
+//    ofstream ofs;
+//    string Cal_fname = rvdir + "Caltxt/Cal_";
+//    Cal_fname += to_string(cal_cam_num);
+//    Cal_fname += ".txt";
 
-    ofs.open(Cal_fname);
-    if(ofs.fail())
-    {
-        cout<<"File Error"<<endl;
-    }
-    //ofs << corners;
-    for(int i=0;i<6;i++)
-    {
-        ofs<< vX[i] << endl;
-    }
-    ofs.close();
+//    ofs.open(Cal_fname);
+//    if(ofs.fail())
+//    {
+//        cout<<"File Error"<<endl;
+//    }
+//    //ofs << corners;
+//    for(int i=0;i<6;i++)
+//    {
+//        ofs<< vX[i] << endl;
+//    }
+//    ofs.close();
 
     //  Print calibration parameters
     QString temp_str;
@@ -764,13 +764,13 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 28;
-    int right_cam_num = 1;
+    int left_cam_num = 1;
+    int right_cam_num = 18;
 
     int row = 1024;
     int col = 1280;
 
-    int nImg = 4;
+    int nImg = 10;
     int nFeature = 54; // Feature점 개수: 100
     int nItr = 100;
 
@@ -779,7 +779,7 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam"+ to_string(left_cam_num) + "/left_txt/";
+            dir += "Streo/cam"+ to_string(left_cam_num) + "/left_txt/";
             dir += to_string(i);
             dir += ".txt";
             left_pointzip.push_back(rv0171::PointList(dir));
@@ -794,7 +794,7 @@ void MainFrame::on_stereo_calibration_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam" + to_string(right_cam_num) + "/right_txt/";
+            dir += "Streo/cam" + to_string(right_cam_num) + "/right_txt/";
             dir += to_string(i);
             dir += ".txt";
             right_pointzip.push_back(rv0171::PointList(dir));
@@ -805,23 +805,54 @@ void MainFrame::on_stereo_calibration_clicked()
         }
     }
 
-    KMatrix mX_l, mX_r;
-    mX_l = rv0171::Import_mAi(left_cam_num);
-    mX_r = rv0171::Import_mAi(right_cam_num);
-
     KVector vX_l, vX_r;
-
     // 2. Calibrate separately the two cameras using Zhang's method
     vX_l = rv0171::ZhangsCalibration(left_pointzip, nImg, nFeature, nItr);
     vX_r = rv0171::ZhangsCalibration(right_pointzip, nImg, nFeature, nItr);
 
+    //Calibration Matrix Save
+    ofstream ofs_l;
+    string Cal_fname_l = rvdir + "Caltxt/Cal_";
+    Cal_fname_l += to_string(left_cam_num);
+    Cal_fname_l += "_left.txt";
+
+    ofs_l.open(Cal_fname_l);
+    if(ofs_l.fail())
+    {
+        cout<<"File Error"<<endl;
+    }
+    //ofs << corners;
+    for(int i=0;i<6;i++)
+    {
+        ofs_l<< vX_l[i] << endl;
+    }
+    ofs_l.close();
+
+    //Calibration Matrix Save
+    ofstream ofs_r;
+    string Cal_fname_r = rvdir + "Caltxt/Cal_";
+    Cal_fname_r += to_string(right_cam_num);
+    Cal_fname_r += "_right.txt";
+
+    ofs_r.open(Cal_fname_r);
+    if(ofs_r.fail())
+    {
+        cout<<"File Error"<<endl;
+    }
+    //ofs << corners;
+    for(int i=0;i<6;i++)
+    {
+        ofs_r<< vX_r[i] << endl;
+    }
+    ofs_r.close();
+
     KMatrix mA_l(3, 3); // left camera intrinsic matrix
-    mA_l = rv0171::Import_mAi(left_cam_num);
-//    mA_l[0][0] = vX_l[0];
-//    mA_l[1][1] = vX_l[1];
-//    mA_l[0][2] = vX_l[2];
-//    mA_l[1][2] = vX_l[3];
-//    mA_l[2][2] = 1.0;
+    //mA_l = rv0171::Import_mAi(left_cam_num);
+    mA_l[0][0] = vX_l[0];
+    mA_l[1][1] = vX_l[1];
+    mA_l[0][2] = vX_l[2];
+    mA_l[1][2] = vX_l[3];
+    mA_l[2][2] = 1.0;
     double dK1_l = vX_l[4];
     double dK2_l = vX_l[5];
     double dError_l = vX_l[vX_l.Size() - 1];  // vX's last element is Err
@@ -846,12 +877,12 @@ void MainFrame::on_stereo_calibration_clicked()
     ui->textErrorCam01->setText(temp_str);
 
     KMatrix mA_r(3, 3);// right camera intrinsic matrix
-    mA_r = rv0171::Import_mAi(right_cam_num);
-//    mA_r[0][0] = vX_r[0];
-//    mA_r[1][1] = vX_r[1];
-//    mA_r[0][2] = vX_r[2];
-//    mA_r[1][2] = vX_r[3];
-//    mA_r[2][2] = 1.0;
+    //mA_r = rv0171::Import_mAi(right_cam_num);
+    mA_r[0][0] = vX_r[0];
+    mA_r[1][1] = vX_r[1];
+    mA_r[0][2] = vX_r[2];
+    mA_r[1][2] = vX_r[3];
+    mA_r[2][2] = 1.0;
     double dK1_r = vX_r[4];
     double dK2_r = vX_r[5];
     double dError_r = vX_r[vX_r.Size() - 1];  // vX's last element is Err
@@ -933,11 +964,11 @@ void MainFrame::on_stereo_calibration_clicked()
     }
 
     // 출력을 위한 ImageForm 생성
-    ImageForm* q_pForm[4] = {0,};
-    string wName[] = {"left1", "left2", "left3", "left4"};
+    ImageForm* q_pForm[nImg] = {0,};
+    string wName[] = {"left1", "left2", "left3", "left4", "left5", "left6", "left7", "left8", "left9", "left10"};
     for (int i = 0; i < nImg; i++) {
         string sImgName = rvdir;
-        sImgName += "cam" + to_string(left_cam_num) +"/left/";
+        sImgName += "Streo/cam" + to_string(left_cam_num) +"/left/";
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
@@ -1005,8 +1036,8 @@ void MainFrame::on_stereo_calibration_clicked()
 
 void MainFrame::on_pushRtMatrix_clicked()
 {
-    int left_cam_num = 13;
-    int right_cam_num = 12;
+    int left_cam_num = 1;
+    int right_cam_num = 18;
 
     string RT_path = rvdir + "RTtxt/RT_";
     RT_path += to_string(left_cam_num);
@@ -1046,9 +1077,9 @@ void MainFrame::on_pushRtMatrix_clicked()
 
 void MainFrame::on_RT_product_clicked()
 {
-    int left_cam_num = 18;
-    int main_cam_num = 28;
-    int right_cam_num = 2;
+    int left_cam_num = 2;
+    int main_cam_num = 1;
+    int right_cam_num = 18;
 
     //T12
     string RT_path12 = rvdir + "RTtxt/RT_";
@@ -1200,15 +1231,6 @@ void MainFrame::on_pushPanorama_clicked()
 //KImageColor icMain(1024*2.5, 1280*3);
 void MainFrame::on_Cylinderical_Warp_clicked()
 {
-    int left_cam_num = 1;
-    int right_cam_num = 18;
-
-    int left_cam_num2 = 3;
-    int right_cam_num2 = 18;
-
-    int left_cam_num3 = 2;
-    int right_cam_num3 = 28;
-
     //Image 1
     KImageColor Img(1024,1280);
     string sImgName = rvdir;
@@ -1255,28 +1277,28 @@ void MainFrame::on_Cylinderical_Warp_clicked()
         qDebug() << "Image 2 load Error!!!";
     }
 
-    //Image 3
-    KImageColor Img3(1024,1280);
-    string sImgName3 = rvdir;
-    sImgName3 += "realtime/3.bmp";
+//    //Image 3
+//    KImageColor Img3(1024,1280);
+//    string sImgName3 = rvdir;
+//    sImgName3 += "realtime/3.bmp";
 
-    QImage* _img3 = new QImage();
-    if(_img3->load(QString::fromStdString(sImgName3)))
-    {
-        for(int r = 0; r < Img3.Row(); r++)
-        {
-            for(int c = 0; c < Img3.Col(); c++)
-            {
-                QColor color3 = _img3->pixelColor(c,r);
-                Img3[r][c].r = color3.red();
-                Img3[r][c].g = color3.green();
-                Img3[r][c].b = color3.blue();
-            }
-        }
-    }
-    else {
-        qDebug() << "Image 3 load Error!!!";
-    }
+//    QImage* _img3 = new QImage();
+//    if(_img3->load(QString::fromStdString(sImgName3)))
+//    {
+//        for(int r = 0; r < Img3.Row(); r++)
+//        {
+//            for(int c = 0; c < Img3.Col(); c++)
+//            {
+//                QColor color3 = _img3->pixelColor(c,r);
+//                Img3[r][c].r = color3.red();
+//                Img3[r][c].g = color3.green();
+//                Img3[r][c].b = color3.blue();
+//            }
+//        }
+//    }
+//    else {
+//        qDebug() << "Image 3 load Error!!!";
+//    }
 
     ///////////////////////////////R,t 불러오기//////////////////////////////////
     KRotation rR1;
@@ -1285,11 +1307,11 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     KVector vT1;
     vT1 = rv0171::Import_vTi(1, 18);
 
-    KRotation rR3;
-    rR3 = rv0171::Import_rRi(3, 18);
+//    KRotation rR3;
+//    rR3 = rv0171::Import_rRi(3, 18);
 
-    KVector vT3;
-    vT3 = rv0171::Import_vTi(3, 18);
+//    KVector vT3;
+//    vT3 = rv0171::Import_vTi(3, 18);
 
     KRotation rR2;
     rR2 = rv0171::Import_rRi(2, 28);
@@ -1315,7 +1337,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rv0171::make_Surround_View_Stitching(mA, mA1, rR1, vT1, vvXi_tilt1);
 
     //cylinderical warping
-    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt1);
+//    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt1);
 
     cout << vvXi_tilt1.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt1.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt1.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt1.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
@@ -1323,23 +1345,23 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     cout << vvXi_tilt1.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt1.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
     cout << endl;
 
-    //Image 3
-    vector<vector<KVector>> vvXi_tilt3;
-    vvXi_tilt3 = rv0171::make_3DCameraCoord(Img3); //3차원 카메라 좌표계
+//    //Image 3
+//    vector<vector<KVector>> vvXi_tilt3;
+//    vvXi_tilt3 = rv0171::make_3DCameraCoord(Img3); //3차원 카메라 좌표계
 
-    KMatrix mA3(3,3);
-    mA3 = rv0171::Import_mAi(3);
+//    KMatrix mA3(3,3);
+//    mA3 = rv0171::Import_mAi(3);
 
-    rv0171::make_Surround_View_Stitching(mA, mA3, rR3, vT3, vvXi_tilt3);
+//    rv0171::make_Surround_View_Stitching(mA, mA3, rR3, vT3, vvXi_tilt3);
 
-    // cylinderical warping
-    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt3);
+//    // cylinderical warping
+//    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt3);
 
-    cout << vvXi_tilt3.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt3.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
-    cout << vvXi_tilt3.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt3.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-    cout << vvXi_tilt3.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt3.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
-    cout << vvXi_tilt3.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt3.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-    cout << endl;
+//    cout << vvXi_tilt3.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt3.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
+//    cout << vvXi_tilt3.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt3.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+//    cout << vvXi_tilt3.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt3.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
+//    cout << vvXi_tilt3.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt3.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
+//    cout << endl;
 
     //Image 2
     vector<vector<KVector>> vvXi_tilt2;
@@ -1351,7 +1373,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rv0171::make_Surround_View_Stitching(mA, mA2, rR2, vT2, vvXi_tilt2);
 
     // cylinderical warping
-    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt2);
+//    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt2);
 
     cout << vvXi_tilt2.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt2.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt2.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt2.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
@@ -1362,7 +1384,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     //출력을 위한 imageform 생성
     int image_count = 3;
     ImageForm* dot_form;
-    KImageColor icMain(1024*2.5, 1280*image_count);
+    KImageColor icMain(1024*4, 1280*4);
 
     dot_form = new ImageForm(icMain,"point",this);
 
@@ -1384,10 +1406,10 @@ void MainFrame::on_Cylinderical_Warp_clicked()
             mp2.setY((int)(vvXi_tilt2.at(i).at(j)._ppA[1][0])+(int)(Img2.Row()/2)+1200);
             dot_form->DrawEllipse(mp2,1,1, color_img2);
 
-            QColor color_img3 = _img3->pixelColor(j,i);
-            mp3.setX((int)(vvXi_tilt3.at(i).at(j)._ppA[0][0])+(int)(Img3.Col()/2)+1200);
-            mp3.setY((int)(vvXi_tilt3.at(i).at(j)._ppA[1][0])+(int)(Img3.Row()/2)+1200);
-            dot_form->DrawEllipse(mp3,1,1, color_img3);
+//            QColor color_img3 = _img3->pixelColor(j,i);
+//            mp3.setX((int)(vvXi_tilt3.at(i).at(j)._ppA[0][0])+(int)(Img3.Col()/2)+1200);
+//            mp3.setY((int)(vvXi_tilt3.at(i).at(j)._ppA[1][0])+(int)(Img3.Row()/2)+1200);
+//            dot_form->DrawEllipse(mp3,1,1, color_img3);
         }
     }
     dot_form->show();
@@ -1481,15 +1503,15 @@ void MainFrame::on_KernelButton_clicked()
                 {
                     if(data_row > icMain.Col())
                     {
-                        icKernel[r][c].r = icMain[r][data_row + c - icMain.Col()].r;
-                        icKernel[r][c].g = icMain[r][data_row + c - icMain.Col()].g;
-                        icKernel[r][c].b = icMain[r][data_row + c - icMain.Col()].b;
+                        icKernel[r][c].r = icMain[r+1300][data_row + c - icMain.Col()].r;
+                        icKernel[r][c].g = icMain[r+1300][data_row + c - icMain.Col()].g;
+                        icKernel[r][c].b = icMain[r+1300][data_row + c - icMain.Col()].b;
                     }
                     else
                     {
-                        icKernel[r][c].r = icMain[r][data_row + c].r;
-                        icKernel[r][c].g = icMain[r][data_row + c].g;
-                        icKernel[r][c].b = icMain[r][data_row + c].b;
+                        icKernel[r][c].r = icMain[r+1300][data_row + c].r;
+                        icKernel[r][c].g = icMain[r+1300][data_row + c].g;
+                        icKernel[r][c].b = icMain[r+1300][data_row + c].b;
                     }
                 }
             }

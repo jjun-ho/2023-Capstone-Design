@@ -698,7 +698,7 @@ KMatrix rv0171::Import_mAi(int cam_num)
 {
     string mAi_path = "./data/Caltxt/Cal_";
     mAi_path += to_string(cam_num);
-    mAi_path += ".txt";
+    mAi_path += "_left.txt";
 
     string str;
     double buf[4] = {0,};
