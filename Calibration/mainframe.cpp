@@ -637,8 +637,7 @@ void MainFrame::on_zhang_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam" + to_string(cal_cam_num) +  "/" + cal_direction + "_txt/";
-            //dir += "Zhang/cam" + to_string(cal_cam_num) + "_txt/";
+            dir += "Zhang/cam" + to_string(cal_cam_num) + "_txt/";
             dir += to_string(i);
             dir += ".txt";
             pointzip.push_back(rv0171::PointList(dir));
@@ -650,7 +649,6 @@ void MainFrame::on_zhang_clicked()
     }
 
     KVector vX;
-
     vX = rv0171::ZhangsCalibration(pointzip, nImg, nFeature, nItr);
 
     // Reprojection
@@ -719,8 +717,7 @@ void MainFrame::on_plot_point_clicked()
     for(int i = 1; i <= nImg + 1; i++){
         string dir = rvdir;
         if(i != nImg + 1) {
-            dir += "cam" + to_string(cal_cam_num) +  "/" + cal_direction + "_txt/";
-            //dir += "Zhang/cam" + to_string(cal_cam_num) + "_txt/";
+            dir += "Zhang/cam" + to_string(cal_cam_num) + "_txt/";
             dir += to_string(i);
             dir += ".txt";
             pointzip.push_back(rv0171::PointList(dir));
@@ -807,6 +804,11 @@ void MainFrame::on_stereo_calibration_clicked()
             right_pointzip.push_back(rv0171::PointList(dir));
         }
     }
+
+    KMatrix mX_l, mX_r;
+    mX_l = rv0171::Import_mAi(left_cam_num);
+    mX_r = rv0171::Import_mAi(right_cam_num);
+
     KVector vX_l, vX_r;
 
     // 2. Calibrate separately the two cameras using Zhang's method
@@ -814,11 +816,12 @@ void MainFrame::on_stereo_calibration_clicked()
     vX_r = rv0171::ZhangsCalibration(right_pointzip, nImg, nFeature, nItr);
 
     KMatrix mA_l(3, 3); // left camera intrinsic matrix
-    mA_l[0][0] = vX_l[0];
-    mA_l[1][1] = vX_l[1];
-    mA_l[0][2] = vX_l[2];
-    mA_l[1][2] = vX_l[3];
-    mA_l[2][2] = 1.0;
+    mA_l = rv0171::Import_mAi(left_cam_num);
+//    mA_l[0][0] = vX_l[0];
+//    mA_l[1][1] = vX_l[1];
+//    mA_l[0][2] = vX_l[2];
+//    mA_l[1][2] = vX_l[3];
+//    mA_l[2][2] = 1.0;
     double dK1_l = vX_l[4];
     double dK2_l = vX_l[5];
     double dError_l = vX_l[vX_l.Size() - 1];  // vX's last element is Err
@@ -842,12 +845,13 @@ void MainFrame::on_stereo_calibration_clicked()
     temp_str = QString::fromStdString(std::to_string(dError_l));
     ui->textErrorCam01->setText(temp_str);
 
-    KMatrix mA_r(3, 3); // right camera intrinsic matrix
-    mA_r[0][0] = vX_r[0];
-    mA_r[1][1] = vX_r[1];
-    mA_r[0][2] = vX_r[2];
-    mA_r[1][2] = vX_r[3];
-    mA_r[2][2] = 1.0;
+    KMatrix mA_r(3, 3);// right camera intrinsic matrix
+    mA_r = rv0171::Import_mAi(right_cam_num);
+//    mA_r[0][0] = vX_r[0];
+//    mA_r[1][1] = vX_r[1];
+//    mA_r[0][2] = vX_r[2];
+//    mA_r[1][2] = vX_r[3];
+//    mA_r[2][2] = 1.0;
     double dK1_r = vX_r[4];
     double dK2_r = vX_r[5];
     double dError_r = vX_r[vX_r.Size() - 1];  // vX's last element is Err

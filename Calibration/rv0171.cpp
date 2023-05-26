@@ -257,7 +257,7 @@ KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip,
         KMatrix _mR = (vR1 | vR2 | vR3);
         _mR.SVD(mU, vD, mW);
         _mR = mU * mW.Tr();
-        cout << "mRSize: " << _mR.Size() << endl;
+        //cout << "mRSize: " << _mR.Size() << endl;
 
         lmR.Add(_mR);
         lvT.Add(_vT);
@@ -291,7 +291,7 @@ KVector rv0171::ZhangsCalibration(vector<vector<pair<double, double>>> pointzip,
     zhang.Powell(vX, 0.05, nItr);
 
     vX.Tailed(zhang.dError);
-    // vX: (alpha, beta, u0, v0, k1, k2) + (R1, R2, R3, Tx, Ty, Tz)*7 + dError => 49x1
+    // vX: (alpha, beta, u0, v0, k1, k2) + (R1, R2, R3, Tx, Ty, Tz)*nImg + dError => 6*nImgx1
 
     return vX;
 }
@@ -352,7 +352,6 @@ double KCalibrationZhang::Erf(const KVector& vX)
          << " Error:" << dError << endl;
     return dError;
 }
-
 
 
 //////////////////////////////
