@@ -764,8 +764,8 @@ void MainFrame::on_plot_point_clicked()
 //////////////////////////////
 void MainFrame::on_stereo_calibration_clicked()
 {
-    int left_cam_num = 1;
-    int right_cam_num = 28;
+    int left_cam_num = 28;
+    int right_cam_num = 1;
 
     int row = 1024;
     int col = 1280;
@@ -937,7 +937,7 @@ void MainFrame::on_stereo_calibration_clicked()
     string wName[] = {"left1", "left2", "left3", "left4"};
     for (int i = 0; i < nImg; i++) {
         string sImgName = rvdir;
-        sImgName += "cam" + to_string(left_cam_num) +"_2/left/";
+        sImgName += "cam" + to_string(left_cam_num) +"/left/";
         sImgName += to_string(i + 1);
         sImgName += ".bmp";
 
