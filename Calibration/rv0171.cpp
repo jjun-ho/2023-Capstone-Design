@@ -694,11 +694,13 @@ Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
 
 //Cylinderical_Warping//
 //Import_mAi
-KMatrix rv0171::Import_mAi(int cam_num)
+KMatrix rv0171::Import_mAi(int left_cam_num, int right_cam_num, int relative_cam_num)
 {
     string mAi_path = "./data/Caltxt/Cal_";
-    mAi_path += to_string(cam_num);
-    mAi_path += "_left.txt";
+    mAi_path += to_string(left_cam_num);
+    mAi_path += to_string(right_cam_num);
+    mAi_path += to_string(relative_cam_num);
+    mAi_path += ".txt";
 
     string str;
     double buf[4] = {0,};
@@ -728,14 +730,12 @@ KMatrix rv0171::Import_mAi(int cam_num)
 }
 
 //Import_rRi
-KRotation rv0171::Import_rRi(int l_cam_num, int r_cam_num)
+KRotation rv0171::Import_rRi(int left_cam_num, int right_cam_num, int relative_cam_num)
 {
-    int left_cam_num = l_cam_num;
-    int right_cam_num = r_cam_num;
-
     string RT_path = "./data/RTtxt/RT_";
     RT_path += to_string(left_cam_num);
     RT_path += to_string(right_cam_num);
+    RT_path += to_string(relative_cam_num);
     RT_path += ".txt";
 
     string str;
@@ -761,14 +761,12 @@ KRotation rv0171::Import_rRi(int l_cam_num, int r_cam_num)
 }
 
 ////Import_vTi
-KVector rv0171::Import_vTi(int l_cam_num, int r_cam_num)
+KVector rv0171::Import_vTi(int left_cam_num, int right_cam_num, int relative_cam_num)
 {
-    int left_cam_num = l_cam_num;
-    int right_cam_num = r_cam_num;
-
     string RT_path = "./data/RTtxt/RT_";
     RT_path += to_string(left_cam_num);
     RT_path += to_string(right_cam_num);
+    RT_path += to_string(relative_cam_num);
     RT_path += ".txt";
 
     string str;

@@ -55,9 +55,9 @@ namespace rv0171
     KMatrix ImageProjection(KMatrix mA, KVector vK, KHomogeneous hP, KMatrix mM);
 
     //Cylinderical_Warping
-    KMatrix Import_mAi(int cam_num);
-    KRotation Import_rRi(int l_cam_num, int r_cam_num);
-    KVector Import_vTi(int l_cam_num, int r_cam_num);
+    KMatrix Import_mAi(int left_cam_num, int right_cam_num, int relative_cam_num);
+    KRotation Import_rRi(int left_cam_num, int right_cam_num, int relative_cam_num);
+    KVector Import_vTi(int left_cam_num, int right_cam_num, int relative_cam_num);
 
     vector<vector<KVector>> make_3DCameraCoord (KImageColor Img);
     void make_Surround_View_Stitching(KMatrix mA, KMatrix mAi, KRotation rRi, KVector vTi, vector<vector<KVector>> &ui);
