@@ -63,6 +63,7 @@ public:
     QPushButton *pushRtMatrix;
     QPushButton *RT_product;
     QWidget *tab_3;
+    QPushButton *pushButton;
     QWidget *tab;
     QWidget *tab_4;
     QWidget *tab_5;
@@ -278,6 +279,9 @@ public:
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
+        pushButton = new QPushButton(tab_3);
+        pushButton->setObjectName("pushButton");
+        pushButton->setGeometry(QRect(50, 40, 181, 51));
         tabWidget->addTab(tab_3, QString());
         tab = new QWidget();
         tab->setObjectName("tab");
@@ -330,7 +334,7 @@ public:
 
         retranslateUi(MainFrame);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainFrame);
@@ -458,6 +462,7 @@ public:
         pushRtMatrix->setText(QCoreApplication::translate("MainFrame", "RT Matrix", nullptr));
         RT_product->setText(QCoreApplication::translate("MainFrame", "RT_product", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("MainFrame", "2 ", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainFrame", "Cylindrical TEST", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainFrame", "3", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainFrame", "4", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainFrame", "5 ", nullptr));

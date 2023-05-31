@@ -49,6 +49,8 @@ private slots:
 
     void on_RT_product_clicked();
 
+    void on_pushButton_clicked();
+
 protected:
     void closeEvent(QCloseEvent* event);
 };

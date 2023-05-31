@@ -63,6 +63,8 @@ private slots:
 
     void on_KernelButton_clicked();
 
+    void on_radioButton_clicked();
+
 protected:
     void closeEvent(QCloseEvent* event);
 };

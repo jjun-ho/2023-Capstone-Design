@@ -730,3 +730,139 @@ void MainFrame::on_RT_product_clicked()
     // UI 활성화 갱신
         UpdateUI();
 }
+
+void MainFrame::on_pushButton_clicked()
+{
+    //기준 프레임에서의 카메라 위치
+        KHomogeneous hpTb_c[9];
+
+        //base to 1(no rot(Identity), tz=2000)
+        hpTb_c[0] = KHomogeneous(KRotation(), KVector(0.0, 0.0, 2000.0));
+        //1번 카메라로부터 8번까지 차례로 돌린것(0 to 1, 1 to 2, ... 7 to 8, clockwise)
+        for(int c=1; c<9; c++)
+            hpTb_c[c]  = KHomogeneous(KRotation(_Y_AXIS, -_RADIAN(40.0*c)),
+                                     KVector(2000.0* sin(_RADIAN(40.0*c)), 0.0, 2000.0*cos(_RADIAN(40.0*c))));
+
+        //mpX: 기준 프레임에서의 3차원 좌표점(열벡터가 한 점을 나타냄, 노란색 원), Ui
+        //y=0일때, y=1000일때의 2가지 경우
+        KMatrix mpX[2];
+
+        for(int n=0; n<36; n++)
+            for(int i=0; i<2; i++)
+                //|=: 옆에 붙이기
+                mpX[i] |= KVector(4000.0*sin(_RADIAN(10.0*n)), i*1000.0, 4000.0*cos(_RADIAN(10.0*n)));
+        //mpX[i]: 3x36
+
+        //각 카메라에서의 투영점
+        //^: 아래로 붙이기
+        KMatrix mK = KVector(700.0,  0.0, 500.0).Tr() ^
+                     KVector(0.0,  700.0, 500.0).Tr() ^
+                     KVector(0.0,    0.0,   1.0).Tr();
+        KMatrix      mpU[2];
+        KHomogeneous hpTc_b[9];
+
+        for(int c=0; c<9; c++)
+            for(int i=0; i<2; i++)
+            {
+                //hpTc_b: n to base
+                hpTc_b[c] = hpTb_c[c].Iv();
+                mpU[i] = mK * (hpTc_b[c].R()*mpX[i] + hpTc_b[c].t());
+            }
+
+        //n번(0 ~ 8) 카메라 이미지를 베이스 프레임의 이미지로 변환
+        //베이스 프레임의 이미지는 9000x1000가 될듯
+        KMatrix mKb = KVector(700.0,  0.0, 2500.0).Tr() ^
+                      KVector(0.0,  700.0,  500.0).Tr() ^
+                      KVector(0.0,    0.0,    1.0).Tr();
+        //mppUb: 최종 U(i to base)
+        KMatrix mppUb[2][9], mppDelta[2][9];
+
+        for(int c=0;  c<9; c++)
+        {
+            for(int i=0; i<2; i++)
+            {
+                mppUb[i][c]    =  mKb * hpTb_c[c].R() * ~mK * mpU[i];
+                //.Cut으로 0,2 ~ 35,2까지 자름: 1x36 matrix
+                //위에서 자른 것을 3x1 matrix로 생성: 3x36 matrix(scale matrix)
+                mppUb[i][c]   /=  KMatrix::RepMat(mppUb[i][c].Cut(2,0,2,35), 3,1);
+
+                mppDelta[i][c] = -mKb * hpTb_c[c].R() * hpTc_b[c].t();
+                mppDelta[i][c]/=  KMatrix::RepMat(mppDelta[i][c].Cut(2,0,2,35), 3,1);
+
+                mppUb[i][c]   += mppDelta[i][c];
+            }
+        }
+
+        KImageColor icBackground(1000, 5000);
+        ImageForm* q_pForm = new ImageForm(icBackground, "Virtual Plane", this);
+
+        QPoint mp1;
+
+        int count = 0, count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0, count7 = 0, count8 = 0;
+
+        for(int c=0;  c<1; c++)
+        {
+            for(int i=0; i<2; i++)
+            {
+                for(int r = 0; r < 36; r++)
+                {
+                    //QColor color_QImg1 = QImg1->pixelColor(c,r);
+                    mp1.setX((int)(mppUb[i][c][0][r]));
+                    mp1.setY((int)(mppUb[i][c][1][r]));
+                    cout <<(int)mppUb[i][c][0][r] << "," << (int)mppUb[i][c][0][r] << endl;
+
+                    if(c == 0){
+                        q_pForm->DrawEllipse(mp1, 7, 7, QColor(255, 0, 0));
+                        count++;}
+                    else if(c == 1){
+                        q_pForm->DrawEllipse(mp1, 7, 7, QColor(255, 255, 0));
+                        count1++;
+                    }
+                    else if(c == 2){
+                        q_pForm->DrawEllipse(mp1, 7, 7, QColor(0, 255, 0));
+                        count2++;
+                    }
+    //                else if(c == 3){
+    //                    q_pForm->DrawEllipse(mp1, 7, 7, QColor(0, 255, 255));
+    //                    count3++;
+    //                }
+    //                else if(c == 4){
+    //                    q_pForm->DrawEllipse(mp1, 7, 7, QColor(0, 0, 255));
+    //                    count4++;
+    //                }
+    //                else if(c == 5){
+    //                    q_pForm->DrawEllipse(mp1, 7, 7, QColor(255, 0, 255));
+    //                    count5++;
+    //                }
+    //                else if(c == 6){
+    //                    q_pForm->DrawEllipse(mp1, 7, 7, QColor(255, 0, 0));
+    //                    count6++;
+    //                }
+    //                else if(c == 7){
+    //                    q_pForm->DrawEllipse(mp1, 7, 7, QColor(255, 255, 0));
+    //                    count7++;
+    //                }
+    //                else if(c == 8){
+    //                    q_pForm->DrawEllipse(mp1, 7, 7, QColor(0, 255, 0));
+    //                    count8++;
+    //                }
+                    //q_pForm->DrawEllipse(mp1, 1, 1, color_QImg1);
+                }
+            }
+        }
+
+        q_pForm->show();
+        UpdateUI();
+
+        cout << count << endl;
+        cout << count1 << endl;
+        cout << count2 << endl;
+        cout << count3 << endl;
+        cout << count4 << endl;
+        cout << count5 << endl;
+        cout << count6 << endl;
+        cout << count7 << endl;
+        cout << count8 << endl;
+        cout << "Finished" << endl;
+}
+

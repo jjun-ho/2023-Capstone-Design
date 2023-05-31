@@ -434,7 +434,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
        <property name="iconSize">
         <size>
@@ -790,6 +790,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <attribute name="title">
          <string>3</string>
         </attribute>
+        <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>40</y>
+           <width>181</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Cylindrical TEST</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="tab">
         <attribute name="title">

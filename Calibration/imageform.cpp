@@ -322,3 +322,4 @@ void ImageForm::resizeEvent(QResizeEvent *event)
     _dScale = _MIN((double)(h) / (double)(_q_bmpMain->height()),(double)(w) / (double)(_q_bmpMain->width()));
     this->update();
 }
+
