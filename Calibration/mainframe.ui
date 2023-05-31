@@ -1616,8 +1616,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="text">
           <string>Kernel</string>
          </property>
-         <property name="autoExclusive">
+         <property name="autoRepeat">
           <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+         <property name="autoRepeatDelay">
+          <number>5000</number>
          </property>
         </widget>
         <widget class="QPushButton" name="CameraBtn">
@@ -1639,14 +1645,17 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QRadioButton" name="radioButton">
          <property name="geometry">
           <rect>
-           <x>480</x>
+           <x>430</x>
            <y>90</y>
            <width>91</width>
            <height>22</height>
           </rect>
          </property>
          <property name="text">
-          <string>RadioButton</string>
+          <string>Real Time</string>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
          </property>
         </widget>
        </widget>

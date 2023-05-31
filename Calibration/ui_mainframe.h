@@ -481,7 +481,9 @@ public:
         KernelButton = new QPushButton(tab_3);
         KernelButton->setObjectName("KernelButton");
         KernelButton->setGeometry(QRect(200, 290, 151, 51));
-        KernelButton->setAutoExclusive(true);
+        KernelButton->setAutoRepeat(true);
+        KernelButton->setAutoExclusive(false);
+        KernelButton->setAutoRepeatDelay(5000);
         CameraBtn = new QPushButton(tab_3);
         CameraBtn->setObjectName("CameraBtn");
         CameraBtn->setGeometry(QRect(199, 53, 151, 51));
@@ -489,6 +491,7 @@ public:
         radioButton = new QRadioButton(tab_3);
         radioButton->setObjectName("radioButton");
         radioButton->setGeometry(QRect(480, 90, 91, 22));
+        radioButton->setAutoExclusive(true);
         tabWidget->addTab(tab_3, QString());
 
         horizontalLayout->addWidget(tabWidget);

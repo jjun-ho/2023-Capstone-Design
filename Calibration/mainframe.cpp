@@ -1433,8 +1433,7 @@ void MainFrame::on_KernelButton_clicked()
 
 void MainFrame::on_radioButton_clicked()
 {
-    int show_flag = 1;
-    int cam_num  = 8;
+    int show_flag = 0;
 
     void* handle1;
     void* handle2;
@@ -1559,7 +1558,6 @@ void MainFrame::on_radioButton_clicked()
     cout << vvXi_tilt2_128.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt2_128.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
     cout << endl;
 
-
     //Image 1_128
     vector<vector<KVector>> vvXi_tilt1_128;
     vvXi_tilt1_128 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
@@ -1620,6 +1618,37 @@ void MainFrame::on_radioButton_clicked()
     dot_form = new ImageForm(icMain,"point",this);
     dot_form->show();
 
+    //IMU
+    KImageColor icBuffer;
+    KImageColor icKernel;
+    icKernel.Create(1024, 1280);
+
+    if(_q_pFormFocused != 0 && _q_pFormFocused->ImageColor().Address() &&  _q_pFormFocused->ID() == "point")
+        icBuffer = _q_pFormFocused->ImageColor();
+    else
+        return;
+
+    int row = icKernel.Row();   // 1024
+    int col = icKernel.Col();   // 1280
+
+    int id;
+    float item[100];
+
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
+
+    Quaternion q;
+    EulerAngles e;
+
+    ImageForm*  q_pForm = new ImageForm(icKernel, "Kernel Applied", this);
+    _lImageForm.push_back(q_pForm);
+    q_pForm->show();
+    UpdateUI();
+
+    int data_row = 0;
 
     while (1) {
         img1 = GetMatFrame(handle1);                                // get frame
@@ -1706,8 +1735,48 @@ void MainFrame::on_radioButton_clicked()
 
             }
         }
+        //IMU
+        icBuffer = dot_form->ImageColor();
+        int count = 300;
+        while(count>0)
+        {
+            if (EBimuAsciiParser(&id,item, 5))
+            {
+                q.z = item[0];
+                q.y = item[1];
+                q.x = item[2];
+                q.w = item[3];
 
-        dot_form->ImageForm::setMask(QRegion(0, 0, 1280, 1024));
+                e = ToEulerAngles(q);
+                printf("Yaw: %f\n", e.yaw);
+
+                int data_row = (int)((e.yaw + 180)*(icBuffer.Col()/360));
+                //cout << "data_row: " << data_row << endl;
+
+                for(int c = 0; c < col; c++)        // 1280
+                {
+                    for(int r = 0; r < row; r++)    // 1024
+                    {
+                        if(data_row > icBuffer.Col())
+                        {
+                            icKernel[r][c].r = icBuffer[r+1300][data_row + c - icBuffer.Col()].r;
+                            icKernel[r][c].g = icBuffer[r+1300][data_row + c - icBuffer.Col()].g;
+                            icKernel[r][c].b = icBuffer[r+1300][data_row + c - icBuffer.Col()].b;
+                        }
+                        else
+                        {
+                            icKernel[r][c].r = icBuffer[r+1300][data_row + c].r;
+                            icKernel[r][c].g = icBuffer[r+1300][data_row + c].g;
+                            icKernel[r][c].b = icBuffer[r+1300][data_row + c].b;
+                        }
+                    }
+                }
+                q_pForm->Update(icKernel);
+                UpdateUI();
+                QCoreApplication::processEvents();
+            }
+            count--;
+        }
 
         //UI 활성화 갱신
         cout << "cylinderical Process Finished!" << endl;
@@ -1715,41 +1784,6 @@ void MainFrame::on_radioButton_clicked()
         dot_form->repaint();
         UpdateUI();
         QCoreApplication::processEvents();
-
-        char c = (char)waitKey(10);
-        if (c == 27)
-        { // ESC
-            StopCamera(handle1);                        // stop camera
-            StopCamera(handle2);                        // stop camera
-            StopCamera(handle3);                        // stop camera
-//            StopCamera(handle4);                        // stop camera
-//            StopCamera(handle5);                        // stop camera
-//            StopCamera(handle6);                        // stop camera
-//            StopCamera(handle7);                        // stop camera
-//            StopCamera(handle8);                        // stop camera
-
-            CloseCamera(handle1);                    // close camera
-            CloseCamera(handle2);                    // close camera
-            CloseCamera(handle3);                    // close camera
-//            CloseCamera(handle4);                    // close camera
-//            CloseCamera(handle5);                    // close camera
-//            CloseCamera(handle6);                    // close camera
-//            CloseCamera(handle7);                    // close camera
-//            CloseCamera(handle8);                    // close camera
-            break;
-        }
-        else if (c ==  32)
-        { // SPASE
-            imwrite("CamImage/1.bmp", img1);
-            imwrite("CamImage/2.bmp", img2);
-            imwrite("CamImage/3.bmp", img3);
-//            imwrite("CamImage/4.bmp", img4);
-//            imwrite("CamImage/5.bmp", img5);
-//            imwrite("CamImage/6.bmp", img6);
-//            imwrite("CamImage/7.bmp", img7);
-//            imwrite("CamImage/8.bmp", img8);
-        }
     }
-
 }
 
