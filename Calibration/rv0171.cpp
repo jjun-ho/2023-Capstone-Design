@@ -827,7 +827,7 @@ void rv0171::make_Surround_View_Stitching(KMatrix mA, KMatrix mAi, KRotation rRi
         {
             temp = mA*rRi.Iv()*(mAi.Iv()*ui[i][j]);
             //내꺼
-//            temp = mA*(rRi.Iv()*mAi.Iv())*vvXi_tilt[i][j];
+//            temp = mA*(rRi.Iv()*mAi.Iv())*ui[i][j];
             ui[i][j] = temp/temp[2][0];
         }
     }

@@ -831,6 +831,8 @@ debug/mainframe.o: mainframe.cpp C:/Qt/6.4.2/mingw_64/include/QtWidgets/QFileDia
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/QPushButton \
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qpushbutton.h \
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qabstractbutton.h \
+		C:/Qt/6.4.2/mingw_64/include/QtWidgets/QRadioButton \
+		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qradiobutton.h \
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/QSpacerItem \
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/QTabWidget \
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/QTextEdit \
