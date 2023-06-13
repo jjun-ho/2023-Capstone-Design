@@ -1393,8 +1393,6 @@ void MainFrame::on_KernelButton_clicked()
     q_pForm->show();
     UpdateUI();
 
-    int data_row = 0;
-
     while(1)   // data_row: 300 ~ 1300 까지
     {
         if (EBimuAsciiParser(&id,item, 5))
@@ -1416,15 +1414,15 @@ void MainFrame::on_KernelButton_clicked()
                 {
                     if(data_row > icMain.Col())
                     {
-                        icKernel[r][c].r = icMain[r+1300][data_row + c - icMain.Col()].r;
-                        icKernel[r][c].g = icMain[r+1300][data_row + c - icMain.Col()].g;
-                        icKernel[r][c].b = icMain[r+1300][data_row + c - icMain.Col()].b;
+                        icKernel[r][c].r = icMain[r+600][data_row + c - icMain.Col()].r;
+                        icKernel[r][c].g = icMain[r+600][data_row + c - icMain.Col()].g;
+                        icKernel[r][c].b = icMain[r+600][data_row + c - icMain.Col()].b;
                     }
                     else
                     {
-                        icKernel[r][c].r = icMain[r+1300][data_row + c].r;
-                        icKernel[r][c].g = icMain[r+1300][data_row + c].g;
-                        icKernel[r][c].b = icMain[r+1300][data_row + c].b;
+                        icKernel[r][c].r = icMain[r+600][data_row + c].r;
+                        icKernel[r][c].g = icMain[r+600][data_row + c].g;
+                        icKernel[r][c].b = icMain[r+600][data_row + c].b;
                     }
                 }
             }
@@ -1693,17 +1691,8 @@ void MainFrame::on_radioButton_clicked()
     Mat icMain(1024*2, 1280*5, CV_8UC3);
 
     //IMU
-    KImageColor icBuffer;
-    KImageColor icKernel;
-    icKernel.Create(900, 1280);
-
-    if(_q_pFormFocused != 0 && _q_pFormFocused->ImageColor().Address() &&  _q_pFormFocused->ID() == "point")
-        icBuffer = _q_pFormFocused->ImageColor();
-    else
-        return;
-
-    int row = icKernel.Row();   // 1024
-    int col = icKernel.Col();   // 1280
+    Mat icBuffer;
+    Mat icKernel(900, 1280, CV_8UC3);
 
     int id;
     float item[100];
@@ -1716,11 +1705,6 @@ void MainFrame::on_radioButton_clicked()
 
     Quaternion q;
     EulerAngles e;
-
-    ImageForm*  q_pForm = new ImageForm(icKernel, "Kernel Applied", this);
-    _lImageForm.push_back(q_pForm);
-    q_pForm->show();
-    UpdateUI();
 
     while (1) {
         Mat icMain_show;
@@ -1794,48 +1778,46 @@ void MainFrame::on_radioButton_clicked()
             }
         }
 
-//        //IMU
-//        icBuffer = dot_form->ImageColor();
-//        int count = 300;
-//        while(count>0)
-//        {
-//            if (EBimuAsciiParser(&id,item, 5))
-//            {
-//                q.z = item[0];
-//                q.y = item[1];
-//                q.x = item[2];
-//                q.w = item[3];
+        //IMU
+        icBuffer = icMain.clone();
+        int count = 50;
+        while(count>0)
+        {
+            if (EBimuAsciiParser(&id,item, 5))
+            {
+                q.z = item[0];
+                q.y = item[1];
+                q.x = item[2];
+                q.w = item[3];
 
-//                e = ToEulerAngles(q);
-//                printf("Yaw: %f\n", e.yaw);
+                e = ToEulerAngles(q);
+                printf("Yaw: %f\n", e.yaw);
 
-//                int data_row = (int)((e.yaw + 180)*(icBuffer.Col()/360));
-//                //cout << "data_row: " << data_row << endl;
+                int data_row = (int)((e.yaw + 180)*(icBuffer.cols/360));
+                //cout << "data_row: " << data_row << endl;
 
-//                for(int c = 0; c < col; c++)        // 1280
-//                {
-//                    for(int r = 0; r < row; r++)    // 1024
-//                    {
-//                        if(data_row > icBuffer.Col())
-//                        {
-//                            icKernel[r][c].r = icBuffer[r+500][data_row + c - icBuffer.Col()].r;
-//                            icKernel[r][c].g = icBuffer[r+500][data_row + c - icBuffer.Col()].g;
-//                            icKernel[r][c].b = icBuffer[r+500][data_row + c - icBuffer.Col()].b;
-//                        }
-//                        else
-//                        {
-//                            icKernel[r][c].r = icBuffer[r+500][data_row + c].r;
-//                            icKernel[r][c].g = icBuffer[r+500][data_row + c].g;
-//                            icKernel[r][c].b = icBuffer[r+500][data_row + c].b;
-//                        }
-//                    }
-//                }
-//                q_pForm->Update(icKernel);
-//                UpdateUI();
-//                QCoreApplication::processEvents();
-//            }
-//            count--;
-//        }
+                for(int c = 0; c < icKernel.cols; c++)
+                {
+                    for(int r = 0; r < icKernel.rows; r++)
+                    {
+                        if(data_row > icBuffer.cols)
+                        {
+                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c - icBuffer.cols);
+                        }
+                        else
+                        {
+                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c);
+                        }
+                    }
+                }
+                imshow("Kernel Image", icKernel);
+
+                char ch = waitKey(10);
+                if(ch == 27)
+                    break;       // 27 == ESC key
+            }
+            count--;
+        }
 
         //UI 활성화 갱신
         cout << "cylinderical Process Finished!" << endl;
