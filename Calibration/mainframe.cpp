@@ -291,8 +291,6 @@ void MainFrame::on_buttonShowList_clicked()
 int col = 1280;
 int row = 1024;
 
-Mat img1, img2, img3, img4, img5, img6, img7, img8;
-
 void MainFrame::on_CameraBtn_clicked()
 {
     int show_flag = 1;
@@ -369,7 +367,7 @@ void MainFrame::on_CameraBtn_clicked()
 //    GrabCamera(handle7);
     GrabCamera(handle8);
 
-//    Mat img1, img2, img3, img4, img5, img6, img7, img8;
+    Mat img1, img2, img3, img4, img5, img6, img7, img8;
     Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
 
     ImageForm* q_pForm[8] = {0,};
@@ -1126,154 +1124,12 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     //Image
     KImageColor Img(1024,1280);
 
-    //출력을 위한 imageform 생성
-    ImageForm* dot_form;
-    KImageColor icMain(1024*2, 1280*5);
-    dot_form = new ImageForm(icMain,"point",this);
-
-
-//    QImage _img1 = QImage((uchar*) img1.data, img1.cols, img1.rows, img1.step, QImage::Format_BGR888);
-//    QImage _img2 = QImage((uchar*) img2.data, img2.cols, img2.rows, img2.step, QImage::Format_BGR888);
-//    QImage _img3 = QImage((uchar*) img3.data, img3.cols, img3.rows, img3.step, QImage::Format_BGR888);
-
-    //Image 1
-    KImageColor Img1(1024,1280);
-    string sImgName1 = rvdir;
-    sImgName1 += "realtime/1.bmp";
-
-    QImage* _img1 = new QImage();
-    if(_img1->load(QString::fromStdString(sImgName1)))
-    {
-        for(int r = 0; r < Img1.Row(); r++)
-        {
-            for(int c = 0; c < Img1.Col(); c++)
-            {
-                QColor color = _img1->pixelColor(c,r);
-                Img1[r][c].r = color.red();
-                Img1[r][c].g = color.green();
-                Img1[r][c].b = color.blue();
-            }
-        }
-    }
-    else {
-        qDebug() << "Image 1 load Error!!!";
-    }
-
-    //Image 2
-    KImageColor Img2(1024,1280);
-    string sImgName2 = rvdir;
-    sImgName2 += "realtime/2.bmp";
-
-    QImage* _img2 = new QImage();
-    if(_img2->load(QString::fromStdString(sImgName2)))
-    {
-        for(int r = 0; r < Img2.Row(); r++)
-        {
-            for(int c = 0; c < Img2.Col(); c++)
-            {
-                QColor color2 = _img2->pixelColor(c,r);
-                Img2[r][c].r = color2.red();
-                Img2[r][c].g = color2.green();
-                Img2[r][c].b = color2.blue();
-            }
-        }
-    }
-    else {
-        qDebug() << "Image 2 load Error!!!";
-    }
-
-    //Image 3
-    KImageColor Img3(1024,1280);
-    string sImgName3 = rvdir;
-    sImgName3 += "realtime/3.bmp";
-
-    QImage* _img3 = new QImage();
-    if(_img3->load(QString::fromStdString(sImgName3)))
-    {
-        for(int r = 0; r < Img3.Row(); r++)
-        {
-            for(int c = 0; c < Img3.Col(); c++)
-            {
-                QColor color3 = _img3->pixelColor(c,r);
-                Img3[r][c].r = color3.red();
-                Img3[r][c].g = color3.green();
-                Img3[r][c].b = color3.blue();
-            }
-        }
-    }
-    else {
-        qDebug() << "Image 3 load Error!!!";
-    }
-
-    //Image 4
-    KImageColor Img4(1024,1280);
-    string sImgName4 = rvdir;
-    sImgName4 += "realtime/4.bmp";
-
-    QImage* _img4 = new QImage();
-    if(_img4->load(QString::fromStdString(sImgName4)))
-    {
-        for(int r = 0; r < Img4.Row(); r++)
-        {
-            for(int c = 0; c < Img4.Col(); c++)
-            {
-                QColor color4 = _img4->pixelColor(c,r);
-                Img4[r][c].r = color4.red();
-                Img4[r][c].g = color4.green();
-                Img4[r][c].b = color4.blue();
-            }
-        }
-    }
-    else {
-        qDebug() << "Image 4 load Error!!!";
-    }
-
-    //Image 5
-    KImageColor Img5(1024,1280);
-    string sImgName5 = rvdir;
-    sImgName5 += "realtime/5.bmp";
-
-    QImage* _img5 = new QImage();
-    if(_img5->load(QString::fromStdString(sImgName5)))
-    {
-        for(int r = 0; r < Img5.Row(); r++)
-        {
-            for(int c = 0; c < Img5.Col(); c++)
-            {
-                QColor color5 = _img5->pixelColor(c,r);
-                Img5[r][c].r = color5.red();
-                Img5[r][c].g = color5.green();
-                Img5[r][c].b = color5.blue();
-            }
-        }
-    }
-    else {
-        qDebug() << "Image 5 load Error!!!";
-    }
-
-    //Image 6
-    KImageColor Img6(1024,1280);
-    string sImgName6 = rvdir;
-    sImgName6 += "realtime/6.bmp";
-
-    QImage* _img6 = new QImage();
-    if(_img6->load(QString::fromStdString(sImgName6)))
-    {
-        for(int r = 0; r < Img6.Row(); r++)
-        {
-            for(int c = 0; c < Img6.Col(); c++)
-            {
-                QColor color6 = _img6->pixelColor(c,r);
-                Img6[r][c].r = color6.red();
-                Img6[r][c].g = color6.green();
-                Img6[r][c].b = color6.blue();
-            }
-        }
-    }
-    else {
-        qDebug() << "Image 6 load Error!!!";
-    }
-
+    Mat img1 = imread("./data/realtime/1.bmp");
+    Mat img2 = imread("./data/realtime/2.bmp");
+    Mat img3 = imread("./data/realtime/3.bmp");
+    Mat img4 = imread("./data/realtime/4.bmp");
+    Mat img5 = imread("./data/realtime/5.bmp");
+    Mat img6 = imread("./data/realtime/6.bmp");
 
     ///////////////////////////////R,t 불러오기//////////////////////////////////
     KRotation rR1_128;
@@ -1290,17 +1146,6 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     rR3_358 = rv0171::Import_rRi(3, 38, 5);
     KVector vT3_358;
     vT3_358 = rv0171::Import_vTi(3, 38, 5);
-
-
-//    KRotation rR1_138;
-//    rR1_138 = rv0171::Import_rRi(1, 18, 3);
-//    KVector vT1_138;
-//    vT1_138 = rv0171::Import_vTi(1, 18, 3);
-
-//    KRotation rR3_138;
-//    rR3_138 = rv0171::Import_rRi(3, 38, 1);
-//    KVector vT3_138;
-//    vT3_138 = rv0171::Import_vTi(3, 38, 1);
 
     KRotation rR4_468;
     rR4_468 = rv0171::Import_rRi(4, 48, 6);
@@ -1360,42 +1205,6 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     cout << vvXi_tilt2_128.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt2_128.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt2_128.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt2_128.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
     cout << endl;
-
-//    //Image 1_138
-//    vector<vector<KVector>> vvXi_tilt1_138;
-//    vvXi_tilt1_138 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
-
-//    KMatrix mA1_138(3,3);
-//    mA1_138 = rv0171::Import_mAi(1, 18, 3);
-
-//    rv0171::make_Surround_View_Stitching(mA, mA1_138, rR1_138, vT1_138, vvXi_tilt1_138);
-
-//    //cylinderical warping
-//    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt1_138);
-
-//    cout << vvXi_tilt1_138.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt1_138.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt1_138.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt1_138.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt1_138.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt1_138.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt1_138.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt1_138.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << endl;
-
-//    //Image 3_138
-//    vector<vector<KVector>> vvXi_tilt3_138;
-//    vvXi_tilt3_138 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
-
-//    KMatrix mA3_138(3,3);
-//    mA3_138 = rv0171::Import_mAi(3, 38, 1);
-
-//    rv0171::make_Surround_View_Stitching(mA, mA3_138, rR3_138, vT3_138, vvXi_tilt3_138);
-
-//    // cylinderical warping
-//    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt3_138);
-
-//    cout << vvXi_tilt3_138.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt3_138.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt3_138.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt3_138.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt3_138.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt3_138.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt3_138.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt3_138.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << endl;
 
     //Image 3_358
     vector<vector<KVector>> vvXi_tilt3_358;
@@ -1469,11 +1278,11 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     cout << vvXi_tilt6_468.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt6_468.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
     cout << endl;
 
+    Mat icMain(1024*2, 1280*5, CV_8UC3);
+    Mat icMain_show;
+
     QPoint mp1_128;
     QPoint mp2_128;
-
-//    QPoint mp1_138;
-//    QPoint mp3_138;
 
     QPoint mp3_358;
     QPoint mp5_358;
@@ -1485,54 +1294,41 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     {
         for(int j=0; j<1280; j++)
         {
-            QColor color_img2 = _img2->pixelColor(j,i);
-            mp2_128.setX((int)(vvXi_tilt2_128.at(i).at(j)._ppA[0][0])+1000+1650);
-            mp2_128.setY((int)(vvXi_tilt2_128.at(i).at(j)._ppA[1][0])+1000+100);
-            dot_form->DrawEllipse(mp2_128,1,1, color_img2);
-
-            QColor color_img1 = _img1->pixelColor(j,i);
             mp1_128.setX((int)(vvXi_tilt1_128.at(i).at(j)._ppA[0][0])+1000+1650);
             mp1_128.setY((int)(vvXi_tilt1_128.at(i).at(j)._ppA[1][0])+1000+100);
-            dot_form->DrawEllipse(mp1_128,1,1, color_img1);
+            icMain.at<Vec3b>(mp1_128.y(), mp1_128.x()) = img1.at<Vec3b>(i,j);
 
-//            mp13.setX((int)(vvXi_tilt1_138.at(i).at(j)._ppA[0][0])+2000);
-//            mp13.setY((int)(vvXi_tilt1_138.at(i).at(j)._ppA[1][0])+2000);
-//            dot_form->DrawEllipse(mp13,1,1, color_img1);
+            mp2_128.setX((int)(vvXi_tilt2_128.at(i).at(j)._ppA[0][0])+1000+1650);
+            mp2_128.setY((int)(vvXi_tilt2_128.at(i).at(j)._ppA[1][0])+1000+100);
+            icMain.at<Vec3b>(mp2_128.y(), mp2_128.x()) = img2.at<Vec3b>(i,j);
 
-//            QColor color_img3 = _img3.pixelColor(j,i);
-//            mp3.setX((int)(vvXi_tilt3_138.at(i).at(j)._ppA[0][0])+2000);
-//            mp3.setY((int)(vvXi_tilt3_138.at(i).at(j)._ppA[1][0])+2000);
-//            dot_form->DrawEllipse(mp3,1,1, color_img3);
-
-            QColor color_img3 = _img3->pixelColor(j,i);
             mp3_358.setX((int)(vvXi_tilt3_358.at(i).at(j)._ppA[0][0])+1000);
             mp3_358.setY((int)(vvXi_tilt3_358.at(i).at(j)._ppA[1][0])+1000);
-            dot_form->DrawEllipse(mp3_358,1,1, color_img3);
+            icMain.at<Vec3b>(mp3_358.y(), mp3_358.x()) = img3.at<Vec3b>(i,j);
 
-            QColor color_img5 = _img5->pixelColor(j,i);
             mp5_358.setX((int)(vvXi_tilt5_358.at(i).at(j)._ppA[0][0])+1000);
             mp5_358.setY((int)(vvXi_tilt5_358.at(i).at(j)._ppA[1][0])+1000);
-            dot_form->DrawEllipse(mp5_358,1,1, color_img5);
+            icMain.at<Vec3b>(mp5_358.y(), mp5_358.x()) = img5.at<Vec3b>(i,j);
 
-            QColor color_img4 = _img4->pixelColor(j,i);
             mp4_468.setX((int)(vvXi_tilt4_468.at(i).at(j)._ppA[0][0])+1000+3530);
             mp4_468.setY((int)(vvXi_tilt4_468.at(i).at(j)._ppA[1][0])+1000+120);
-            dot_form->DrawEllipse(mp4_468,1,1, color_img4);
+            icMain.at<Vec3b>(mp4_468.y(), mp4_468.x()) = img4.at<Vec3b>(i,j);
 
-            QColor color_img6 = _img6->pixelColor(j,i);
             mp6_468.setX((int)(vvXi_tilt6_468.at(i).at(j)._ppA[0][0])+1000+3530);
             mp6_468.setY((int)(vvXi_tilt6_468.at(i).at(j)._ppA[1][0])+1000+120);
-            dot_form->DrawEllipse(mp6_468,1,1, color_img6);
-
+            icMain.at<Vec3b>(mp6_468.y(), mp6_468.x()) = img6.at<Vec3b>(i,j);
         }
     }
 
     //UI 활성화 갱신
     cout << "cylinderical Process Finished!" << endl;
 
-    dot_form->show();
-    UpdateUI();
-    QCoreApplication::processEvents();
+    cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
+    imshow("icMain", icMain_show);
+
+    char ch = waitKey(10);
+    //if(ch == 27)
+        //break;       // 27 == ESC key
 
 }
 
@@ -1741,7 +1537,7 @@ void MainFrame::on_radioButton_clicked()
 //    GrabCamera(handle7);
 //    GrabCamera(handle8);
 
-//    Mat img1, img2, img3, img4, img5, img6, img7, img8;
+    Mat img1, img2, img3, img4, img5, img6, img7, img8;
     Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
 
     //Cylindrical Warp
@@ -1762,17 +1558,6 @@ void MainFrame::on_radioButton_clicked()
     rR3_358 = rv0171::Import_rRi(3, 38, 5);
     KVector vT3_358;
     vT3_358 = rv0171::Import_vTi(3, 38, 5);
-
-
-//    KRotation rR1_138;
-//    rR1_138 = rv0171::Import_rRi(1, 18, 3);
-//    KVector vT1_138;
-//    vT1_138 = rv0171::Import_vTi(1, 18, 3);
-
-//    KRotation rR3_138;
-//    rR3_138 = rv0171::Import_rRi(3, 38, 1);
-//    KVector vT3_138;
-//    vT3_138 = rv0171::Import_vTi(3, 38, 1);
 
     KRotation rR4_468;
     rR4_468 = rv0171::Import_rRi(4, 48, 6);
@@ -1832,42 +1617,6 @@ void MainFrame::on_radioButton_clicked()
     cout << vvXi_tilt2_128.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt2_128.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
     cout << vvXi_tilt2_128.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt2_128.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
     cout << endl;
-
-//    //Image 1_138
-//    vector<vector<KVector>> vvXi_tilt1_138;
-//    vvXi_tilt1_138 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
-
-//    KMatrix mA1_138(3,3);
-//    mA1_138 = rv0171::Import_mAi(1, 18, 3);
-
-//    rv0171::make_Surround_View_Stitching(mA, mA1_138, rR1_138, vT1_138, vvXi_tilt1_138);
-
-//    //cylinderical warping
-//    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt1_138);
-
-//    cout << vvXi_tilt1_138.at(0).at(0)._ppA[0][0] << " " << vvXi_tilt1_138.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt1_138.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt1_138.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt1_138.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt1_138.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt1_138.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt1_138.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << endl;
-
-//    //Image 3_138
-//    vector<vector<KVector>> vvXi_tilt3_138;
-//    vvXi_tilt3_138 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
-
-//    KMatrix mA3_138(3,3);
-//    mA3_138 = rv0171::Import_mAi(3, 38, 1);
-
-//    rv0171::make_Surround_View_Stitching(mA, mA3_138, rR3_138, vT3_138, vvXi_tilt3_138);
-
-//    // cylinderical warping
-//    rv0171::make_Cylinderical_Warp(mA, vvXi_tilt3_138);
-
-//    cout << vvXi_tilt3_138.at(0).at(0)._ppA[0][0]<< " " << vvXi_tilt3_138.at(0).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt3_138.at(0).at(1279)._ppA[0][0] << " " << vvXi_tilt3_138.at(0).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt3_138.at(1023).at(0)._ppA[0][0] << " " << vvXi_tilt3_138.at(1023).at(0)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << vvXi_tilt3_138.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt3_138.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
-//    cout << endl;
 
     //Image 3_358
     vector<vector<KVector>> vvXi_tilt3_358;
@@ -1941,11 +1690,7 @@ void MainFrame::on_radioButton_clicked()
     cout << vvXi_tilt6_468.at(1023).at(1279)._ppA[0][0] << " " << vvXi_tilt6_468.at(1023).at(1279)._ppA[1][0] <<endl; //(u,v,1)
     cout << endl;
 
-    //출력을 위한 imageform 생성
-    ImageForm* dot_form;
-    KImageColor icMain(1024*2, 1280*5);
-    dot_form = new ImageForm(icMain,"point",this);
-    dot_form->show();
+    Mat icMain(1024*2, 1280*5, CV_8UC3);
 
     //IMU
     KImageColor icBuffer;
@@ -1977,9 +1722,9 @@ void MainFrame::on_radioButton_clicked()
     q_pForm->show();
     UpdateUI();
 
-    int data_row = 0;
-
     while (1) {
+        Mat icMain_show;
+
         img1 = GetMatFrame(handle1);                                // get frame
         img2 = GetMatFrame(handle2);
         img3 = GetMatFrame(handle3);
@@ -2010,19 +1755,8 @@ void MainFrame::on_radioButton_clicked()
 //            imshow("camera8", show_img8);
         }
 
-
-        QImage _img1 = QImage((uchar*) img1.data, img1.cols, img1.rows, img1.step, QImage::Format_BGR888);
-        QImage _img2 = QImage((uchar*) img2.data, img2.cols, img2.rows, img2.step, QImage::Format_BGR888);
-        QImage _img3 = QImage((uchar*) img3.data, img3.cols, img3.rows, img3.step, QImage::Format_BGR888);
-        QImage _img4 = QImage((uchar*) img4.data, img4.cols, img4.rows, img4.step, QImage::Format_BGR888);
-        QImage _img5 = QImage((uchar*) img5.data, img5.cols, img5.rows, img5.step, QImage::Format_BGR888);
-        QImage _img6 = QImage((uchar*) img6.data, img6.cols, img6.rows, img6.step, QImage::Format_BGR888);
-
         QPoint mp1_128;
         QPoint mp2_128;
-
-    //    QPoint mp1_138;
-    //    QPoint mp3_138;
 
         QPoint mp3_358;
         QPoint mp5_358;
@@ -2034,97 +1768,84 @@ void MainFrame::on_radioButton_clicked()
         {
             for(int j=0; j<1280; j++)
             {
-                QColor color_img2 = _img2.pixelColor(j,i);
-                mp2_128.setX((int)(vvXi_tilt2_128.at(i).at(j)._ppA[0][0])+1000+1650);
-                mp2_128.setY((int)(vvXi_tilt2_128.at(i).at(j)._ppA[1][0])+1000+100);
-                dot_form->DrawEllipse(mp2_128,1,1, color_img2);
-
-                QColor color_img1 = _img1.pixelColor(j,i);
                 mp1_128.setX((int)(vvXi_tilt1_128.at(i).at(j)._ppA[0][0])+1000+1650);
                 mp1_128.setY((int)(vvXi_tilt1_128.at(i).at(j)._ppA[1][0])+1000+100);
-                dot_form->DrawEllipse(mp1_128,1,1, color_img1);
+                icMain.at<Vec3b>(mp1_128.y(), mp1_128.x()) = img1.at<Vec3b>(i,j);
 
-    //            mp13.setX((int)(vvXi_tilt1_138.at(i).at(j)._ppA[0][0])+2000);
-    //            mp13.setY((int)(vvXi_tilt1_138.at(i).at(j)._ppA[1][0])+2000);
-    //            dot_form->DrawEllipse(mp13,1,1, color_img1);
+                mp2_128.setX((int)(vvXi_tilt2_128.at(i).at(j)._ppA[0][0])+1000+1650);
+                mp2_128.setY((int)(vvXi_tilt2_128.at(i).at(j)._ppA[1][0])+1000+100);
+                icMain.at<Vec3b>(mp2_128.y(), mp2_128.x()) = img2.at<Vec3b>(i,j);
 
-    //            QColor color_img3 = _img3.pixelColor(j,i);
-    //            mp3.setX((int)(vvXi_tilt3_138.at(i).at(j)._ppA[0][0])+2000);
-    //            mp3.setY((int)(vvXi_tilt3_138.at(i).at(j)._ppA[1][0])+2000);
-    //            dot_form->DrawEllipse(mp3,1,1, color_img3);
-
-                QColor color_img3 = _img3.pixelColor(j,i);
                 mp3_358.setX((int)(vvXi_tilt3_358.at(i).at(j)._ppA[0][0])+1000);
                 mp3_358.setY((int)(vvXi_tilt3_358.at(i).at(j)._ppA[1][0])+1000);
-                dot_form->DrawEllipse(mp3_358,1,1, color_img3);
+                icMain.at<Vec3b>(mp3_358.y(), mp3_358.x()) = img3.at<Vec3b>(i,j);
 
-                QColor color_img5 = _img5.pixelColor(j,i);
                 mp5_358.setX((int)(vvXi_tilt5_358.at(i).at(j)._ppA[0][0])+1000);
                 mp5_358.setY((int)(vvXi_tilt5_358.at(i).at(j)._ppA[1][0])+1000);
-                dot_form->DrawEllipse(mp5_358,1,1, color_img5);
+                icMain.at<Vec3b>(mp5_358.y(), mp5_358.x()) = img5.at<Vec3b>(i,j);
 
-                QColor color_img4 = _img4.pixelColor(j,i);
                 mp4_468.setX((int)(vvXi_tilt4_468.at(i).at(j)._ppA[0][0])+1000+3530);
                 mp4_468.setY((int)(vvXi_tilt4_468.at(i).at(j)._ppA[1][0])+1000+120);
-                dot_form->DrawEllipse(mp4_468,1,1, color_img4);
+                icMain.at<Vec3b>(mp4_468.y(), mp4_468.x()) = img4.at<Vec3b>(i,j);
 
-                QColor color_img6 = _img6.pixelColor(j,i);
                 mp6_468.setX((int)(vvXi_tilt6_468.at(i).at(j)._ppA[0][0])+1000+3530);
                 mp6_468.setY((int)(vvXi_tilt6_468.at(i).at(j)._ppA[1][0])+1000+120);
-                dot_form->DrawEllipse(mp6_468,1,1, color_img6);
-
+                icMain.at<Vec3b>(mp6_468.y(), mp6_468.x()) = img6.at<Vec3b>(i,j);
             }
         }
 
-        //IMU
-        icBuffer = dot_form->ImageColor();
-        int count = 300;
-        while(count>0)
-        {
-            if (EBimuAsciiParser(&id,item, 5))
-            {
-                q.z = item[0];
-                q.y = item[1];
-                q.x = item[2];
-                q.w = item[3];
+//        //IMU
+//        icBuffer = dot_form->ImageColor();
+//        int count = 300;
+//        while(count>0)
+//        {
+//            if (EBimuAsciiParser(&id,item, 5))
+//            {
+//                q.z = item[0];
+//                q.y = item[1];
+//                q.x = item[2];
+//                q.w = item[3];
 
-                e = ToEulerAngles(q);
-                printf("Yaw: %f\n", e.yaw);
+//                e = ToEulerAngles(q);
+//                printf("Yaw: %f\n", e.yaw);
 
-                int data_row = (int)((e.yaw + 180)*(icBuffer.Col()/360));
-                //cout << "data_row: " << data_row << endl;
+//                int data_row = (int)((e.yaw + 180)*(icBuffer.Col()/360));
+//                //cout << "data_row: " << data_row << endl;
 
-                for(int c = 0; c < col; c++)        // 1280
-                {
-                    for(int r = 0; r < row; r++)    // 1024
-                    {
-                        if(data_row > icBuffer.Col())
-                        {
-                            icKernel[r][c].r = icBuffer[r+500][data_row + c - icBuffer.Col()].r;
-                            icKernel[r][c].g = icBuffer[r+500][data_row + c - icBuffer.Col()].g;
-                            icKernel[r][c].b = icBuffer[r+500][data_row + c - icBuffer.Col()].b;
-                        }
-                        else
-                        {
-                            icKernel[r][c].r = icBuffer[r+500][data_row + c].r;
-                            icKernel[r][c].g = icBuffer[r+500][data_row + c].g;
-                            icKernel[r][c].b = icBuffer[r+500][data_row + c].b;
-                        }
-                    }
-                }
-                q_pForm->Update(icKernel);
-                UpdateUI();
-                QCoreApplication::processEvents();
-            }
-            count--;
-        }
+//                for(int c = 0; c < col; c++)        // 1280
+//                {
+//                    for(int r = 0; r < row; r++)    // 1024
+//                    {
+//                        if(data_row > icBuffer.Col())
+//                        {
+//                            icKernel[r][c].r = icBuffer[r+500][data_row + c - icBuffer.Col()].r;
+//                            icKernel[r][c].g = icBuffer[r+500][data_row + c - icBuffer.Col()].g;
+//                            icKernel[r][c].b = icBuffer[r+500][data_row + c - icBuffer.Col()].b;
+//                        }
+//                        else
+//                        {
+//                            icKernel[r][c].r = icBuffer[r+500][data_row + c].r;
+//                            icKernel[r][c].g = icBuffer[r+500][data_row + c].g;
+//                            icKernel[r][c].b = icBuffer[r+500][data_row + c].b;
+//                        }
+//                    }
+//                }
+//                q_pForm->Update(icKernel);
+//                UpdateUI();
+//                QCoreApplication::processEvents();
+//            }
+//            count--;
+//        }
 
         //UI 활성화 갱신
         cout << "cylinderical Process Finished!" << endl;
 
-        dot_form->repaint();
-        UpdateUI();
-        QCoreApplication::processEvents();
+        cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
+        imshow("icMain", icMain_show);
+
+        char ch = waitKey(10);
+        if(ch == 27)
+            break;       // 27 == ESC key
     }
 }
 
