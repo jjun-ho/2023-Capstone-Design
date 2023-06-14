@@ -52,17 +52,17 @@ EulerAngles ToEulerAngles(Quaternion q) {
     // roll (x-axis rotation)
     double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
     double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-    angles.roll = std::atan2(sinr_cosp, cosr_cosp) * 57.2958; // rad to deg
+    angles.roll = std::atan2(sinr_cosp, cosr_cosp) * (180.0/_PI); // rad to deg
 
     // pitch (y-axis rotation)
     double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
     double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-    angles.pitch = 2 * std::atan2(sinp, cosp) - M_PI / 2 * 57.2958; // rad to deg
+    angles.pitch = 2 * std::atan2(sinp, cosp) - M_PI / 2 * (180.0/_PI); // rad to deg
 
     // yaw (z-axis rotation)
     double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
     double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-    angles.yaw = std::atan2(siny_cosp, cosy_cosp) * 57.2958; // rad to deg
+    angles.yaw = std::atan2(siny_cosp, cosy_cosp) * (180.0/_PI); // rad to deg
 
     return angles;
 }
@@ -1164,8 +1164,8 @@ void MainFrame::on_Cylinderical_Warp_clicked()
 
     ///////////////////////////////Surround View Stitching//////////////////////////////////
     KMatrix mA(3,3);
-    mA[0][0] = 1165; //fi
-    mA[1][1] = 1165; //fi
+    mA[0][0] = 1000; //fi
+    mA[1][1] = 1000; //fi
     mA[2][2] = 1.0;
     mA[0][2] = 0;
     mA[1][2] = 0;
@@ -1229,7 +1229,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     vvXi_tilt4_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
 
     KMatrix mA4_468(3,3);
-    mA4_468 = rv0171::Import_mAi(3, 38, 5);
+    mA4_468 = rv0171::Import_mAi(4, 48, 6);
 
     rv0171::make_Surround_View_Stitching(mA, mA4_468, rR4_468, vT4_468, vvXi_tilt4_468);
 
@@ -1265,7 +1265,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     vvXi_tilt6_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
 
     KMatrix mA6_468(3,3);
-    mA6_468 = rv0171::Import_mAi(3, 38, 5);
+    mA6_468 = rv0171::Import_mAi(6, 68, 4);
 
     rv0171::make_Surround_View_Stitching(mA, mA6_468, rR6_468, vT6_468, vvXi_tilt6_468);
 
@@ -1282,8 +1282,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     Mat icMain_show;
 
     //IMU
-    Mat icBuffer;
-    Mat icKernel(900, 1280, CV_8UC3);
+    Mat icKernel(850, 1280, CV_8UC3);
 
     int id;
     float item[100];
@@ -1343,7 +1342,6 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     imshow("icMain", icMain_show);
 
     //IMU
-//    icBuffer = icMain.clone();
     while(1)
     {
         if (EBimuAsciiParser(&id,item, 5))
@@ -1556,7 +1554,7 @@ void MainFrame::on_pushRealTime_clicked()
     vvXi_tilt2_128 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
 
     KMatrix mA2_128(3,3);
-    mA2_128 = rv0171::Import_mAi(2,28,1);
+    mA2_128 = rv0171::Import_mAi(2, 28, 1);
 
     rv0171::make_Surround_View_Stitching(mA, mA2_128, rR2_128, vT2_128, vvXi_tilt2_128);
 
@@ -1592,7 +1590,7 @@ void MainFrame::on_pushRealTime_clicked()
     vvXi_tilt4_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
 
     KMatrix mA4_468(3,3);
-    mA4_468 = rv0171::Import_mAi(3, 38, 5);
+    mA4_468 = rv0171::Import_mAi(4, 48, 6);
 
     rv0171::make_Surround_View_Stitching(mA, mA4_468, rR4_468, vT4_468, vvXi_tilt4_468);
 
@@ -1628,7 +1626,7 @@ void MainFrame::on_pushRealTime_clicked()
     vvXi_tilt6_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
 
     KMatrix mA6_468(3,3);
-    mA6_468 = rv0171::Import_mAi(3, 38, 5);
+    mA6_468 = rv0171::Import_mAi(6, 68, 4);
 
     rv0171::make_Surround_View_Stitching(mA, mA6_468, rR6_468, vT6_468, vvXi_tilt6_468);
 
