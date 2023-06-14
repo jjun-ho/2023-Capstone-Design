@@ -18,7 +18,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
@@ -115,9 +114,8 @@ public:
     QPushButton *pushPanorama;
     QPushButton *Cylinderical_Warp;
     QPushButton *IMUButton;
-    QPushButton *KernelButton;
     QPushButton *CameraBtn;
-    QRadioButton *radioButton;
+    QPushButton *pushRealTime;
     QListWidget *listWidget;
 
     void setupUi(QDialog *MainFrame)
@@ -458,40 +456,34 @@ public:
         tab->setObjectName("tab");
         pushRtMatrix = new QPushButton(tab);
         pushRtMatrix->setObjectName("pushRtMatrix");
-        pushRtMatrix->setGeometry(QRect(160, 200, 231, 51));
+        pushRtMatrix->setGeometry(QRect(200, 180, 201, 51));
         RT_product = new QPushButton(tab);
         RT_product->setObjectName("RT_product");
-        RT_product->setGeometry(QRect(160, 280, 231, 51));
+        RT_product->setGeometry(QRect(200, 250, 201, 51));
         Checker_Corner = new QPushButton(tab);
         Checker_Corner->setObjectName("Checker_Corner");
-        Checker_Corner->setGeometry(QRect(180, 130, 191, 51));
+        Checker_Corner->setGeometry(QRect(200, 110, 201, 51));
         tabWidget->addTab(tab, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
         pushPanorama = new QPushButton(tab_3);
         pushPanorama->setObjectName("pushPanorama");
-        pushPanorama->setGeometry(QRect(200, 170, 151, 51));
+        pushPanorama->setGeometry(QRect(220, 170, 151, 51));
         Cylinderical_Warp = new QPushButton(tab_3);
         Cylinderical_Warp->setObjectName("Cylinderical_Warp");
-        Cylinderical_Warp->setGeometry(QRect(200, 230, 151, 51));
+        Cylinderical_Warp->setGeometry(QRect(220, 230, 151, 51));
         Cylinderical_Warp->setAutoExclusive(true);
         IMUButton = new QPushButton(tab_3);
         IMUButton->setObjectName("IMUButton");
-        IMUButton->setGeometry(QRect(200, 110, 151, 51));
-        KernelButton = new QPushButton(tab_3);
-        KernelButton->setObjectName("KernelButton");
-        KernelButton->setGeometry(QRect(200, 290, 151, 51));
-        KernelButton->setAutoRepeat(true);
-        KernelButton->setAutoExclusive(false);
-        KernelButton->setAutoRepeatDelay(5000);
+        IMUButton->setGeometry(QRect(220, 110, 151, 51));
         CameraBtn = new QPushButton(tab_3);
         CameraBtn->setObjectName("CameraBtn");
-        CameraBtn->setGeometry(QRect(199, 53, 151, 51));
+        CameraBtn->setGeometry(QRect(219, 53, 151, 51));
         CameraBtn->setAutoExclusive(true);
-        radioButton = new QRadioButton(tab_3);
-        radioButton->setObjectName("radioButton");
-        radioButton->setGeometry(QRect(480, 90, 91, 22));
-        radioButton->setAutoExclusive(true);
+        pushRealTime = new QPushButton(tab_3);
+        pushRealTime->setObjectName("pushRealTime");
+        pushRealTime->setGeometry(QRect(220, 290, 151, 51));
+        pushRealTime->setAutoExclusive(true);
         tabWidget->addTab(tab_3, QString());
 
         horizontalLayout->addWidget(tabWidget);
@@ -940,9 +932,8 @@ public:
         pushPanorama->setText(QCoreApplication::translate("MainFrame", "Panorama", nullptr));
         Cylinderical_Warp->setText(QCoreApplication::translate("MainFrame", "Cylindrical Warp", nullptr));
         IMUButton->setText(QCoreApplication::translate("MainFrame", "IMU", nullptr));
-        KernelButton->setText(QCoreApplication::translate("MainFrame", "Kernel", nullptr));
         CameraBtn->setText(QCoreApplication::translate("MainFrame", "Camera", nullptr));
-        radioButton->setText(QCoreApplication::translate("MainFrame", "RadioButton", nullptr));
+        pushRealTime->setText(QCoreApplication::translate("MainFrame", "Real Time", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainFrame", "Page", nullptr));
     } // retranslateUi
 

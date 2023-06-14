@@ -61,9 +61,7 @@ private slots:
 
     void on_IMUButton_clicked();
 
-    void on_KernelButton_clicked();
-
-    void on_radioButton_clicked();
+    void on_pushRealTime_clicked();
 
 protected:
     void closeEvent(QCloseEvent* event);

@@ -1281,6 +1281,22 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     Mat icMain(1024*2, 1280*5, CV_8UC3);
     Mat icMain_show;
 
+    //IMU
+    Mat icBuffer;
+    Mat icKernel(900, 1280, CV_8UC3);
+
+    int id;
+    float item[100];
+
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
+
+    Quaternion q;
+    EulerAngles e;
+
     QPoint mp1_128;
     QPoint mp2_128;
 
@@ -1323,13 +1339,47 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     //UI 활성화 갱신
     cout << "cylinderical Process Finished!" << endl;
 
-    cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
+    cv::resize(icMain, icMain_show, Size(icMain.cols/4, icMain.rows/4));        // resize
     imshow("icMain", icMain_show);
 
-    char ch = waitKey(10);
-    //if(ch == 27)
-        //break;       // 27 == ESC key
+    //IMU
+//    icBuffer = icMain.clone();
+    while(1)
+    {
+        if (EBimuAsciiParser(&id,item, 5))
+        {
+            q.z = item[0];
+            q.y = item[1];
+            q.x = item[2];
+            q.w = item[3];
 
+            e = ToEulerAngles(q);
+            cout << "Yaw: " << e.yaw <<endl;
+
+            int data_row = (int)((e.yaw + 180)*(icMain.cols/360));
+            //cout << "data_row: " << data_row << endl;
+
+            for(int c = 0; c < icKernel.cols; c++)
+            {
+                for(int r = 0; r < icKernel.rows; r++)
+                {
+                    if(data_row > icMain.cols)
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c - icMain.cols);
+                    }
+                    else
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c);
+                    }
+                }
+            }
+            imshow("Kernel Image", icKernel);
+
+            char ch = waitKey(10);
+            if(ch == 27)
+                break;       // 27 == ESC key
+        }
+    }
 }
 
 void MainFrame::on_IMUButton_clicked()
@@ -1362,105 +1412,8 @@ void MainFrame::on_IMUButton_clicked()
     }
 }
 
-void MainFrame::on_KernelButton_clicked()
-{
-    KImageColor icMain;
-    KImageColor icKernel;
-    icKernel.Create(1024, 1280);
 
-    if(_q_pFormFocused != 0 && _q_pFormFocused->ImageColor().Address() &&  _q_pFormFocused->ID() == "point")
-        icMain = _q_pFormFocused->ImageColor();
-    else
-        return;
-
-    int row = icKernel.Row();   // 1024
-    int col = icKernel.Col();   // 1280
-
-    int id;
-    float item[100];
-
-    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
-    {
-        printf("\n\rSerialport Error...");
-        Sleep(2000);
-    }
-
-    Quaternion q;
-    EulerAngles e;
-
-    ImageForm*  q_pForm = new ImageForm(icKernel, "Kernel Applied", this);
-    _lImageForm.push_back(q_pForm);
-    q_pForm->show();
-    UpdateUI();
-
-    while(1)   // data_row: 300 ~ 1300 까지
-    {
-        if (EBimuAsciiParser(&id,item, 5))
-        {
-            q.z = item[0];
-            q.y = item[1];
-            q.x = item[2];
-            q.w = item[3];
-
-            e = ToEulerAngles(q);
-            printf("Yaw: %f\n", e.yaw);
-
-            int data_row = (int)((e.yaw + 180)*(icMain.Col()/360));
-            //cout << "data_row: " << data_row << endl;
-
-            for(int c = 0; c < col; c++)        // 1280
-            {
-                for(int r = 0; r < row; r++)    // 1024
-                {
-                    if(data_row > icMain.Col())
-                    {
-                        icKernel[r][c].r = icMain[r+600][data_row + c - icMain.Col()].r;
-                        icKernel[r][c].g = icMain[r+600][data_row + c - icMain.Col()].g;
-                        icKernel[r][c].b = icMain[r+600][data_row + c - icMain.Col()].b;
-                    }
-                    else
-                    {
-                        icKernel[r][c].r = icMain[r+600][data_row + c].r;
-                        icKernel[r][c].g = icMain[r+600][data_row + c].g;
-                        icKernel[r][c].b = icMain[r+600][data_row + c].b;
-                    }
-                }
-            }
-            q_pForm->Update(icKernel);
-            UpdateUI();
-            QCoreApplication::processEvents();            
-        }
-        else
-        {
-//            for(int c = 0; c < col; c++)        // 1280
-//            {
-//                for(int r = 0; r < row; r++)    // 1024
-//                {
-//                    if(data_row > icMain.Col())
-//                    {
-//                        icKernel[r][c].r = icMain[r][data_row + c - icMain.Col()].r;
-//                        icKernel[r][c].g = icMain[r][data_row + c - icMain.Col()].g;
-//                        icKernel[r][c].b = icMain[r][data_row + c - icMain.Col()].b;
-//                    }
-//                    else
-//                    {
-//                        icKernel[r][c].r = icMain[r][data_row + c].r;
-//                        icKernel[r][c].g = icMain[r][data_row + c].g;
-//                        icKernel[r][c].b = icMain[r][data_row + c].b;
-//                    }
-//                }
-//            }
-//            q_pForm->Update(icKernel);
-//            UpdateUI();
-//            QCoreApplication::processEvents();
-            cout << "Connection lost!! Turn on your IMU!!" << endl;
-        }
-    }
-}
-
-
-
-void MainFrame::on_radioButton_clicked()
+void MainFrame::on_pushRealTime_clicked()
 {
     int show_flag = 0;
 
@@ -1690,21 +1643,21 @@ void MainFrame::on_radioButton_clicked()
 
     Mat icMain(1024*2, 1280*5, CV_8UC3);
 
-    //IMU
-    Mat icBuffer;
-    Mat icKernel(900, 1280, CV_8UC3);
+//    //IMU
+//    Mat icBuffer;
+//    Mat icKernel(900, 1280, CV_8UC3);
 
-    int id;
-    float item[100];
+//    int id;
+//    float item[100];
 
-    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
-    {
-        printf("\n\rSerialport Error...");
-        Sleep(2000);
-    }
+//    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+//    {
+//        printf("\n\rSerialport Error...");
+//        Sleep(2000);
+//    }
 
-    Quaternion q;
-    EulerAngles e;
+//    Quaternion q;
+//    EulerAngles e;
 
     while (1) {
         Mat icMain_show;
@@ -1778,46 +1731,46 @@ void MainFrame::on_radioButton_clicked()
             }
         }
 
-        //IMU
-        icBuffer = icMain.clone();
-        int count = 50;
-        while(count>0)
-        {
-            if (EBimuAsciiParser(&id,item, 5))
-            {
-                q.z = item[0];
-                q.y = item[1];
-                q.x = item[2];
-                q.w = item[3];
+//        //IMU
+//        icBuffer = icMain.clone();
+//        int count = 50;
+//        while(count>0)
+//        {
+//            if (EBimuAsciiParser(&id,item, 5))
+//            {
+//                q.z = item[0];
+//                q.y = item[1];
+//                q.x = item[2];
+//                q.w = item[3];
 
-                e = ToEulerAngles(q);
-                printf("Yaw: %f\n", e.yaw);
+//                e = ToEulerAngles(q);
+//                cout << "Yaw: " << e.yaw <<endl;
 
-                int data_row = (int)((e.yaw + 180)*(icBuffer.cols/360));
-                //cout << "data_row: " << data_row << endl;
+//                int data_row = (int)((e.yaw + 180)*(icBuffer.cols/360));
+//                //cout << "data_row: " << data_row << endl;
 
-                for(int c = 0; c < icKernel.cols; c++)
-                {
-                    for(int r = 0; r < icKernel.rows; r++)
-                    {
-                        if(data_row > icBuffer.cols)
-                        {
-                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c - icBuffer.cols);
-                        }
-                        else
-                        {
-                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c);
-                        }
-                    }
-                }
-                imshow("Kernel Image", icKernel);
+//                for(int c = 0; c < icKernel.cols; c++)
+//                {
+//                    for(int r = 0; r < icKernel.rows; r++)
+//                    {
+//                        if(data_row > icBuffer.cols)
+//                        {
+//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c - icBuffer.cols);
+//                        }
+//                        else
+//                        {
+//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c);
+//                        }
+//                    }
+//                }
+//                imshow("Kernel Image", icKernel);
 
-                char ch = waitKey(10);
-                if(ch == 27)
-                    break;       // 27 == ESC key
-            }
-            count--;
-        }
+//                char ch = waitKey(10);
+//                if(ch == 27)
+//                    break;       // 27 == ESC key
+//            }
+//            count--;
+//        }
 
         //UI 활성화 갱신
         cout << "cylinderical Process Finished!" << endl;

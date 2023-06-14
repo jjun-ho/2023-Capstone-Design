@@ -1521,9 +1521,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="pushRtMatrix">
          <property name="geometry">
           <rect>
-           <x>160</x>
-           <y>200</y>
-           <width>231</width>
+           <x>200</x>
+           <y>180</y>
+           <width>201</width>
            <height>51</height>
           </rect>
          </property>
@@ -1534,9 +1534,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="RT_product">
          <property name="geometry">
           <rect>
-           <x>160</x>
-           <y>280</y>
-           <width>231</width>
+           <x>200</x>
+           <y>250</y>
+           <width>201</width>
            <height>51</height>
           </rect>
          </property>
@@ -1547,9 +1547,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="Checker_Corner">
          <property name="geometry">
           <rect>
-           <x>180</x>
-           <y>130</y>
-           <width>191</width>
+           <x>200</x>
+           <y>110</y>
+           <width>201</width>
            <height>51</height>
           </rect>
          </property>
@@ -1565,7 +1565,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="pushPanorama">
          <property name="geometry">
           <rect>
-           <x>200</x>
+           <x>220</x>
            <y>170</y>
            <width>151</width>
            <height>51</height>
@@ -1578,7 +1578,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="Cylinderical_Warp">
          <property name="geometry">
           <rect>
-           <x>200</x>
+           <x>220</x>
            <y>230</y>
            <width>151</width>
            <height>51</height>
@@ -1594,7 +1594,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="IMUButton">
          <property name="geometry">
           <rect>
-           <x>200</x>
+           <x>220</x>
            <y>110</y>
            <width>151</width>
            <height>51</height>
@@ -1604,32 +1604,10 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <string>IMU</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="KernelButton">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>290</y>
-           <width>151</width>
-           <height>51</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Kernel</string>
-         </property>
-         <property name="autoRepeat">
-          <bool>true</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>false</bool>
-         </property>
-         <property name="autoRepeatDelay">
-          <number>5000</number>
-         </property>
-        </widget>
         <widget class="QPushButton" name="CameraBtn">
          <property name="geometry">
           <rect>
-           <x>199</x>
+           <x>219</x>
            <y>53</y>
            <width>151</width>
            <height>51</height>
@@ -1642,13 +1620,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <bool>true</bool>
          </property>
         </widget>
-        <widget class="QRadioButton" name="radioButton">
+        <widget class="QPushButton" name="pushRealTime">
          <property name="geometry">
           <rect>
-           <x>430</x>
-           <y>90</y>
-           <width>91</width>
-           <height>22</height>
+           <x>220</x>
+           <y>290</y>
+           <width>151</width>
+           <height>51</height>
           </rect>
          </property>
          <property name="text">
