@@ -63,6 +63,10 @@ private slots:
 
     void on_pushRealTime_clicked();
 
+    void on_Cylinderical_Warp_2_clicked();
+
+    void on_pushRealTime_2_clicked();
+
 protected:
     void closeEvent(QCloseEvent* event);
 };

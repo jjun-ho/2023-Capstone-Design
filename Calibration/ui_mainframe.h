@@ -116,6 +116,9 @@ public:
     QPushButton *IMUButton;
     QPushButton *CameraBtn;
     QPushButton *pushRealTime;
+    QWidget *tab_4;
+    QPushButton *Cylinderical_Warp_2;
+    QPushButton *pushRealTime_2;
     QListWidget *listWidget;
 
     void setupUi(QDialog *MainFrame)
@@ -485,6 +488,15 @@ public:
         pushRealTime->setGeometry(QRect(220, 290, 151, 51));
         pushRealTime->setAutoExclusive(true);
         tabWidget->addTab(tab_3, QString());
+        tab_4 = new QWidget();
+        tab_4->setObjectName("tab_4");
+        Cylinderical_Warp_2 = new QPushButton(tab_4);
+        Cylinderical_Warp_2->setObjectName("Cylinderical_Warp_2");
+        Cylinderical_Warp_2->setGeometry(QRect(170, 100, 221, 51));
+        pushRealTime_2 = new QPushButton(tab_4);
+        pushRealTime_2->setObjectName("pushRealTime_2");
+        pushRealTime_2->setGeometry(QRect(170, 170, 221, 51));
+        tabWidget->addTab(tab_4, QString());
 
         horizontalLayout->addWidget(tabWidget);
 
@@ -543,7 +555,7 @@ public:
 
         retranslateUi(MainFrame);
 
-        tabWidget->setCurrentIndex(3);
+        tabWidget->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(MainFrame);
@@ -935,6 +947,9 @@ public:
         CameraBtn->setText(QCoreApplication::translate("MainFrame", "Camera", nullptr));
         pushRealTime->setText(QCoreApplication::translate("MainFrame", "Real Time", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainFrame", "Page", nullptr));
+        Cylinderical_Warp_2->setText(QCoreApplication::translate("MainFrame", "Cylinderical_Warp", nullptr));
+        pushRealTime_2->setText(QCoreApplication::translate("MainFrame", "Real Time", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainFrame", "Page", nullptr));
     } // retranslateUi
 
 };

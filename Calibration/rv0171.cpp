@@ -863,3 +863,60 @@ void rv0171::make_Cylinderical_Warp(KMatrix mA, vector<vector<KVector>> &ui)
 
 }
 
+
+KMatrices rv0171::make_Surround_View_Stitching_ver2(KMatrix mA, KMatrix mAi, KRotation rRi, KVector vTi, vector<vector<KVector>> &ui, int n)
+{
+    KMatrix mppU;
+    KMatrix mppUv,mppUv2;
+
+    KMatrices mppUs(1024);
+    mppUs.RemoveAll();
+
+    KHomogeneous hpTvo_c , hpTc_vo;
+
+    hpTvo_c.t() = vTi;
+    hpTvo_c.R() = rRi;
+
+    hpTc_vo = hpTvo_c.Iv();
+
+    for(int i =0; i<ui.size();i++) //1024
+    {
+        KMatrix mppU;
+        for(int j =0; j<ui.at(0).size();j++) // 1280
+        {
+            mppU |= KVector(ui.at(i).at(j)._ppA[0][0]*100000,ui.at(i).at(j)._ppA[1][0]*100000,1.0*100000); // 3x1280
+
+        }
+
+        mppUv = mA * KRotation(_Y_AXIS, -_RADIAN(22.5*(2*n-1)))* hpTvo_c.R() * (mAi.Iv()*mppU);  // mppu -> 이미지 좌표
+
+        mppUv2 = mA  * KRotation(_Y_AXIS, -_RADIAN(22.5*(2*n-1))) *hpTvo_c.R() * (- KMatrix::RepMat(hpTc_vo.t(), 1, mppUv.Col() ));
+
+        mppUv += mppUv2;
+
+        mppUv /= KMatrix::RepMat(mppUv.Cut(2,_ROW),3,1);
+
+        mppUs.Add(mppUv);
+
+    }
+    return mppUs; // 1024x1280
+}
+
+
+void rv0171::make_Cylinderical_Warp_ver2(KMatrix mA, KMatrices &ui)
+{
+    // V0(uv,vv) // 가상 좌표계를 만들고  (가상의 방향) 이것으로 virtual camera 를 만든다  virtual camera의  중심을 optical center (V0)로 했다
+    //N개의 카메라가 있다면 각각의 optical center가 있는데 그것의  중점이 world coordinate 의 중심으로   (uv,vv) 로 둿다.
+
+    double fv = mA[0][0];
+
+    for(int i =0; i<1024;i++) //1024
+    {
+        for(int j =0; j<1280;j++) // 1280
+        {
+            ui[i]._ppA[0][j] = fv * atan2( ui[i]._ppA[0][j],fv)+mA[0][2];
+            ui[i]._ppA[1][j] = fv * ( ui[i]._ppA[1][j] / sqrt(ui[i]._ppA[0][j]*ui[i]._ppA[0][j] + fv*fv))+mA[1][2];
+        }
+    }
+
+}

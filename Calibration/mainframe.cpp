@@ -1525,8 +1525,8 @@ void MainFrame::on_pushRealTime_clicked()
 
     ///////////////////////////////Surround View Stitching//////////////////////////////////
     KMatrix mA(3,3);
-    mA[0][0] = 1165; //fi
-    mA[1][1] = 1165; //fi
+    mA[0][0] = 1000; //fi
+    mA[1][1] = 1000; //fi
     mA[2][2] = 1.0;
     mA[0][2] = 0;
     mA[1][2] = 0;
@@ -1725,6 +1725,592 @@ void MainFrame::on_pushRealTime_clicked()
 
                 mp6_468.setX((int)(vvXi_tilt6_468.at(i).at(j)._ppA[0][0])+1000+3530);
                 mp6_468.setY((int)(vvXi_tilt6_468.at(i).at(j)._ppA[1][0])+1000+120);
+                icMain.at<Vec3b>(mp6_468.y(), mp6_468.x()) = img6.at<Vec3b>(i,j);
+            }
+        }
+
+//        //IMU
+//        icBuffer = icMain.clone();
+//        int count = 50;
+//        while(count>0)
+//        {
+//            if (EBimuAsciiParser(&id,item, 5))
+//            {
+//                q.z = item[0];
+//                q.y = item[1];
+//                q.x = item[2];
+//                q.w = item[3];
+
+//                e = ToEulerAngles(q);
+//                cout << "Yaw: " << e.yaw <<endl;
+
+//                int data_row = (int)((e.yaw + 180)*(icBuffer.cols/360));
+//                //cout << "data_row: " << data_row << endl;
+
+//                for(int c = 0; c < icKernel.cols; c++)
+//                {
+//                    for(int r = 0; r < icKernel.rows; r++)
+//                    {
+//                        if(data_row > icBuffer.cols)
+//                        {
+//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c - icBuffer.cols);
+//                        }
+//                        else
+//                        {
+//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c);
+//                        }
+//                    }
+//                }
+//                imshow("Kernel Image", icKernel);
+
+//                char ch = waitKey(10);
+//                if(ch == 27)
+//                    break;       // 27 == ESC key
+//            }
+//            count--;
+//        }
+
+        //UI 활성화 갱신
+        cout << "cylinderical Process Finished!" << endl;
+
+        cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
+        imshow("icMain", icMain_show);
+
+        char ch = waitKey(10);
+        if(ch == 27)
+            break;       // 27 == ESC key
+    }
+}
+
+
+void MainFrame::on_Cylinderical_Warp_2_clicked()
+{
+    //Image
+    KImageColor Img(1024,1280);
+
+    Mat img1 = imread("./data/realtime/1.bmp");
+    Mat img2 = imread("./data/realtime/2.bmp");
+    Mat img3 = imread("./data/realtime/3.bmp");
+    Mat img4 = imread("./data/realtime/4.bmp");
+    Mat img5 = imread("./data/realtime/5.bmp");
+    Mat img6 = imread("./data/realtime/6.bmp");
+
+    ///////////////////////////////R,t 불러오기//////////////////////////////////
+    KRotation rR1_128;
+    rR1_128 = rv0171::Import_rRi(1, 18, 2);
+    KVector vT1_128;
+    vT1_128 = rv0171::Import_vTi(1, 18, 2);
+
+    KRotation rR2_128;
+    rR2_128 = rv0171::Import_rRi(2, 28, 1);
+    KVector vT2_128;
+    vT2_128 = rv0171::Import_vTi(2, 28, 1);
+
+    KRotation rR3_358;
+    rR3_358 = rv0171::Import_rRi(3, 38, 5);
+    KVector vT3_358;
+    vT3_358 = rv0171::Import_vTi(3, 38, 5);
+
+    KRotation rR4_468;
+    rR4_468 = rv0171::Import_rRi(4, 48, 6);
+    KVector vT4_468;
+    vT4_468 = rv0171::Import_vTi(4, 48, 6);
+
+    KRotation rR5_358;
+    rR5_358 = rv0171::Import_rRi(5, 58, 3);
+    KVector vT5_358;
+    vT5_358 = rv0171::Import_vTi(5, 58, 3);
+
+    KRotation rR6_468;
+    rR6_468 = rv0171::Import_rRi(6, 68, 4);
+    KVector vT6_468;
+    vT6_468 = rv0171::Import_vTi(6, 68, 4);
+
+    ///////////////////////////////Surround View Stitching//////////////////////////////////
+    KMatrix mA(3,3);
+    mA[0][0] = 1000; //fi
+    mA[1][1] = 1000; //fi
+    mA[2][2] = 1.0;
+    mA[0][2] = 0;
+    mA[1][2] = 0;
+
+    //Image 1_128
+    vector<vector<KVector>> vvXi_tilt1_128;
+    vvXi_tilt1_128 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA1_128(3,3);
+    mA1_128 = rv0171::Import_mAi(1, 18, 2);
+
+    KMatrices vvXs_1_128;
+    vvXs_1_128 = rv0171::make_Surround_View_Stitching_ver2(mA, mA1_128, rR1_128, vT1_128, vvXi_tilt1_128, 1);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_1_128);
+\
+    cout << "Image 1_128 End" << endl;
+
+    //Image 2_128
+    vector<vector<KVector>> vvXi_tilt2_128;
+    vvXi_tilt2_128 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA2_128(3,3);
+    mA2_128 = rv0171::Import_mAi(2,28,1);
+
+    KMatrices vvXs_2_128;
+    vvXs_2_128 = rv0171::make_Surround_View_Stitching_ver2(mA, mA2_128, rR2_128, vT2_128, vvXi_tilt2_128, 0);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_2_128);
+
+    cout << "Image 2_128 End" << endl;
+
+    //Image 3_358
+    vector<vector<KVector>> vvXi_tilt3_358;
+    vvXi_tilt3_358 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA3_358(3,3);
+    mA3_358 = rv0171::Import_mAi(3, 38, 5);
+
+    KMatrices vvXs_3_358;
+    vvXs_3_358 = rv0171::make_Surround_View_Stitching_ver2(mA, mA3_358, rR3_358, vT3_358, vvXi_tilt3_358, 0);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_3_358);
+
+    cout << "Image 3_358 End" << endl;
+
+    //Image 4_468
+    vector<vector<KVector>> vvXi_tilt4_468;
+    vvXi_tilt4_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA4_468(3,3);
+    mA4_468 = rv0171::Import_mAi(4, 48, 6);
+
+    KMatrices vvXs_4_468;
+    vvXs_4_468 = rv0171::make_Surround_View_Stitching_ver2(mA, mA4_468, rR4_468, vT5_358, vvXi_tilt4_468, 1);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_4_468);
+
+    cout << "Image 4_468 End" << endl;
+
+    //Image 5_358
+    vector<vector<KVector>> vvXi_tilt5_358;
+    vvXi_tilt5_358 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA5_358(3,3);
+    mA5_358 = rv0171::Import_mAi(5, 58, 3);
+
+    KMatrices vvXs_5_358;
+    vvXs_5_358 = rv0171::make_Surround_View_Stitching_ver2(mA, mA5_358, rR5_358, vT5_358, vvXi_tilt5_358, 1);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_5_358);
+
+    cout << "Image 5_358 End" << endl;
+
+    //Image 6_468
+    vector<vector<KVector>> vvXi_tilt6_468;
+    vvXi_tilt6_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA6_468(3,3);
+    mA6_468 = rv0171::Import_mAi(6, 68, 4);
+
+    KMatrices vvXs_6_468;
+    vvXs_6_468 = rv0171::make_Surround_View_Stitching_ver2(mA, mA6_468, rR6_468, vT6_468, vvXi_tilt6_468, 0);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_6_468);
+
+    cout << "Image 6_468 End" << endl;
+
+    Mat icMain(1024*2, 1280*5, CV_8UC3);
+    Mat icMain_show;
+
+    //IMU
+    Mat icKernel(850, 1280, CV_8UC3);
+
+    int id;
+    float item[100];
+
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
+
+    Quaternion q;
+    EulerAngles e;
+
+    QPoint mp1_128;
+    QPoint mp2_128;
+
+    QPoint mp3_358;
+    QPoint mp5_358;
+
+    QPoint mp4_468;
+    QPoint mp6_468;
+
+    for(int i=0; i<1024; i++)
+    {
+        for(int j=0; j<1280; j++)
+        {
+            mp1_128.setX((int)(vvXs_1_128[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90));
+            mp1_128.setY((int)(vvXs_1_128[i]._ppA[1][j])+1000);
+            icMain.at<Vec3b>(mp1_128.y(), mp1_128.x()) = img1.at<Vec3b>(i,j);
+
+            mp2_128.setX((int)(vvXs_2_128[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90));
+            mp2_128.setY((int)(vvXs_2_128[i]._ppA[1][j])+1000);
+            icMain.at<Vec3b>(mp2_128.y(), mp2_128.x()) = img2.at<Vec3b>(i,j);
+
+            mp3_358.setX((int)(vvXs_3_358[i]._ppA[0][j])+1000);
+            mp3_358.setY((int)(vvXs_3_358[i]._ppA[1][j])+1000);
+            icMain.at<Vec3b>(mp3_358.y(), mp3_358.x()) = img3.at<Vec3b>(i,j);
+
+            mp5_358.setX((int)(vvXs_5_358[i]._ppA[0][j])+1000);
+            mp5_358.setY((int)(vvXs_5_358[i]._ppA[1][j])+1000);
+            icMain.at<Vec3b>(mp5_358.y(), mp5_358.x()) = img5.at<Vec3b>(i,j);
+
+            mp4_468.setX((int)(vvXs_4_468[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2));
+            mp4_468.setY((int)(vvXs_4_468[i]._ppA[1][j])+1000);
+            icMain.at<Vec3b>(mp4_468.y(), mp4_468.x()) = img4.at<Vec3b>(i,j);
+
+            mp6_468.setX((int)(vvXs_6_468[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2));
+            mp6_468.setY((int)(vvXs_6_468[i]._ppA[1][j])+1000);
+            icMain.at<Vec3b>(mp6_468.y(), mp6_468.x()) = img6.at<Vec3b>(i,j);
+        }
+    }
+
+    //UI 활성화 갱신
+    cout << "cylinderical Process Finished!" << endl;
+
+    cv::resize(icMain, icMain_show, Size(icMain.cols/3, icMain.rows/3));        // resize
+    imshow("icMain", icMain_show);
+
+    //IMU
+    while(1)
+    {
+        if (EBimuAsciiParser(&id,item, 5))
+        {
+            q.z = item[0];
+            q.y = item[1];
+            q.x = item[2];
+            q.w = item[3];
+
+            e = ToEulerAngles(q);
+            cout << "Yaw: " << e.yaw <<endl;
+
+            int data_row = (int)((e.yaw + 180)*(icMain.cols/360));
+            //cout << "data_row: " << data_row << endl;
+
+            for(int c = 0; c < icKernel.cols; c++)
+            {
+                for(int r = 0; r < icKernel.rows; r++)
+                {
+                    if(data_row > icMain.cols)
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c - icMain.cols);
+                    }
+                    else
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c);
+                    }
+                }
+            }
+            imshow("Kernel Image", icKernel);
+
+            char ch = waitKey(10);
+            if(ch == 27)
+                break;       // 27 == ESC key
+        }
+    }
+}
+
+
+void MainFrame::on_pushRealTime_2_clicked()
+{
+    int show_flag = 0;
+
+    void* handle1;
+    void* handle2;
+    void* handle3;
+    void* handle4;
+    void* handle5;
+    void* handle6;
+//    void* handle7;
+//    void* handle8;
+
+    double setFrame = 30.0f;
+
+    handle1 = CreateCamera("Cam01");            // Create Handle and Open
+    handle2 = CreateCamera("Cam02");            // Create Handle and Open
+    handle3 = CreateCamera("Cam03");            // Create Handle and Open
+    handle4 = CreateCamera("Cam04");            // Create Handle and Open
+    handle5 = CreateCamera("Cam05");            // Create Handle and Open
+    handle6 = CreateCamera("Cam06");            // Create Handle and Open
+//    handle7 = CreateCamera("Cam07");            // Create Handle and Open
+//    handle8 = CreateCamera("Cam08");            // Create Handle and Open
+
+    SetExposureAuto(handle1, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle1, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle2, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle2, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle3, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle3, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle4, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle4, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle5, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle5, setFrame);                    // set Frame rate
+
+    SetExposureAuto(handle6, true);                    // set Exposure Auto off
+    //SetExposure(handle, 30000.0f);                    // set Exposure
+    SetFramerate(handle6, setFrame);                    // set Frame rate
+
+//    SetExposureAuto(handle7, true);                    // set Exposure Auto off
+//    //SetExposure(handle, 30000.0f);                    // set Exposure
+//    SetFramerate(handle7, setFrame);                    // set Frame rate
+
+//    SetExposureAuto(handle8, true);                    // set Exposure Auto off
+//    //SetExposure(handle, 30000.0f);                    // set Exposure
+//    SetFramerate(handle8, setFrame);                    // set Frame rate
+
+    // data type : BayerRG8
+    MV_CC_SetEnumValue(handle1, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle2, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle3, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle4, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle5, "PixelFormat", 0x01080009);
+    MV_CC_SetEnumValue(handle6, "PixelFormat", 0x01080009);
+//    MV_CC_SetEnumValue(handle7, "PixelFormat", 0x01080009);
+//    MV_CC_SetEnumValue(handle8, "PixelFormat", 0x01080009);
+
+    GrabCamera(handle1);
+    GrabCamera(handle2);
+    GrabCamera(handle3);
+    GrabCamera(handle4);
+    GrabCamera(handle5);
+    GrabCamera(handle6);
+//    GrabCamera(handle7);
+//    GrabCamera(handle8);
+
+    Mat img1, img2, img3, img4, img5, img6, img7, img8;
+    Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
+
+    //Cylindrical Warp
+    KImageColor Img(1024,1280);
+
+    ///////////////////////////////R,t 불러오기//////////////////////////////////
+    KRotation rR1_128;
+    rR1_128 = rv0171::Import_rRi(1, 18, 2);
+    KVector vT1_128;
+    vT1_128 = rv0171::Import_vTi(1, 18, 2);
+
+    KRotation rR2_128;
+    rR2_128 = rv0171::Import_rRi(2, 28, 1);
+    KVector vT2_128;
+    vT2_128 = rv0171::Import_vTi(2, 28, 1);
+
+    KRotation rR3_358;
+    rR3_358 = rv0171::Import_rRi(3, 38, 5);
+    KVector vT3_358;
+    vT3_358 = rv0171::Import_vTi(3, 38, 5);
+
+    KRotation rR4_468;
+    rR4_468 = rv0171::Import_rRi(4, 48, 6);
+    KVector vT4_468;
+    vT4_468 = rv0171::Import_vTi(4, 48, 6);
+
+    KRotation rR5_358;
+    rR5_358 = rv0171::Import_rRi(5, 58, 3);
+    KVector vT5_358;
+    vT5_358 = rv0171::Import_vTi(5, 58, 3);
+
+    KRotation rR6_468;
+    rR6_468 = rv0171::Import_rRi(6, 68, 4);
+    KVector vT6_468;
+    vT6_468 = rv0171::Import_vTi(6, 68, 4);
+
+    ///////////////////////////////Surround View Stitching//////////////////////////////////
+    KMatrix mA(3,3);
+    mA[0][0] = 1000; //fi
+    mA[1][1] = 1000; //fi
+    mA[2][2] = 1.0;
+    mA[0][2] = 0;
+    mA[1][2] = 0;
+
+    //Image 1_128
+    vector<vector<KVector>> vvXi_tilt1_128;
+    vvXi_tilt1_128 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA1_128(3,3);
+    mA1_128 = rv0171::Import_mAi(1, 18, 2);
+
+    KMatrices vvXs_1_128;
+    vvXs_1_128 = rv0171::make_Surround_View_Stitching_ver2(mA, mA1_128, rR1_128, vT1_128, vvXi_tilt1_128, 1);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_1_128);
+\
+    cout << "Image 1_128 End" << endl;
+
+    //Image 2_128
+    vector<vector<KVector>> vvXi_tilt2_128;
+    vvXi_tilt2_128 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA2_128(3,3);
+    mA2_128 = rv0171::Import_mAi(2,28,1);
+
+    KMatrices vvXs_2_128;
+    vvXs_2_128 = rv0171::make_Surround_View_Stitching_ver2(mA, mA2_128, rR2_128, vT2_128, vvXi_tilt2_128, 0);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_2_128);
+
+    cout << "Image 2_128 End" << endl;
+
+    //Image 3_358
+    vector<vector<KVector>> vvXi_tilt3_358;
+    vvXi_tilt3_358 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA3_358(3,3);
+    mA3_358 = rv0171::Import_mAi(3, 38, 5);
+
+    KMatrices vvXs_3_358;
+    vvXs_3_358 = rv0171::make_Surround_View_Stitching_ver2(mA, mA3_358, rR3_358, vT3_358, vvXi_tilt3_358, 0);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_3_358);
+
+    cout << "Image 3_358 End" << endl;
+
+    //Image 4_468
+    vector<vector<KVector>> vvXi_tilt4_468;
+    vvXi_tilt4_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA4_468(3,3);
+    mA4_468 = rv0171::Import_mAi(4, 48, 6);
+
+    KMatrices vvXs_4_468;
+    vvXs_4_468 = rv0171::make_Surround_View_Stitching_ver2(mA, mA4_468, rR4_468, vT5_358, vvXi_tilt4_468, 1);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_4_468);
+
+    cout << "Image 4_468 End" << endl;
+
+    //Image 5_358
+    vector<vector<KVector>> vvXi_tilt5_358;
+    vvXi_tilt5_358 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA5_358(3,3);
+    mA5_358 = rv0171::Import_mAi(5, 58, 3);
+
+    KMatrices vvXs_5_358;
+    vvXs_5_358 = rv0171::make_Surround_View_Stitching_ver2(mA, mA5_358, rR5_358, vT5_358, vvXi_tilt5_358, 1);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_5_358);
+
+    cout << "Image 5_358 End" << endl;
+
+    //Image 6_468
+    vector<vector<KVector>> vvXi_tilt6_468;
+    vvXi_tilt6_468 = rv0171::make_3DCameraCoord(Img); //3차원 카메라 좌표계
+
+    KMatrix mA6_468(3,3);
+    mA6_468 = rv0171::Import_mAi(6, 68, 4);
+
+    KMatrices vvXs_6_468;
+    vvXs_6_468 = rv0171::make_Surround_View_Stitching_ver2(mA, mA6_468, rR6_468, vT6_468, vvXi_tilt6_468, 0);
+
+    rv0171::make_Cylinderical_Warp_ver2(mA, vvXs_6_468);
+
+    cout << "Image 6_468 End" << endl;
+
+    Mat icMain(1024*2, 1280*5, CV_8UC3);
+
+//    //IMU
+//    Mat icBuffer;
+//    Mat icKernel(900, 1280, CV_8UC3);
+
+//    int id;
+//    float item[100];
+
+//    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+//    {
+//        printf("\n\rSerialport Error...");
+//        Sleep(2000);
+//    }
+
+//    Quaternion q;
+//    EulerAngles e;
+
+    while (1) {
+        Mat icMain_show;
+
+        img1 = GetMatFrame(handle1);                                // get frame
+        img2 = GetMatFrame(handle2);
+        img3 = GetMatFrame(handle3);
+        img4 = GetMatFrame(handle4);
+        img5 = GetMatFrame(handle5);
+        img6 = GetMatFrame(handle6);
+//        img7 = GetMatFrame(handle7);
+//        img8 = GetMatFrame(handle8);
+
+        if(show_flag == 1)
+        {
+            cv::resize(img1, show_img1, Size(img1.cols/2, img1.rows/2));        // resize
+            cv::resize(img2, show_img2, Size(img2.cols/2, img2.rows/2));        // resize
+            cv::resize(img3, show_img3, Size(img3.cols/2, img3.rows/2));        // resize
+            cv::resize(img4, show_img4, Size(img4.cols/2, img4.rows/2));        // resize
+            cv::resize(img5, show_img5, Size(img5.cols/2, img5.rows/2));        // resize
+            cv::resize(img6, show_img6, Size(img6.cols/2, img6.rows/2));        // resize
+//            cv::resize(img7, show_img7, Size(img7.cols/2, img7.rows/2));        // resize
+//            cv::resize(img8, show_img8, Size(img8.cols/2, img8.rows/2));        // resize
+
+            imshow("camera1", show_img1);
+            imshow("camera2", show_img2);
+            imshow("camera3", show_img3);
+            imshow("camera4", show_img4);
+            imshow("camera5", show_img5);
+            imshow("camera6", show_img6);
+//            imshow("camera7", show_img7);
+//            imshow("camera8", show_img8);
+        }
+
+        QPoint mp1_128;
+        QPoint mp2_128;
+
+        QPoint mp3_358;
+        QPoint mp5_358;
+
+        QPoint mp4_468;
+        QPoint mp6_468;
+
+        for(int i=0; i<1024; i++)
+        {
+            for(int j=0; j<1280; j++)
+            {
+                mp1_128.setX((int)(vvXs_1_128[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90));
+                mp1_128.setY((int)(vvXs_1_128[i]._ppA[1][j])+1000);
+                icMain.at<Vec3b>(mp1_128.y(), mp1_128.x()) = img1.at<Vec3b>(i,j);
+
+                mp2_128.setX((int)(vvXs_2_128[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90));
+                mp2_128.setY((int)(vvXs_2_128[i]._ppA[1][j])+1000);
+                icMain.at<Vec3b>(mp2_128.y(), mp2_128.x()) = img2.at<Vec3b>(i,j);
+
+                mp3_358.setX((int)(vvXs_3_358[i]._ppA[0][j])+1000);
+                mp3_358.setY((int)(vvXs_3_358[i]._ppA[1][j])+1000);
+                icMain.at<Vec3b>(mp3_358.y(), mp3_358.x()) = img3.at<Vec3b>(i,j);
+
+                mp5_358.setX((int)(vvXs_5_358[i]._ppA[0][j])+1000);
+                mp5_358.setY((int)(vvXs_5_358[i]._ppA[1][j])+1000);
+                icMain.at<Vec3b>(mp5_358.y(), mp5_358.x()) = img5.at<Vec3b>(i,j);
+
+                mp4_468.setX((int)(vvXs_4_468[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2));
+                mp4_468.setY((int)(vvXs_4_468[i]._ppA[1][j])+1000);
+                icMain.at<Vec3b>(mp4_468.y(), mp4_468.x()) = img4.at<Vec3b>(i,j);
+
+                mp6_468.setX((int)(vvXs_6_468[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2));
+                mp6_468.setY((int)(vvXs_6_468[i]._ppA[1][j])+1000);
                 icMain.at<Vec3b>(mp6_468.y(), mp6_468.x()) = img6.at<Vec3b>(i,j);
             }
         }

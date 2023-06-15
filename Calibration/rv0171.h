@@ -62,6 +62,9 @@ namespace rv0171
     vector<vector<KVector>> make_3DCameraCoord (KImageColor Img);
     void make_Surround_View_Stitching(KMatrix mA, KMatrix mAi, KRotation rRi, KVector vTi, vector<vector<KVector>> &ui);
     void make_Cylinderical_Warp(KMatrix mA, vector<vector<KVector>> &ui);
+
+    KMatrices make_Surround_View_Stitching_ver2(KMatrix mA, KMatrix mAi, KRotation rRi, KVector vTi, vector<vector<KVector>> &ui, int n);
+    void make_Cylinderical_Warp_ver2(KMatrix mA, KMatrices &ui);
 }
 
 
