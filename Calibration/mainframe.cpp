@@ -1643,7 +1643,7 @@ void MainFrame::on_pushRealTime_clicked()
 
 //    //IMU
 //    Mat icBuffer;
-//    Mat icKernel(900, 1280, CV_8UC3);
+//    Mat icKernel(850, 1280, CV_8UC3);
 
 //    int id;
 //    float item[100];
@@ -2229,7 +2229,7 @@ void MainFrame::on_pushRealTime_2_clicked()
 
 //    //IMU
 //    Mat icBuffer;
-//    Mat icKernel(900, 1280, CV_8UC3);
+//    Mat icKernel(850, 1280, CV_8UC3);
 
 //    int id;
 //    float item[100];

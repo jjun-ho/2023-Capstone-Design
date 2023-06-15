@@ -884,7 +884,7 @@ KMatrices rv0171::make_Surround_View_Stitching_ver2(KMatrix mA, KMatrix mAi, KRo
         KMatrix mppU;
         for(int j =0; j<ui.at(0).size();j++) // 1280
         {
-            mppU |= KVector(ui.at(i).at(j)._ppA[0][0]*100000,ui.at(i).at(j)._ppA[1][0]*100000,1.0*100000); // 3x1280
+            mppU |= KVector(ui.at(i).at(j)._ppA[0][0],ui.at(i).at(j)._ppA[1][0],1.0); // 3x1280
 
         }
 

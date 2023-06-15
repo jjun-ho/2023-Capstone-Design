@@ -947,7 +947,7 @@ public:
         CameraBtn->setText(QCoreApplication::translate("MainFrame", "Camera", nullptr));
         pushRealTime->setText(QCoreApplication::translate("MainFrame", "Real Time", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainFrame", "Page", nullptr));
-        Cylinderical_Warp_2->setText(QCoreApplication::translate("MainFrame", "Cylinderical_Warp", nullptr));
+        Cylinderical_Warp_2->setText(QCoreApplication::translate("MainFrame", "Cylinderical Warp", nullptr));
         pushRealTime_2->setText(QCoreApplication::translate("MainFrame", "Real Time", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainFrame", "Page", nullptr));
     } // retranslateUi
