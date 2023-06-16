@@ -459,43 +459,43 @@ public:
         tab->setObjectName("tab");
         pushRtMatrix = new QPushButton(tab);
         pushRtMatrix->setObjectName("pushRtMatrix");
-        pushRtMatrix->setGeometry(QRect(200, 180, 201, 51));
+        pushRtMatrix->setGeometry(QRect(190, 180, 201, 51));
         RT_product = new QPushButton(tab);
         RT_product->setObjectName("RT_product");
-        RT_product->setGeometry(QRect(200, 250, 201, 51));
+        RT_product->setGeometry(QRect(190, 250, 201, 51));
         Checker_Corner = new QPushButton(tab);
         Checker_Corner->setObjectName("Checker_Corner");
-        Checker_Corner->setGeometry(QRect(200, 110, 201, 51));
+        Checker_Corner->setGeometry(QRect(190, 110, 201, 51));
         tabWidget->addTab(tab, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
         pushPanorama = new QPushButton(tab_3);
         pushPanorama->setObjectName("pushPanorama");
-        pushPanorama->setGeometry(QRect(220, 170, 151, 51));
+        pushPanorama->setGeometry(QRect(220, 180, 151, 51));
         Cylinderical_Warp = new QPushButton(tab_3);
         Cylinderical_Warp->setObjectName("Cylinderical_Warp");
-        Cylinderical_Warp->setGeometry(QRect(220, 230, 151, 51));
+        Cylinderical_Warp->setGeometry(QRect(220, 240, 151, 51));
         Cylinderical_Warp->setAutoExclusive(true);
         IMUButton = new QPushButton(tab_3);
         IMUButton->setObjectName("IMUButton");
-        IMUButton->setGeometry(QRect(220, 110, 151, 51));
+        IMUButton->setGeometry(QRect(220, 120, 151, 51));
         CameraBtn = new QPushButton(tab_3);
         CameraBtn->setObjectName("CameraBtn");
-        CameraBtn->setGeometry(QRect(219, 53, 151, 51));
+        CameraBtn->setGeometry(QRect(219, 63, 151, 51));
         CameraBtn->setAutoExclusive(true);
         pushRealTime = new QPushButton(tab_3);
         pushRealTime->setObjectName("pushRealTime");
-        pushRealTime->setGeometry(QRect(220, 290, 151, 51));
+        pushRealTime->setGeometry(QRect(220, 300, 151, 51));
         pushRealTime->setAutoExclusive(true);
         tabWidget->addTab(tab_3, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName("tab_4");
         Cylinderical_Warp_2 = new QPushButton(tab_4);
         Cylinderical_Warp_2->setObjectName("Cylinderical_Warp_2");
-        Cylinderical_Warp_2->setGeometry(QRect(170, 100, 221, 51));
+        Cylinderical_Warp_2->setGeometry(QRect(190, 130, 221, 51));
         pushRealTime_2 = new QPushButton(tab_4);
         pushRealTime_2->setObjectName("pushRealTime_2");
-        pushRealTime_2->setGeometry(QRect(170, 170, 221, 51));
+        pushRealTime_2->setGeometry(QRect(190, 200, 221, 51));
         tabWidget->addTab(tab_4, QString());
 
         horizontalLayout->addWidget(tabWidget);
@@ -555,7 +555,7 @@ public:
 
         retranslateUi(MainFrame);
 
-        tabWidget->setCurrentIndex(4);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainFrame);

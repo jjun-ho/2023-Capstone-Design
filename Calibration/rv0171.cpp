@@ -694,12 +694,11 @@ Mat makePanorama(Mat matLeftImage, Mat matRightImage) {
 
 //Cylinderical_Warping//
 //Import_mAi
-KMatrix rv0171::Import_mAi(int left_cam_num, int right_cam_num, int relative_cam_num)
+KMatrix rv0171::Import_mAi(int left_cam_num, int right_cam_num)
 {
     string mAi_path = "./data/Caltxt/Cal_";
     mAi_path += to_string(left_cam_num);
     mAi_path += to_string(right_cam_num);
-    mAi_path += to_string(relative_cam_num);
     mAi_path += ".txt";
 
     string str;
@@ -730,12 +729,11 @@ KMatrix rv0171::Import_mAi(int left_cam_num, int right_cam_num, int relative_cam
 }
 
 //Import_rRi
-KRotation rv0171::Import_rRi(int left_cam_num, int right_cam_num, int relative_cam_num)
+KRotation rv0171::Import_rRi(int left_cam_num, int right_cam_num)
 {
     string RT_path = "./data/RTtxt/RT_";
     RT_path += to_string(left_cam_num);
     RT_path += to_string(right_cam_num);
-    RT_path += to_string(relative_cam_num);
     RT_path += ".txt";
 
     string str;
@@ -761,12 +759,11 @@ KRotation rv0171::Import_rRi(int left_cam_num, int right_cam_num, int relative_c
 }
 
 ////Import_vTi
-KVector rv0171::Import_vTi(int left_cam_num, int right_cam_num, int relative_cam_num)
+KVector rv0171::Import_vTi(int left_cam_num, int right_cam_num)
 {
     string RT_path = "./data/RTtxt/RT_";
     RT_path += to_string(left_cam_num);
     RT_path += to_string(right_cam_num);
-    RT_path += to_string(relative_cam_num);
     RT_path += ".txt";
 
     string str;
@@ -888,9 +885,9 @@ KMatrices rv0171::make_Surround_View_Stitching_ver2(KMatrix mA, KMatrix mAi, KRo
 
         }
 
-        mppUv = mA * KRotation(_Y_AXIS, -_RADIAN(22.5*(2*n-1)))* hpTvo_c.R() * (mAi.Iv()*mppU);  // mppu -> 이미지 좌표
+        mppUv = mA * KRotation(_Y_AXIS, -_RADIAN(24*(2*n-1)))* hpTvo_c.R() * (mAi.Iv()*mppU);  // mppu -> 이미지 좌표
 
-        mppUv2 = mA  * KRotation(_Y_AXIS, -_RADIAN(22.5*(2*n-1))) *hpTvo_c.R() * (- KMatrix::RepMat(hpTc_vo.t(), 1, mppUv.Col() ));
+        mppUv2 = mA  * KRotation(_Y_AXIS, -_RADIAN(24*(2*n-1))) *hpTvo_c.R() * (- KMatrix::RepMat(hpTc_vo.t(), 1, mppUv.Col() ));
 
         mppUv += mppUv2;
 

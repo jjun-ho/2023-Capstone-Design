@@ -380,7 +380,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>3</number>
        </property>
        <property name="iconSize">
         <size>
@@ -1521,7 +1521,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="pushRtMatrix">
          <property name="geometry">
           <rect>
-           <x>200</x>
+           <x>190</x>
            <y>180</y>
            <width>201</width>
            <height>51</height>
@@ -1534,7 +1534,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="RT_product">
          <property name="geometry">
           <rect>
-           <x>200</x>
+           <x>190</x>
            <y>250</y>
            <width>201</width>
            <height>51</height>
@@ -1547,7 +1547,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="Checker_Corner">
          <property name="geometry">
           <rect>
-           <x>200</x>
+           <x>190</x>
            <y>110</y>
            <width>201</width>
            <height>51</height>
@@ -1566,7 +1566,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="geometry">
           <rect>
            <x>220</x>
-           <y>170</y>
+           <y>180</y>
            <width>151</width>
            <height>51</height>
           </rect>
@@ -1579,7 +1579,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="geometry">
           <rect>
            <x>220</x>
-           <y>230</y>
+           <y>240</y>
            <width>151</width>
            <height>51</height>
           </rect>
@@ -1595,7 +1595,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="geometry">
           <rect>
            <x>220</x>
-           <y>110</y>
+           <y>120</y>
            <width>151</width>
            <height>51</height>
           </rect>
@@ -1608,7 +1608,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="geometry">
           <rect>
            <x>219</x>
-           <y>53</y>
+           <y>63</y>
            <width>151</width>
            <height>51</height>
           </rect>
@@ -1624,7 +1624,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <property name="geometry">
           <rect>
            <x>220</x>
-           <y>290</y>
+           <y>300</y>
            <width>151</width>
            <height>51</height>
           </rect>
@@ -1644,8 +1644,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="Cylinderical_Warp_2">
          <property name="geometry">
           <rect>
-           <x>170</x>
-           <y>100</y>
+           <x>190</x>
+           <y>130</y>
            <width>221</width>
            <height>51</height>
           </rect>
@@ -1657,8 +1657,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <widget class="QPushButton" name="pushRealTime_2">
          <property name="geometry">
           <rect>
-           <x>170</x>
-           <y>170</y>
+           <x>190</x>
+           <y>200</y>
            <width>221</width>
            <height>51</height>
           </rect>
