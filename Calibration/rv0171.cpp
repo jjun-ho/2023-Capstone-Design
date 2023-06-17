@@ -885,9 +885,9 @@ KMatrices rv0171::make_Surround_View_Stitching_ver2(KMatrix mA, KMatrix mAi, KRo
 
         }
 
-        mppUv = mA * KRotation(_Y_AXIS, -_RADIAN(24*(2*n-1)))* hpTvo_c.R() * (mAi.Iv()*mppU);  // mppu -> 이미지 좌표
+        mppUv = mA * KRotation(_Y_AXIS, -_RADIAN(23*(2*n-1)))* hpTvo_c.R() * (mAi.Iv()*mppU);  // mppu -> 이미지 좌표
 
-        mppUv2 = mA  * KRotation(_Y_AXIS, -_RADIAN(24*(2*n-1))) *hpTvo_c.R() * (- KMatrix::RepMat(hpTc_vo.t(), 1, mppUv.Col() ));
+        mppUv2 = mA  * KRotation(_Y_AXIS, -_RADIAN(23*(2*n-1))) *hpTvo_c.R() * (- KMatrix::RepMat(hpTc_vo.t(), 1, mppUv.Col() ));
 
         mppUv += mppUv2;
 

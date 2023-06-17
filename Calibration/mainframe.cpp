@@ -1928,7 +1928,7 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
     Mat icMain_show;
 
     //IMU
-    Mat icKernel(850, 1280, CV_8UC3);
+    Mat icKernel(750, 1280, CV_8UC3);
 
     int id;
     float item[100];
@@ -1953,37 +1953,47 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
 
     for(int i=0; i<1024; i++)
     {
-        for(int j=0; j<1280; j++)
+        for(int j=40; j<1280; j++)
         {
-            mp4_458.setX((int)(vvXs_4_458[i]._ppA[0][j])+1000);
-            mp4_458.setY((int)(vvXs_4_458[i]._ppA[1][j])+1000);
-            if(icMain.at<Vec3b>(mp4_458.y(), mp4_458.x())[0] == 0)
-                icMain.at<Vec3b>(mp4_458.y(), mp4_458.x()) = img4.at<Vec3b>(i,j);
-            else
-                icMain.at<Vec3b>(mp4_458.y(), mp4_458.x()) += img4.at<Vec3b>(i,j)*(0/255);
+            mp5_458.setX((int)(vvXs_5_458[i]._ppA[0][j])+1000+60);
+            mp5_458.setY((int)(vvXs_5_458[i]._ppA[1][j])+1000+5);
+            icMain.at<Vec3b>(mp5_458.y(), mp5_458.x()) = img5.at<Vec3b>(i,j);
 
-            mp5_458.setX((int)(vvXs_5_458[i]._ppA[0][j])+1000);
-            mp5_458.setY((int)(vvXs_5_458[i]._ppA[1][j])+1000);
-            if(icMain.at<Vec3b>(mp5_458.y(), mp5_458.x())[0] == 0)
-                icMain.at<Vec3b>(mp5_458.y(), mp5_458.x()) = img5.at<Vec3b>(i,j);
-            else
-                icMain.at<Vec3b>(mp5_458.y(), mp5_458.x()) += img5.at<Vec3b>(i,j)*(0/255);
+            mp3_238.setX((int)(vvXs_3_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+235);
+            mp3_238.setY((int)(vvXs_3_238[i]._ppA[1][j])+1000-75);
+            icMain.at<Vec3b>(mp3_238.y(), mp3_238.x()) = img3.at<Vec3b>(i,j);
+        }
+    }
+    for(int i=0; i<1024; i++)
+    {
+        for(int j=165; j<1280; j++)
+        {
+            mp1_618.setX((int)(vvXs_1_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+110);
+            mp1_618.setY((int)(vvXs_1_618[i]._ppA[1][j])+1000-35);
+            icMain.at<Vec3b>(mp1_618.y(), mp1_618.x()) = img1.at<Vec3b>(i,j);
+        }
+    }
 
-            mp6_618.setX((int)(vvXs_6_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+130);
+    for(int i=0; i<1024; i++)
+    {
+        for(int j=0; j<1240; j++)
+        {
+            mp4_458.setX((int)(vvXs_4_458[i]._ppA[0][j])+1000-60);
+            mp4_458.setY((int)(vvXs_4_458[i]._ppA[1][j])+1000-5);
+            icMain.at<Vec3b>(mp4_458.y(), mp4_458.x()) = img4.at<Vec3b>(i,j);
+
+            mp2_238.setX((int)(vvXs_2_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+125);
+            mp2_238.setY((int)(vvXs_2_238[i]._ppA[1][j])+1000-85);
+            icMain.at<Vec3b>(mp2_238.y(), mp2_238.x()) = img2.at<Vec3b>(i,j);
+        }
+    }
+    for(int i=0; i<1024; i++)
+    {
+        for(int j=0; j<1115; j++)
+        {
+            mp6_618.setX((int)(vvXs_6_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+150);
             mp6_618.setY((int)(vvXs_6_618[i]._ppA[1][j])+1000-60);
             icMain.at<Vec3b>(mp6_618.y(), mp6_618.x()) = img6.at<Vec3b>(i,j);
-
-            mp1_618.setX((int)(vvXs_1_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+130);
-            mp1_618.setY((int)(vvXs_1_618[i]._ppA[1][j])+1000-60);
-            icMain.at<Vec3b>(mp1_618.y(), mp1_618.x()) = img1.at<Vec3b>(i,j);
-
-            mp2_238.setX((int)(vvXs_2_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+220);
-            mp2_238.setY((int)(vvXs_2_238[i]._ppA[1][j])+1000-40);
-            icMain.at<Vec3b>(mp2_238.y(), mp2_238.x()) = img2.at<Vec3b>(i,j);
-
-            mp3_238.setX((int)(vvXs_3_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+220);
-            mp3_238.setY((int)(vvXs_3_238[i]._ppA[1][j])+1000-40);
-            icMain.at<Vec3b>(mp3_238.y(), mp3_238.x()) = img3.at<Vec3b>(i,j);
         }
     }
 
@@ -1993,43 +2003,43 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
     cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
     imshow("icMain", icMain_show);
 
-//    //IMU
-//    while(1)
-//    {
-//        if (EBimuAsciiParser(&id,item, 5))
-//        {
-//            q.z = item[0];
-//            q.y = item[1];
-//            q.x = item[2];
-//            q.w = item[3];
+    //IMU
+    while(1)
+    {
+        if (EBimuAsciiParser(&id,item, 5))
+        {
+            q.z = item[0];
+            q.y = item[1];
+            q.x = item[2];
+            q.w = item[3];
 
-//            e = ToEulerAngles(q);
-//            cout << "Yaw: " << e.yaw <<endl;
+            e = ToEulerAngles(q);
+            cout << "Yaw: " << e.yaw +57 <<endl;
 
-//            int data_row = (int)((e.yaw + 180)*(icMain.cols/360));
-//            //cout << "data_row: " << data_row << endl;
+            int data_row = (int)((e.yaw + 180)*(icMain.cols/360));
+            //cout << "data_row: " << data_row << endl;
 
-//            for(int c = 0; c < icKernel.cols; c++)
-//            {
-//                for(int r = 0; r < icKernel.rows; r++)
-//                {
-//                    if(data_row > icMain.cols)
-//                    {
-//                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c - icMain.cols);
-//                    }
-//                    else
-//                    {
-//                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c);
-//                    }
-//                }
-//            }
-//            imshow("Kernel Image", icKernel);
+            for(int c = 0; c < icKernel.cols; c++)
+            {
+                for(int r = 0; r < icKernel.rows; r++)
+                {
+                    if(data_row > icMain.cols)
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c - icMain.cols);
+                    }
+                    else
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c);
+                    }
+                }
+            }
+            imshow("Kernel Image", icKernel);
 
-//            char ch = waitKey(10);
-//            if(ch == 27)
-//                break;       // 27 == ESC key
-//        }
-//    }
+            char ch = waitKey(10);
+            if(ch == 27)
+                break;       // 27 == ESC key
+        }
+    }
 }
 
 
@@ -2239,21 +2249,20 @@ void MainFrame::on_pushRealTime_2_clicked()
 
     Mat icMain(1024*2, 1280*5, CV_8UC3);
 
-//    //IMU
-//    Mat icBuffer;
-//    Mat icKernel(850, 1280, CV_8UC3);
+    //IMU
+    Mat icKernel(750, 1280, CV_8UC3);
 
-//    int id;
-//    float item[100];
+    int id;
+    float item[100];
 
-//    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
-//    {
-//        printf("\n\rSerialport Error...");
-//        Sleep(2000);
-//    }
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
 
-//    Quaternion q;
-//    EulerAngles e;
+    Quaternion q;
+    EulerAngles e;
 
     while (1) {
         Mat icMain_show;
@@ -2297,35 +2306,53 @@ void MainFrame::on_pushRealTime_2_clicked()
         QPoint mp2_238;
         QPoint mp3_238;
 
+
         for(int i=0; i<1024; i++)
         {
-            for(int j=0; j<1280; j++)
+            for(int j=40; j<1280; j++)
             {
-                mp4_458.setX((int)(vvXs_4_458[i]._ppA[0][j])+1000);
-                mp4_458.setY((int)(vvXs_4_458[i]._ppA[1][j])+1000);
-                icMain.at<Vec3b>(mp4_458.y(), mp4_458.x()) = img4.at<Vec3b>(i,j);
-
-                mp5_458.setX((int)(vvXs_5_458[i]._ppA[0][j])+1000);
-                mp5_458.setY((int)(vvXs_5_458[i]._ppA[1][j])+1000);
+                mp5_458.setX((int)(vvXs_5_458[i]._ppA[0][j])+1000+60);
+                mp5_458.setY((int)(vvXs_5_458[i]._ppA[1][j])+1000+5);
                 icMain.at<Vec3b>(mp5_458.y(), mp5_458.x()) = img5.at<Vec3b>(i,j);
 
-                mp6_618.setX((int)(vvXs_6_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+130);
-                mp6_618.setY((int)(vvXs_6_618[i]._ppA[1][j])+1000-60);
-                icMain.at<Vec3b>(mp6_618.y(), mp6_618.x()) = img6.at<Vec3b>(i,j);
-
-                mp1_618.setX((int)(vvXs_1_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+130);
-                mp1_618.setY((int)(vvXs_1_618[i]._ppA[1][j])+1000-60);
-                icMain.at<Vec3b>(mp1_618.y(), mp1_618.x()) = img1.at<Vec3b>(i,j);
-
-                mp2_238.setX((int)(vvXs_2_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+220);
-                mp2_238.setY((int)(vvXs_2_238[i]._ppA[1][j])+1000-85);
-                icMain.at<Vec3b>(mp2_238.y(), mp2_238.x()) = img2.at<Vec3b>(i,j);
-
-                mp3_238.setX((int)(vvXs_3_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+220);
-                mp3_238.setY((int)(vvXs_3_238[i]._ppA[1][j])+1000-85);
+                mp3_238.setX((int)(vvXs_3_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+235);
+                mp3_238.setY((int)(vvXs_3_238[i]._ppA[1][j])+1000-75);
                 icMain.at<Vec3b>(mp3_238.y(), mp3_238.x()) = img3.at<Vec3b>(i,j);
             }
         }
+        for(int i=0; i<1024; i++)
+        {
+            for(int j=165; j<1280; j++)
+            {
+                mp1_618.setX((int)(vvXs_1_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+110);
+                mp1_618.setY((int)(vvXs_1_618[i]._ppA[1][j])+1000-35);
+                icMain.at<Vec3b>(mp1_618.y(), mp1_618.x()) = img1.at<Vec3b>(i,j);
+            }
+        }
+
+        for(int i=0; i<1024; i++)
+        {
+            for(int j=0; j<1240; j++)
+            {
+                mp4_458.setX((int)(vvXs_4_458[i]._ppA[0][j])+1000-60);
+                mp4_458.setY((int)(vvXs_4_458[i]._ppA[1][j])+1000-5);
+                icMain.at<Vec3b>(mp4_458.y(), mp4_458.x()) = img4.at<Vec3b>(i,j);
+
+                mp2_238.setX((int)(vvXs_2_238[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90*2)+125);
+                mp2_238.setY((int)(vvXs_2_238[i]._ppA[1][j])+1000-85);
+                icMain.at<Vec3b>(mp2_238.y(), mp2_238.x()) = img2.at<Vec3b>(i,j);
+            }
+        }
+        for(int i=0; i<1024; i++)
+        {
+            for(int j=0; j<1115; j++)
+            {
+                mp6_618.setX((int)(vvXs_6_618[i]._ppA[0][j])+1000+mA[0][0]*_RADIAN(90)+150);
+                mp6_618.setY((int)(vvXs_6_618[i]._ppA[1][j])+1000-60);
+                icMain.at<Vec3b>(mp6_618.y(), mp6_618.x()) = img6.at<Vec3b>(i,j);
+            }
+        }
+
 
 //        //IMU
 //        icBuffer = icMain.clone();
