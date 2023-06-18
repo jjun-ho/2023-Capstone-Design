@@ -594,7 +594,7 @@ void MainFrame::on_zhang_clicked()
 // 체커보드 점을 띄운 검은 이미지 출력
 void MainFrame::on_plot_point_clicked()
 {
-    int nImg = 1;
+    int nImg = 15;
     int nFeature = 54;
     int row = 1024;
     int col = 1280;
@@ -1283,7 +1283,7 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     Mat icMain_show;
 
     //IMU
-    Mat icKernel(850, 1280, CV_8UC3);
+    Mat icKernel(750, 1280, CV_8UC3);
 
     int id;
     float item[100];
@@ -1296,6 +1296,10 @@ void MainFrame::on_Cylinderical_Warp_clicked()
 
     Quaternion q;
     EulerAngles e;
+
+    double angle_pre =0;
+    double angle_cur = 0;
+    double angle = 0;
 
     QPoint mp4_458;
     QPoint mp5_458;
@@ -1342,43 +1346,56 @@ void MainFrame::on_Cylinderical_Warp_clicked()
     cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
     imshow("icMain", icMain_show);
 
-//    //IMU
-//    while(1)
-//    {
-//        if (EBimuAsciiParser(&id,item, 5))
-//        {
-//            q.z = item[0];
-//            q.y = item[1];
-//            q.x = item[2];
-//            q.w = item[3];
+    //IMU
+    int init_count = 0;
+    while(1)
+    {
+        if (EBimuAsciiParser(&id,item, 5))
+        {
+            q.z = item[0];
+            q.y = item[1];
+            q.x = item[2];
+            q.w = item[3];
 
-//            e = ToEulerAngles(q);
-//            cout << "Yaw: " << e.yaw <<endl;
+            e = ToEulerAngles(q);
 
-//            int data_row = (int)((e.yaw + 180)*(icMain.cols/360));
-//            //cout << "data_row: " << data_row << endl;
+            if(init_count == 0)
+            {
+                angle_pre = e.yaw;
+            }
+            angle_cur = e.yaw;
 
-//            for(int c = 0; c < icKernel.cols; c++)
-//            {
-//                for(int r = 0; r < icKernel.rows; r++)
-//                {
-//                    if(data_row > icMain.cols)
-//                    {
-//                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c - icMain.cols);
-//                    }
-//                    else
-//                    {
-//                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c);
-//                    }
-//                }
-//            }
-//            imshow("Kernel Image", icKernel);
+            angle += angle_cur - angle_pre;
+            cout << "Yaw: " << angle <<endl;
 
-//            char ch = waitKey(10);
-//            if(ch == 27)
-//                break;       // 27 == ESC key
-//        }
-//    }
+            int data_row = (int)((angle + 180)*(icMain.cols/360));
+            //cout << "data_row: " << data_row << endl;
+
+            for(int c = 0; c < icKernel.cols; c++)
+            {
+                for(int r = 0; r < icKernel.rows; r++)
+                {
+                    if(data_row > icMain.cols)
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
+                    }
+                    else
+                    {
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
+                    }
+                }
+            }
+            imshow("Kernel Image", icKernel);
+
+            char ch = waitKey(10);
+            if(ch == 27)    // ESC key
+                break;
+            else if (ch ==  32)  // SPASE
+                angle = 0;
+        }
+        angle_pre = angle_cur;
+        init_count++;
+    }
 }
 
 void MainFrame::on_IMUButton_clicked()
@@ -1410,7 +1427,6 @@ void MainFrame::on_IMUButton_clicked()
         }
     }
 }
-
 
 void MainFrame::on_pushRealTime_clicked()
 {
@@ -1648,8 +1664,7 @@ void MainFrame::on_pushRealTime_clicked()
     Mat icMain(1024*2, 1280*5, CV_8UC3);
 
 //    //IMU
-//    Mat icBuffer;
-//    Mat icKernel(850, 1280, CV_8UC3);
+//    Mat icKernel(750, 1280, CV_8UC3);
 
 //    int id;
 //    float item[100];
@@ -1662,6 +1677,10 @@ void MainFrame::on_pushRealTime_clicked()
 
 //    Quaternion q;
 //    EulerAngles e;
+
+//    double angle_pre =0;
+//    double angle_cur = 0;
+//    double angle = 0;
 
     while (1) {
         Mat icMain_show;
@@ -1736,9 +1755,9 @@ void MainFrame::on_pushRealTime_clicked()
         }
 
 //        //IMU
-//        icBuffer = icMain.clone();
-//        int count = 50;
-//        while(count>0)
+//        int count = 100;
+//        int init_count = 0;
+//        while(count > 0)
 //        {
 //            if (EBimuAsciiParser(&id,item, 5))
 //            {
@@ -1748,31 +1767,43 @@ void MainFrame::on_pushRealTime_clicked()
 //                q.w = item[3];
 
 //                e = ToEulerAngles(q);
-//                cout << "Yaw: " << e.yaw <<endl;
 
-//                int data_row = (int)((e.yaw + 180)*(icBuffer.cols/360));
+//                if(init_count == 0)
+//                {
+//                    angle_pre = e.yaw;
+//                }
+//                angle_cur = e.yaw;
+
+//                angle += angle_cur - angle_pre;
+//                cout << "Yaw: " << angle <<endl;
+
+//                int data_row = (int)((angle + 180)*(icMain.cols/360));
 //                //cout << "data_row: " << data_row << endl;
 
 //                for(int c = 0; c < icKernel.cols; c++)
 //                {
 //                    for(int r = 0; r < icKernel.rows; r++)
 //                    {
-//                        if(data_row > icBuffer.cols)
+//                        if(data_row > icMain.cols)
 //                        {
-//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c - icBuffer.cols);
+//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
 //                        }
 //                        else
 //                        {
-//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c);
+//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
 //                        }
 //                    }
 //                }
 //                imshow("Kernel Image", icKernel);
 
 //                char ch = waitKey(10);
-//                if(ch == 27)
-//                    break;       // 27 == ESC key
+//                if(ch == 27)    // ESC key
+//                    break;
+//                else if (ch ==  32)  // SPASE
+//                    angle = 0;
 //            }
+//            angle_pre = angle_cur;
+//            init_count++;
 //            count--;
 //        }
 
@@ -1787,7 +1818,6 @@ void MainFrame::on_pushRealTime_clicked()
             break;       // 27 == ESC key
     }
 }
-
 
 void MainFrame::on_Cylinderical_Warp_2_clicked()
 {
@@ -1942,6 +1972,10 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
     Quaternion q;
     EulerAngles e;
 
+    double angle_pre =0;
+    double angle_cur = 0;
+    double angle = 0;
+
     QPoint mp4_458;
     QPoint mp5_458;
 
@@ -2004,6 +2038,7 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
     imshow("icMain", icMain_show);
 
     //IMU
+    int init_count = 0;
     while(1)
     {
         if (EBimuAsciiParser(&id,item, 5))
@@ -2014,9 +2049,17 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
             q.w = item[3];
 
             e = ToEulerAngles(q);
-            cout << "Yaw: " << e.yaw +57 <<endl;
 
-            int data_row = (int)((e.yaw + 180)*(icMain.cols/360));
+            if(init_count == 0)
+            {
+                angle_pre = e.yaw;
+            }
+            angle_cur = e.yaw;
+
+            angle += angle_cur - angle_pre;
+            cout << "Yaw: " << angle <<endl;
+
+            int data_row = (int)((angle + 180)*(icMain.cols/360));
             //cout << "data_row: " << data_row << endl;
 
             for(int c = 0; c < icKernel.cols; c++)
@@ -2025,23 +2068,26 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
                 {
                     if(data_row > icMain.cols)
                     {
-                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c - icMain.cols);
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
                     }
                     else
                     {
-                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row + c);
+                        icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
                     }
                 }
             }
             imshow("Kernel Image", icKernel);
 
             char ch = waitKey(10);
-            if(ch == 27)
-                break;       // 27 == ESC key
+            if(ch == 27)    // ESC key
+                break;
+            else if (ch ==  32)  // SPASE
+                angle = 0;
         }
+        angle_pre = angle_cur;
+        init_count++;
     }
 }
-
 
 void MainFrame::on_pushRealTime_2_clicked()
 {
@@ -2249,20 +2295,24 @@ void MainFrame::on_pushRealTime_2_clicked()
 
     Mat icMain(1024*2, 1280*5, CV_8UC3);
 
-    //IMU
-    Mat icKernel(750, 1280, CV_8UC3);
+//    //IMU
+//    Mat icKernel(750, 1280, CV_8UC3);
 
-    int id;
-    float item[100];
+//    int id;
+//    float item[100];
 
-    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
-    {
-        printf("\n\rSerialport Error...");
-        Sleep(2000);
-    }
+//    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+//    {
+//        printf("\n\rSerialport Error...");
+//        Sleep(2000);
+//    }
 
-    Quaternion q;
-    EulerAngles e;
+//    Quaternion q;
+//    EulerAngles e;
+
+//    double angle_pre =0;
+//    double angle_cur = 0;
+//    double angle = 0;
 
     while (1) {
         Mat icMain_show;
@@ -2353,11 +2403,10 @@ void MainFrame::on_pushRealTime_2_clicked()
             }
         }
 
-
 //        //IMU
-//        icBuffer = icMain.clone();
-//        int count = 50;
-//        while(count>0)
+//        int count = 100;
+//        int init_count = 0;
+//        while(count > 0)
 //        {
 //            if (EBimuAsciiParser(&id,item, 5))
 //            {
@@ -2367,31 +2416,43 @@ void MainFrame::on_pushRealTime_2_clicked()
 //                q.w = item[3];
 
 //                e = ToEulerAngles(q);
-//                cout << "Yaw: " << e.yaw <<endl;
 
-//                int data_row = (int)((e.yaw + 180)*(icBuffer.cols/360));
+//                if(init_count == 0)
+//                {
+//                    angle_pre = e.yaw;
+//                }
+//                angle_cur = e.yaw;
+
+//                angle += angle_cur - angle_pre;
+//                cout << "Yaw: " << angle <<endl;
+
+//                int data_row = (int)((angle + 180)*(icMain.cols/360));
 //                //cout << "data_row: " << data_row << endl;
 
 //                for(int c = 0; c < icKernel.cols; c++)
 //                {
 //                    for(int r = 0; r < icKernel.rows; r++)
 //                    {
-//                        if(data_row > icBuffer.cols)
+//                        if(data_row > icMain.cols)
 //                        {
-//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c - icBuffer.cols);
+//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
 //                        }
 //                        else
 //                        {
-//                            icKernel.at<Vec3b>(r, c) = icBuffer.at<Vec3b>(r+600, data_row + c);
+//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
 //                        }
 //                    }
 //                }
 //                imshow("Kernel Image", icKernel);
 
 //                char ch = waitKey(10);
-//                if(ch == 27)
-//                    break;       // 27 == ESC key
+//                if(ch == 27)    // ESC key
+//                    break;
+//                else if (ch ==  32)  // SPASE
+//                    angle = 0;
 //            }
+//            angle_pre = angle_cur;
+//            init_count++;
 //            count--;
 //        }
 
