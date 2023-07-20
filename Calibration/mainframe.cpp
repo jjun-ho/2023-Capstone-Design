@@ -1940,6 +1940,7 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
 
     //IMU
     Mat icKernel(750, 1280, CV_8UC3);
+    Mat icKernel_show(750, 1280, CV_8UC3);
 
     int id;
     float item[100];
@@ -2057,7 +2058,8 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
                     }
                 }
             }
-            imshow("Kernel Image", icKernel);
+            cv::resize(icKernel, icKernel_show, Size(int(icKernel.cols*1.8), int(icKernel.rows*1.4)));
+            imshow("Kernel Image", icKernel_show);
 
             char ch = waitKey(10);
             if(ch == 27)    // ESC key
@@ -2073,6 +2075,7 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
 void MainFrame::on_pushRealTime_2_clicked()
 {
     int show_imu = 1;
+    int show_main = 0;
 
     void* handle1;
     void* handle2;
@@ -2405,7 +2408,7 @@ void MainFrame::on_pushRealTime_2_clicked()
                             }
                         }
                     }
-                    cv::resize(icKernel, icKernel_show, Size(int(icKernel.cols*1.8), int(icKernel.rows*1.8)));
+                    cv::resize(icKernel, icKernel_show, Size(int(icKernel.cols*1.8), int(icKernel.rows*1.4)));
                     imshow("Kernel Image", icKernel_show);
 
                     char ch = waitKey(10);
@@ -2422,8 +2425,11 @@ void MainFrame::on_pushRealTime_2_clicked()
         //UI 활성화 갱신
         cout << "cylinderical Process Finished!" << endl;
 
-        cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
-        imshow("icMain", icMain_show);
+        if(show_main == 1)
+        {
+            cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
+            imshow("icMain", icMain_show);
+        }
 
         char ch = waitKey(10);
         if(ch == 27)
