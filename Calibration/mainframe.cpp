@@ -1,3 +1,7 @@
+//*************************************************************************************************
+//2023.08.03 수정!!!!
+//*************************************************************************************************
+
 #include <QFileDialog>
 #include <QmessageBox>
 #include <QPainter>
@@ -1430,7 +1434,7 @@ void MainFrame::on_IMUButton_clicked()
 
 void MainFrame::on_pushRealTime_clicked()
 {
-    int show_flag = 0;
+    int show_imu = 0;
 
     void* handle1;
     void* handle2;
@@ -1504,7 +1508,6 @@ void MainFrame::on_pushRealTime_clicked()
 //    GrabCamera(handle8);
 
     Mat img1, img2, img3, img4, img5, img6, img7, img8;
-    Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
 
     //Cylindrical Warp
     KImageColor Img(1024,1280);
@@ -1663,24 +1666,24 @@ void MainFrame::on_pushRealTime_clicked()
 
     Mat icMain(1024*2, 1280*5, CV_8UC3);
 
-//    //IMU
-//    Mat icKernel(750, 1280, CV_8UC3);
+    //IMU
+    Mat icKernel(750, 1280, CV_8UC3);
 
-//    int id;
-//    float item[100];
+    int id;
+    float item[100];
 
-//    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
-//    {
-//        printf("\n\rSerialport Error...");
-//        Sleep(2000);
-//    }
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
 
-//    Quaternion q;
-//    EulerAngles e;
+    Quaternion q;
+    EulerAngles e;
 
-//    double angle_pre =0;
-//    double angle_cur = 0;
-//    double angle = 0;
+    double angle_pre =0;
+    double angle_cur = 0;
+    double angle = 0;
 
     while (1) {
         Mat icMain_show;
@@ -1693,27 +1696,6 @@ void MainFrame::on_pushRealTime_clicked()
         img6 = GetMatFrame(handle6);
 //        img7 = GetMatFrame(handle7);
 //        img8 = GetMatFrame(handle8);
-
-        if(show_flag == 1)
-        {
-            cv::resize(img1, show_img1, Size(img1.cols/2, img1.rows/2));        // resize
-            cv::resize(img2, show_img2, Size(img2.cols/2, img2.rows/2));        // resize
-            cv::resize(img3, show_img3, Size(img3.cols/2, img3.rows/2));        // resize
-            cv::resize(img4, show_img4, Size(img4.cols/2, img4.rows/2));        // resize
-            cv::resize(img5, show_img5, Size(img5.cols/2, img5.rows/2));        // resize
-            cv::resize(img6, show_img6, Size(img6.cols/2, img6.rows/2));        // resize
-//            cv::resize(img7, show_img7, Size(img7.cols/2, img7.rows/2));        // resize
-//            cv::resize(img8, show_img8, Size(img8.cols/2, img8.rows/2));        // resize
-
-            imshow("camera1", show_img1);
-            imshow("camera2", show_img2);
-            imshow("camera3", show_img3);
-            imshow("camera4", show_img4);
-            imshow("camera5", show_img5);
-            imshow("camera6", show_img6);
-//            imshow("camera7", show_img7);
-//            imshow("camera8", show_img8);
-        }
 
         QPoint mp4_458;
         QPoint mp5_458;
@@ -1754,58 +1736,61 @@ void MainFrame::on_pushRealTime_clicked()
             }
         }
 
-//        //IMU
-//        int count = 100;
-//        int init_count = 0;
-//        while(count > 0)
-//        {
-//            if (EBimuAsciiParser(&id,item, 5))
-//            {
-//                q.z = item[0];
-//                q.y = item[1];
-//                q.x = item[2];
-//                q.w = item[3];
+        if(show_imu == 1)
+        {
+            //IMU
+            int count = 25;
+            int init_count = 0;
+            while(count > 0)
+            {
+                if (EBimuAsciiParser(&id,item, 5))
+                {
+                    q.z = item[0];
+                    q.y = item[1];
+                    q.x = item[2];
+                    q.w = item[3];
 
-//                e = ToEulerAngles(q);
+                    e = ToEulerAngles(q);
 
-//                if(init_count == 0)
-//                {
-//                    angle_pre = e.yaw;
-//                }
-//                angle_cur = e.yaw;
+                    if(init_count == 0)
+                    {
+                        angle_pre = e.yaw;
+                    }
+                    angle_cur = e.yaw;
 
-//                angle += angle_cur - angle_pre;
-//                cout << "Yaw: " << angle <<endl;
+                    angle += angle_cur - angle_pre;
+                    cout << "Yaw: " << angle <<endl;
 
-//                int data_row = (int)((angle + 180)*(icMain.cols/360));
-//                //cout << "data_row: " << data_row << endl;
+                    int data_row = (int)((angle + 180)*(icMain.cols/360));
+                    //cout << "data_row: " << data_row << endl;
 
-//                for(int c = 0; c < icKernel.cols; c++)
-//                {
-//                    for(int r = 0; r < icKernel.rows; r++)
-//                    {
-//                        if(data_row > icMain.cols)
-//                        {
-//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
-//                        }
-//                        else
-//                        {
-//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
-//                        }
-//                    }
-//                }
-//                imshow("Kernel Image", icKernel);
+                    for(int c = 0; c < icKernel.cols; c++)
+                    {
+                        for(int r = 0; r < icKernel.rows; r++)
+                        {
+                            if(data_row > icMain.cols)
+                            {
+                                icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
+                            }
+                            else
+                            {
+                                icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
+                            }
+                        }
+                    }
+                    imshow("Kernel Image", icKernel);
 
-//                char ch = waitKey(10);
-//                if(ch == 27)    // ESC key
-//                    break;
-//                else if (ch ==  32)  // SPASE
-//                    angle = 0;
-//            }
-//            angle_pre = angle_cur;
-//            init_count++;
-//            count--;
-//        }
+                    char ch = waitKey(10);
+                    if(ch == 27)    // ESC key
+                        break;
+                    else if (ch ==  32)  // SPASE
+                        angle = 0;
+                }
+                angle_pre = angle_cur;
+                init_count++;
+                count--;
+            }
+        }
 
         //UI 활성화 갱신
         cout << "cylinderical Process Finished!" << endl;
@@ -1959,6 +1944,7 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
 
     //IMU
     Mat icKernel(750, 1280, CV_8UC3);
+    Mat icKernel_show(750, 1280, CV_8UC3);
 
     int id;
     float item[100];
@@ -2076,7 +2062,8 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
                     }
                 }
             }
-            imshow("Kernel Image", icKernel);
+            cv::resize(icKernel, icKernel_show, Size(int(icKernel.cols*1.8), int(icKernel.rows*1.4)));
+            imshow("Kernel Image", icKernel_show);
 
             char ch = waitKey(10);
             if(ch == 27)    // ESC key
@@ -2091,7 +2078,8 @@ void MainFrame::on_Cylinderical_Warp_2_clicked()
 
 void MainFrame::on_pushRealTime_2_clicked()
 {
-    int show_flag = 0;
+    int show_imu = 1;
+    int show_main = 0;
 
     void* handle1;
     void* handle2;
@@ -2165,7 +2153,6 @@ void MainFrame::on_pushRealTime_2_clicked()
 //    GrabCamera(handle8);
 
     Mat img1, img2, img3, img4, img5, img6, img7, img8;
-    Mat show_img1, show_img2, show_img3, show_img4, show_img5, show_img6, show_img7, show_img8;
 
     //Cylindrical Warp
     KImageColor Img(1024,1280);
@@ -2295,24 +2282,25 @@ void MainFrame::on_pushRealTime_2_clicked()
 
     Mat icMain(1024*2, 1280*5, CV_8UC3);
 
-//    //IMU
-//    Mat icKernel(750, 1280, CV_8UC3);
+    //IMU
+    Mat icKernel(750, 1280, CV_8UC3);
+    Mat icKernel_show(750, 1280, CV_8UC3);
 
-//    int id;
-//    float item[100];
+    int id;
+    float item[100];
 
-//    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
-//    {
-//        printf("\n\rSerialport Error...");
-//        Sleep(2000);
-//    }
+    if (OpenSerialPort(MY_SERIALPORT, 115200, NOPARITY, 8, ONESTOPBIT) != ERR_OK)
+    {
+        printf("\n\rSerialport Error...");
+        Sleep(2000);
+    }
 
-//    Quaternion q;
-//    EulerAngles e;
+    Quaternion q;
+    EulerAngles e;
 
-//    double angle_pre =0;
-//    double angle_cur = 0;
-//    double angle = 0;
+    double angle_pre =0;
+    double angle_cur = 0;
+    double angle = 0;
 
     while (1) {
         Mat icMain_show;
@@ -2325,27 +2313,6 @@ void MainFrame::on_pushRealTime_2_clicked()
         img6 = GetMatFrame(handle6);
 //        img7 = GetMatFrame(handle7);
 //        img8 = GetMatFrame(handle8);
-
-        if(show_flag == 1)
-        {
-            cv::resize(img1, show_img1, Size(img1.cols/2, img1.rows/2));        // resize
-            cv::resize(img2, show_img2, Size(img2.cols/2, img2.rows/2));        // resize
-            cv::resize(img3, show_img3, Size(img3.cols/2, img3.rows/2));        // resize
-            cv::resize(img4, show_img4, Size(img4.cols/2, img4.rows/2));        // resize
-            cv::resize(img5, show_img5, Size(img5.cols/2, img5.rows/2));        // resize
-            cv::resize(img6, show_img6, Size(img6.cols/2, img6.rows/2));        // resize
-//            cv::resize(img7, show_img7, Size(img7.cols/2, img7.rows/2));        // resize
-//            cv::resize(img8, show_img8, Size(img8.cols/2, img8.rows/2));        // resize
-
-            imshow("camera1", show_img1);
-            imshow("camera2", show_img2);
-            imshow("camera3", show_img3);
-            imshow("camera4", show_img4);
-            imshow("camera5", show_img5);
-            imshow("camera6", show_img6);
-//            imshow("camera7", show_img7);
-//            imshow("camera8", show_img8);
-        }
 
         QPoint mp4_458;
         QPoint mp5_458;
@@ -2403,64 +2370,70 @@ void MainFrame::on_pushRealTime_2_clicked()
             }
         }
 
-//        //IMU
-//        int count = 100;
-//        int init_count = 0;
-//        while(count > 0)
-//        {
-//            if (EBimuAsciiParser(&id,item, 5))
-//            {
-//                q.z = item[0];
-//                q.y = item[1];
-//                q.x = item[2];
-//                q.w = item[3];
+        if(show_imu == 1)
+        {
+            //IMU
+            int count = 21; //25
+            int init_count = 0;
+            while(count > 0)
+            {
+                if (EBimuAsciiParser(&id,item, 5))
+                {
+                    q.z = item[0];
+                    q.y = item[1];
+                    q.x = item[2];
+                    q.w = item[3];
 
-//                e = ToEulerAngles(q);
+                    e = ToEulerAngles(q);
 
-//                if(init_count == 0)
-//                {
-//                    angle_pre = e.yaw;
-//                }
-//                angle_cur = e.yaw;
+                    if(init_count == 0)
+                    {
+                        angle_pre = e.yaw;
+                    }
+                    angle_cur = e.yaw;
 
-//                angle += angle_cur - angle_pre;
-//                cout << "Yaw: " << angle <<endl;
+                    angle += angle_cur - angle_pre;
+                    cout << "Yaw: " << angle <<endl;
 
-//                int data_row = (int)((angle + 180)*(icMain.cols/360));
-//                //cout << "data_row: " << data_row << endl;
+                    int data_row = (int)((angle + 180)*(icMain.cols/360));
+                    //cout << "data_row: " << data_row << endl;
 
-//                for(int c = 0; c < icKernel.cols; c++)
-//                {
-//                    for(int r = 0; r < icKernel.rows; r++)
-//                    {
-//                        if(data_row > icMain.cols)
-//                        {
-//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
-//                        }
-//                        else
-//                        {
-//                            icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
-//                        }
-//                    }
-//                }
-//                imshow("Kernel Image", icKernel);
+                    for(int c = 0; c < icKernel.cols; c++)
+                    {
+                        for(int r = 0; r < icKernel.rows; r++)
+                        {
+                            if(data_row > icMain.cols)
+                            {
+                                icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c - icMain.cols);
+                            }
+                            else
+                            {
+                                icKernel.at<Vec3b>(r, c) = icMain.at<Vec3b>(r+600, data_row - 888 + c);
+                            }
+                        }
+                    }
+                    cv::resize(icKernel, icKernel_show, Size(int(icKernel.cols*1.8), int(icKernel.rows*1.4)));
+                    imshow("Kernel Image", icKernel_show);
 
-//                char ch = waitKey(10);
-//                if(ch == 27)    // ESC key
-//                    break;
-//                else if (ch ==  32)  // SPASE
-//                    angle = 0;
-//            }
-//            angle_pre = angle_cur;
-//            init_count++;
-//            count--;
-//        }
-
+                    char ch = waitKey(10);
+                    if(ch == 27)    // ESC key
+                        break;
+                    else if (ch ==  32)  // SPASE
+                        angle = 0;
+                }
+                angle_pre = angle_cur;
+                init_count++;
+                count--;
+            }
+        }
         //UI 활성화 갱신
         cout << "cylinderical Process Finished!" << endl;
 
-        cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
-        imshow("icMain", icMain_show);
+        if(show_main == 1)
+        {
+            cv::resize(icMain, icMain_show, Size(icMain.cols/2, icMain.rows/2));        // resize
+            imshow("icMain", icMain_show);
+        }
 
         char ch = waitKey(10);
         if(ch == 27)
